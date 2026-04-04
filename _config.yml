@@ -224,18 +224,15 @@ jekyll-archives:
     tag: /tags/:name/
     category: /categories/:name/
 
-    feed:
+plugins:
+  - jekyll-paginate
+  - jekyll-redirect-from
+  - jekyll-seo-tag
+  - jekyll-archives
+  - jekyll-sitemap
+  - jekyll-include-cache
+
+# 禁用
+feed:
   disable: true
-
-sidebar:
-  rss: false
-  
-
-
-sidebar:
-  home: 首页
-  categories: 分类  
-  tags: 标签
-  archives: 归档
-  about: 关于
   
