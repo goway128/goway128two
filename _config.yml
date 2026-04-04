@@ -224,6 +224,9 @@ jekyll-archives:
     tag: /tags/:name/
     category: /categories/:name/
 
+    feed:
+  disable: true
+
 
 
 sidebar:
