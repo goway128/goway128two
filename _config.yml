@@ -225,3 +225,13 @@ jekyll-archives:
   permalinks:
     tag: /tags/:name/
     category: /categories/:name/
+
+
+
+sidebar:
+  home: 首页
+  categories: 分类  
+  tags: 标签
+  archives: 归档
+  about: 关于
+  
