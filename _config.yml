@@ -231,8 +231,5 @@ plugins:
   - jekyll-archives
   - jekyll-sitemap
   - jekyll-include-cache
-
-# 禁用
-feed:
-  disable: true
+  
   
