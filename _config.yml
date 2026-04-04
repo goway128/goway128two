@@ -25,12 +25,13 @@ description: >-
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
 url: "https://goway128.online"
 
-github:
-  username: github_username # change to your GitHub username
-
+telegram:
+  username: gowayslove520 
+  
 twitter:
-  username: twitter_username # change to your Twitter username
+  username: gowayslove520
 
+  
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
