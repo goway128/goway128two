@@ -1,0 +1,41 @@
+# _data/locales/zh-CN.yml
+commons:
+  sidebar:
+    home: 首页
+    categories: 分类
+    tags: 标签
+    archives: 归档
+    about: 关于
+  
+  tabs:
+    home: 首页
+    categories: 分类
+    tags: 标签
+    archives: 归档
+    about: 关于
+    
+  post:
+    written_by: 作者
+    posted: 发表于
+    updated: 更新于
+    words: 字
+    pageview_measure: 次浏览
+    read_time:
+      unit: 分钟
+      prompt: 阅读
+    relate_posts: 相关文章
+    share: 分享
+    button:
+      next: 下一篇
+      previous: 上一篇
+      copy_code:
+        succeed: 已复制！
+      share_link:
+        title: 复制链接
+        succeed: 链接已复制！
+        
+  search:
+    hint: 搜索
+    cancel: 取消
+    no_results: 没有找到相关结果
+
