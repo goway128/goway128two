@@ -59,3 +59,9 @@ commons:
   search_results:
     found: 找到
     returns: 条结果
+
+
+    # _data/locales/
+post:
+  license:
+    text: ""   #
