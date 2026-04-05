@@ -44,8 +44,8 @@ commons:
     toc: 目录
     
   copyright:
-    brief: 保留所有权利
-    verbose: 除非另有说明，本网站上的博客文章均由作者按照知识共享署名4.0国际许可协议进行授权。
+    brief: 
+    verbose: 
     
   meta: 分享
   
