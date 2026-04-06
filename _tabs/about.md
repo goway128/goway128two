@@ -11,7 +11,6 @@ title: 关于
 
 ### INFP
 
-### MTX/F
 
 兴趣：网站，AI，API
 
