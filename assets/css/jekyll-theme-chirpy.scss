@@ -1,77 +1,18 @@
+@use 'main' {%- if jekyll.environment == 'production' -%}.bundle{%- endif -%};
 
-
-@import "../../_sass/custom";
-
-html[data-theme="dark"] {
-  --ch-color-background: #1f1f2e !important;
-  --ch-color-surface: #1f1f2e !important;
-  --ch-color-text: #e0e0e0;
-  --ch-color-text-secondary: #b0b0c0;
-  --ch-color-border: #3a3a4f;
-  --ch-color-accent: #bb86fc;
-
-  
-  body, main, .layout, .sidebar, .card, article, .post {
-    background-color: #1f1f2e !important;
-  }
-
-  .sidebar {
-    background: #1a1a28 !important;
-  }
+.post .page__hero-image,
+.post img[alt*="封面"],          /* 备用选择器 */
+.page__hero-image {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 580px;             
+  object-fit: contain !important; 
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-
-
-// 
-.post-cover-wrapper {
-  position: fixed; // 
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60vh; //  60%
-  z-index: -1;   // 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-
-  .post-cover {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    // 
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.3);
-    }
-  }
-
-  .post-header {
-    color: white;
-    z-index: 1;
-    text-align: center;
-  }
-}
-
-// 上滚动
-.post-main-container {
-  position: relative;
-  z-index: 10;      //
-  margin-top: 60vh; // 
-  background: #ffffff; // 
-  border-radius: 20px 20px 0 0; 
-  min-height: 100vh;
-  padding: 40px 0;
-  box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
-}
-
-.post-content {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 20px;
+.home .card .card__img {
+  height: 220px;
+  object-fit: cover;
 }
