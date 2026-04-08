@@ -22,51 +22,56 @@ html[data-theme="dark"] {
 
 
 
-@keyframes intro {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
-}
+// 
+.post-cover-wrapper {
+  position: fixed; // 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60vh; //  60%
+  z-index: -1;   // 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 
-
-.post {
-  #main,
-  .post__header,
-  .post__meta,
-  .post__content,
-  .page__hero,
-  .card,
-  article {
-    animation: intro 0.3s both;
+  .post-cover {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    // 
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+    }
   }
 
-  
-  .post__header { animation-delay: 0.15s; }
-  .post__meta    { animation-delay: 0.25s; }
-  .page__hero    { animation-delay: 0.20s; }
-  .post__content { animation-delay: 0.35s; }
-  .card          { animation-delay: 0.40s; }
-}
-
-
-.post {
-  #main,
-  .post__header,
-  .post__meta,
-  .post__content,
-  .page__hero,
-  .card,
-  article {
-    animation: intro-slide 0.4s ease both;
+  .post-header {
+    color: white;
+    z-index: 1;
+    text-align: center;
   }
 }
 
-@keyframes intro-slide {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+// 上滚动
+.post-main-container {
+  position: relative;
+  z-index: 10;      //
+  margin-top: 60vh; // 
+  background: #ffffff; // 
+  border-radius: 20px 20px 0 0; 
+  min-height: 100vh;
+  padding: 40px 0;
+  box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+}
+
+.post-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
