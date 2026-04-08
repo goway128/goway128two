@@ -1,0 +1,29 @@
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    
+    const fadeElements = document.querySelectorAll(
+      '.post-content h1, .post-content h2, .post-content h3, ' +
+      '.post-content h4, .post-content h5, .post-content h6, ' +
+      '.post-content p, .post-content ul, .post-content ol, ' +
+      '.post-content blockquote, .post-content img, ' +
+      '.post-content .highlight, .archive__item'
+    );
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+        
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 60);   
+        }
+      });
+    }, {
+      threshold: 0.08,        
+      rootMargin: "0px 0px -60px 0px"
+    });
+
+    fadeElements.forEach(el => observer.observe(el));
+  });
+</script>
