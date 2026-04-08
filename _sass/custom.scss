@@ -1,15 +1,71 @@
-.post .page__hero-image,
-.post .post__hero,
-.page__hero-image {
-  width: 100% !important;
-  height: auto !important;           
-  max-height: 560px;                 
-  object-fit: contain !important;    
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
+*,
+*::before,
+*::after {
+  transition: all 0.25s ease-in-out;
 }
 
-/* 可选：让图片带一点圆角和阴影，更好看 */
-.post .page__hero-image {
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+body {
+  animation: intro-fade 0.6s ease both;
 }
+
+@keyframes intro-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+
+.fade-in-auto {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in-auto.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6,
+.post-content p,
+.post-content ul,
+.post-content ol,
+.post-content blockquote,
+.post-content img,
+.post-content .highlight,
+.archive__item {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  will-change: opacity, transform;
+}
+
+.post-content h1.visible,
+.post-content h2.visible,
+.post-content h3.visible,
+.post-content h4.visible,
+.post-content h5.visible,
+.post-content h6.visible,
+.post-content p.visible,
+.post-content ul.visible,
+.post-content ol.visible,
+.post-content blockquote.visible,
+.post-content img.visible,
+.post-content .highlight.visible,
+.archive__item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+.post-content h2 { transition-delay: 0.05s; }
+.post-content h3 { transition-delay: 0.1s; }
+.post-content p  { transition-delay: 0.15s; }
+.post-content ul,
+.post-content ol,
+.post-content blockquote { transition-delay: 0.2s; }
