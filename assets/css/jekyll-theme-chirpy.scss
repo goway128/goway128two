@@ -19,3 +19,54 @@ html[data-theme="dark"] {
     background: #1a1a28 !important;
   }
 }
+
+
+
+@keyframes intro {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+.post {
+  #main,
+  .post__header,
+  .post__meta,
+  .post__content,
+  .page__hero,
+  .card,
+  article {
+    animation: intro 0.3s both;
+  }
+
+  
+  .post__header { animation-delay: 0.15s; }
+  .post__meta    { animation-delay: 0.25s; }
+  .page__hero    { animation-delay: 0.20s; }
+  .post__content { animation-delay: 0.35s; }
+  .card          { animation-delay: 0.40s; }
+}
+
+
+.post {
+  #main,
+  .post__header,
+  .post__meta,
+  .post__content,
+  .page__hero,
+  .card,
+  article {
+    animation: intro-slide 0.4s ease both;
+  }
+}
+
+@keyframes intro-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
