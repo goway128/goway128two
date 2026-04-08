@@ -1,49 +1,15 @@
-/* ====================== 自定义 ====================== */
-
-html[data-theme="dark"] {
-  
-  /* 整体 */
-  --ch-color-background: #1f1f2e;
-  --ch-color-surface: #1f1f2e;           
-  
-  /* 文字 */
-  --ch-color-text: #e0e0e0;
-  --ch-color-text-secondary: #b0b0c0;
-  --ch-color-muted: #8888a0;
-
-  /* 链接和强调色*/
-  --ch-color-accent: #bb86fc;            
-  --ch-color-accent-hover: #d4a5ff;
-
-  /* 边框和分割线*/
-  --ch-color-border: #3a3a4f;
-  --ch-color-divider: #2a2a3f;
-
-  /* 代码块背景 */
-  --ch-color-code-background: #18182a;
-
-  /* 侧边栏*/
-  .sidebar {
-    background: #1a1a28;
-    border-right: 1px solid #2f2f45;
-  }
-
-  /* 文章卡片和内容区 */
-  .card,
-  .post,
-  .page__inner-wrap {
-    background: #1f1f2e;
-    border-color: #2f2f45;
-  }
-
-  /* 头部导航*/
-  header,
-  .masthead {
-    background: #1f1f2e;
-  }
+.post .page__hero-image,
+.post .post__hero,
+.page__hero-image {
+  width: 100% !important;
+  height: auto !important;           
+  max-height: 560px;                 
+  object-fit: contain !important;    
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
 }
 
-
-html[data-theme="light"] {
-  --ch-color-background: #f8f8f8;
+/* 可选：让图片带一点圆角和阴影，更好看 */
+.post .page__hero-image {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
 }
