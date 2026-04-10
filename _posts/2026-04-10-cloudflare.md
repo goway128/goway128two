@@ -8,7 +8,7 @@ toc: true         # 目录
 comments: false    # 评论
 pin: false        # 置顶
 image:
-  path: https://111666.best/7675ad27-259e-449f-b83e-0f7501b6c265.jpg
+  path: https://i.111666.best/image/tvP4pWRcTPbtrcVtuiK1qq.png
 ---
 
 Cloudflare 是一家总部位于美国旧金山的全球科技公司，其使命是“帮助打造一个更好的互联网”（Help build a better Internet）。它通过庞大的全球边缘网络（Connectivity Cloud），为网站、应用、AI 代理和企业网络提供安全防护、性能加速和开发工具。目前，Cloudflare 的网络覆盖超过 125 个国家/地区的 330 多个城市，每天处理数亿个请求，约 20% 的互联网网站使用其服务
