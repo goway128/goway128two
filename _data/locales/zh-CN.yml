@@ -1,17 +1,19 @@
 commons:
   sidebar:
-    home: 首页
+    home: 文章列表
     categories: 分类
     tags: 标签
     archives: 归档
     about: 关于
+    guanyuwo: 首页
   
   tabs:
-    home: 首页
+    home: 文章列表
     categories: 分类
     tags: 标签
     archives: 归档
     about: 关于
+    guanyuwp: 首页
     
   post:
     written_by: 作者
