@@ -1,51 +1,28 @@
-html[data-theme="dark"] {
-  /* 背景 */
+html[data-mode="dark"] {
   --body-bg: #0a0a1f;
-  --sidebar-bg: #1a1a3e;
-  --topbar-bg: rgba(10, 10, 31, 0.85);
+  --main-bg: #0f0f2a;
+  --main-border-color: rgba(255,255,255,0.08);
 
-  /* 文字 */
   --text-color: #e0e7ff;
   --text-muted-color: #94a3b8;
   --heading-color: #e0e7ff;
 
-  /* 链接 / 高亮 */
   --link-color: #a855f7;
   --link-underline-color: #a855f7;
-  --btn-patinator-text-color: #a855f7;
 
-  /* 侧边栏文字 */
+  --sidebar-bg: #1a1a3e;
   --sidebar-muted-color: #c4d0ff;
+  --sidebar-active-color: #ffffff;
   --nav-cursor-color: #a855f7;
+  --sidebar-btn-bg: #2a2a4e;
 
-  /* 卡片 / 边框 */
-  --card-bg: rgba(255, 255, 255, 0.07);
-  --card-border-color: rgba(255, 255, 255, 0.1);
-  --border-color: rgba(255, 255, 255, 0.12);
+  --topbar-wrapper-bg: rgba(10, 10, 31, 0.85);
+  --topbar-text-color: #e0e7ff;
 
-  /* 代码块 */
-  --code-bg: #1a1a3e;
-  --highlight-bg-color: #1a1a3e;
+  --card-border-color: rgba(255,255,255,0.1);
+  --card-box-shadow: rgba(168, 85, 247, 0.15);
+
+  --btn-patinator-text-color: #a855f7;
+  --btn-paginator-hover-color: #1a1a3e;
+  --btn-paginator-border-color: rgba(255,255,255,0.15);
 }
-
-// 偏移30px
-.reveal-on-scroll {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1), 
-                transform 0.7s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-}
-
-// 触发
-.reveal-on-scroll.revealed {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-// 
-.reveal-on-scroll:nth-child(1) { transition-delay: 0.05s; }
-.reveal-on-scroll:nth-child(2) { transition-delay: 0.10s; }
-.reveal-on-scroll:nth-child(3) { transition-delay: 0.15s; }
-.reveal-on-scroll:nth-child(4) { transition-delay: 0.20s; }
-.reveal-on-scroll:nth-child(5) { transition-delay: 0.25s; }
-.reveal-on-scroll:nth-child(6) { transition-delay: 0.30s; }
