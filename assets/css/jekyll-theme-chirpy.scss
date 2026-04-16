@@ -1,14 +1,7 @@
-@use 'main'{%- if jekyll.environment == 'production' -%}.bundle{%- endif -%};
-
-
-html[data-theme="dark"] {
-  --ch-color-background: #1f1f2e;     /* 整体 */
-  --ch-color-surface: #e0e7ff     /* 卡片、侧边栏 */
-  --ch-color-accent: #bb86fc;         /* 链接高亮色 */
-}
+@import 'main';
 
 html[data-theme="dark"] {
-  --ch-color-background: #1f1f2e;     /* 整体 */
-  --ch-color-surface: #e0e7ff     /* 卡片、侧边栏 */
-  --ch-color-accent: #bb86fc;         /* 链接高亮色 */
+  --ch-color-background: #1f1f2e;
+  --ch-color-surface: #e0e7ff;
+  --ch-color-accent: #bb86fc;
 }
