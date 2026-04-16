@@ -1,7 +1,3 @@
-@import 'main';
+@import 'main{%- if jekyll.environment == "production" -%}.bundle{%- endif -%}';
 
-html[data-theme="dark"] {
-  --ch-color-background: #1f1f2e;
-  --ch-color-surface: #e0e7ff;
-  --ch-color-accent: #bb86fc;
-}
+@import 'custom/custom';
