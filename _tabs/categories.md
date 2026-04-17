@@ -1,6 +1,6 @@
 ---
 layout: categories
-icon: fas fa-stream
+icon: fa-solid fa-sliders
 order: 2
 title: 分类
 ---
