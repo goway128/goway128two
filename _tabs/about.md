@@ -1,18 +1,18 @@
 ---
 layout: page
-icon: fas fa-info-circle
+icon: fa-brands fa-codepen
 order: 6
 title: 关于
 ---
 
-# 关于我？
+关于我？
 
 ~~一个13岁の沃尔玛塑料袋~~
 
-### INFP
+INFP
 
+[ngl链接](https://ngl.link/goway0128)
 
-兴趣：网站，AI，API
 
 
 
