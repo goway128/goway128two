@@ -13,10 +13,11 @@ icon: fa-solid fa-at
 可以添加我到你的网站
 
 
-```html
+```md
 name 白
-url https://i.111666.best/image/AQAH3evyedaM9JXjas8PCA.jpg
-message 白の小站
+url https:goway128.online
+avatar https://i.111666.best/image/AQAH3evyedaM9JXjas8PCA.jpg
+desc 白の小站
     
 
 
@@ -27,14 +28,67 @@ message 白の小站
 
 
 
-```html
+```md
 name example
 url https://example...
-message（可选）
+avatar https://example...
+desc（可选）
 
 
 ```
 
-*（原谅我语法写的是html）*
 
 
+
+<style>
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+.friend-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border-color);
+  border-radius: 12px;
+  text-decoration: none !important;
+  transition: box-shadow 0.2s;
+}
+.friend-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.friend-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.friend-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--heading-color);
+  margin: 0 0 4px;
+}
+.friend-desc {
+  font-size: 13px;
+  color: var(--text-muted-color);
+  margin: 0;
+  line-height: 1.5;
+}
+</style>
+
+<div class="friends-grid">
+  <a class="friend-card" href="https:goway128.online="_blank">
+    <img class="friend-avatar" src="https://i.111666.best/image/AQAH3evyedaM9JXjas8PCA.jpg" alt="1zkn">
+    <div>
+      <p class="friend-name">白</p>
+      <p class="friend-desc">白の小站</p>
+    </div>
+  </a>
+  <!-- 复制上面的 <a>...</a> 块，继续添加更多友链 -->
+</div>
