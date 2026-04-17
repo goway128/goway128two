@@ -1,32 +1,58 @@
-    <div>
-      <h4 style="color: #fff; margin-bottom: 16px; font-size: 1.1rem;">项目</h4>
-      <ul style="list-style: none; padding: 0; line-height: 1.8;">
-        <li><a href="" style="color: #aaa; text-decoration: none;">测试</a></li>
-      </ul>
-    </div>
-
+<footer style="background: #1a1a1a; color: #aaa; padding: 50px 20px 30px; font-size: 0.95rem;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    
+    <div style="display: grid; 
+                grid-template-columns: repeat(4, 1fr); 
+                gap: 40px 30px; 
+                justify-items: center;">
       
-    <div>
-      <h4 style="color: #fff; margin-bottom: 16px; font-size: 1.1rem;">开发</h4>
-      <ul style="list-style: none; padding: 0; line-height: 1.8;">
-        <li><a href="https://www.tcptest.cn/http" style="color: #aaa; text-decoration: none;">测速</a></li>
-      </ul>
+      <!-- 博客 -->
+      <div style="text-align: center; width: 100%; max-width: 240px;">
+        <h4 style="color: #fff; margin-bottom: 18px; font-size: 1.15rem;">博客</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
+          <li><a href="/tags" style="color: #aaa; text-decoration: none;">全部标签</a></li>
+        </ul>
+      </div>
+
+      <!-- 项目 -->
+      <div style="text-align: center; width: 100%; max-width: 240px;">
+        <h4 style="color: #fff; margin-bottom: 18px; font-size: 1.15rem;">图床</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
+          <li><a href="https://111666.best" style="color: #aaa; text-decoration: none;">16图床</a></li>
+          <li><a href="https://imgchr.com/" style="color: #aaa; text-decoration: none;">路过图床</a></li>
+        </ul>
+      </div>
+
+      <!-- 页面 -->
+      <div style="text-align: center; width: 100%; max-width: 240px;">
+        <h4 style="color: #fff; margin-bottom: 18px; font-size: 1.15rem;">开发</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
+          <li><a href="https://www.tcptest.cn/http" style="color: #aaa; text-decoration: none;">测速</a></li>
+          <li><a href="https://ping0.cc" style="color: #aaa; text-decoration: none;">ip纯净度</a></li>
+          <li><a href="https://www.whatsmydns.net" style="color: #aaa; text-decoration: none;">dns查询</a></li>
+          <li><a href="https://fontawesome.com/search" style="color: #aaa; text-decoration: none;">lcon图标</a></li>
+        </ul>
+      </div>
+
+      <!-- 服务 -->
+      <div style="text-align: center; width: 100%; max-width: 240px;">
+        <h4 style="color: #fff; margin-bottom: 18px; font-size: 1.15rem;">AI服务</h4>
+        <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
+          <li><a href="10dian-ai.top" style="color: #aaa; text-decoration: none;">10点官网</a></li>
+        </ul>
+      </div>
+
     </div>
-  </div>
 
-
-    <div>
-      <h4 style="color: #fff; margin-bottom: 16px; font-size: 1.1rem;">图床</h4>
-      <ul style="list-style: none; padding: 0; line-height: 1.8;">
-        <li><a href="https://111666.best" style="color: #aaa; text-decoration: none;">16图床</a></li>
-          <li><a href="https://imgchr.com" style="color: #aaa; text-decoration: none;">路过图床</a></li>
-      </ul>
+    <!-- 版权行 -->
+    <div style="text-align: center; margin-top: 60px; padding-top: 25px; border-top: 1px solid #333; font-size: 0.85rem; color: #666;">
+      <p>© {{ 'now' | date: '%Y' }} {{ site.social.name }}. Some rights reserved.</p>
+      <p>保留所有权利</p>
+      <p>
+        <a href="https://icp.gov.moe/?keyword=20267676" target="_blank" style="color: #888; text-decoration: none;">
+          萌ICP备20267676号
+        </a>
+      </p>
     </div>
-  </div>
-
-  <div style="text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #333; font-size: 0.8rem; color: #666;">
-    <p>© {{ 'now' | date: '%Y' }} {{ site.social.name }}. Some rights reserved.</p>
-    <p>保留所有权利</p>
-    <p><a href="https://icp.gov.moe/?keyword=20267676" target="_blank" style="color: #888; text-decoration: none;">萌ICP备20267676号</a></p>
   </div>
 </footer>
