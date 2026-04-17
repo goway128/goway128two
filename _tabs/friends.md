@@ -6,7 +6,9 @@ order: 5
 icon: fa-solid fa-at     
 ---
 
+
 *欢迎来到友链区！*
+
 
 可以添加我到你的网站
 
@@ -25,7 +27,7 @@ message 白の小站
 
 
 
-```ntml
+```html
 name example
 url https://example...
 message（可选）
@@ -34,4 +36,5 @@ message（可选）
 ```
 
 *（原谅我语法写的是html）*
+
 
