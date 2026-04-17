@@ -33,5 +33,5 @@ desc（可选）
 
 
 <div markdown="0" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin:1.5rem 0;">
-<a href="https://https://mahiro.uk/" target="_blank" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card-bg);border:1px solid var(--card-border-color);border-radius:12px;text-decoration:none;"><img src="https://mahiro.uk/content/nekoxun.jpg" style="width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;"><span style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:15px;font-weight:600;color:var(--heading-color);">Smirnova Oyama</span><span style="font-size:13px;color:var(--text-muted-color);line-height:1.5;">一个本科计算机学生</span></span></a>
+<a href="https://mahiro.uk/" target="_blank" style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card-bg);border:1px solid var(--card-border-color);border-radius:12px;text-decoration:none;"><img src="https://mahiro.uk/content/nekoxun.jpg" style="width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;"><span style="display:flex;flex-direction:column;gap:4px;"><span style="font-size:15px;font-weight:600;color:var(--heading-color);">Smirnova Oyama</span><span style="font-size:13px;color:var(--text-muted-color);line-height:1.5;">一个本科计算机学生</span></span></a>
 </div>
