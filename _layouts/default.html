@@ -86,16 +86,16 @@ layout: compress
     {% include_cached search-loader.html lang=lang %}
 
     <style>
+      #lang-wrap {
+        padding: 0 1rem 0.8rem;
+        width: 100%;
+      }
       #lang-switcher-btn {
-        position: fixed;
-        bottom: 20px;
-        left: 16px;
-        z-index: 1100;
-        width: 200px;
-        padding: 6px 18px;
+        width: 100%;
+        padding: 7px 14px;
         border-radius: 999px;
-        border: 1.5px solid rgba(128,128,128,0.3);
-        background: var(--sidebar-bg, #1e2125);
+        border: 1.5px solid rgba(128,128,128,0.25);
+        background: transparent;
         color: var(--sidebar-muted-color, #aaa);
         font-size: 0.78rem;
         font-weight: 600;
@@ -106,15 +106,10 @@ layout: compress
         align-items: center;
         gap: 6px;
       }
-      @media (max-width: 849px) {
-        #lang-switcher-btn, #lang-panel { display: none !important; }
-      }
       #lang-switcher-btn:hover { border-color: #f9a8c9; color: #f9a8c9; }
       #lang-panel {
         position: fixed;
-        bottom: 58px;
-        left: 16px;
-        z-index: 1200;
+        z-index: 9999;
         background: var(--card-bg, #21252b);
         border: 1.5px solid rgba(128,128,128,0.2);
         border-radius: 16px;
@@ -122,7 +117,7 @@ layout: compress
         display: none;
         flex-direction: column;
         gap: 4px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        box-shadow: 0 -4px 32px rgba(0,0,0,0.3);
         min-width: 130px;
       }
       #lang-panel.open { display: flex; }
@@ -146,10 +141,12 @@ layout: compress
       <button class="lang-option active" data-lang="zh">CN 中文</button>
       <button class="lang-option" data-lang="en">EN English</button>
     </div>
-    <button id="lang-switcher-btn">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-      <span id="lang-btn-label">中文</span>
-    </button>
+    <div id="lang-wrap">
+      <button id="lang-switcher-btn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        <span id="lang-btn-label">中文</span>
+      </button>
+    </div>
     <script>
     (function(){
       var i18n={zh:{'首页':'首页','分类':'分类','归档':'归档','友链':'友链','关于':'关于','文章':'文章','标签':'标签'},en:{'首页':'Home','分类':'Categories','归档':'Archives','友链':'Friends','关于':'About','文章':'Posts','标签':'Tags'}};
@@ -165,14 +162,32 @@ layout: compress
         cur=lang;localStorage.setItem('chirpy-lang',lang);
       }
       var panel=document.getElementById('lang-panel');
+      var wrap=document.getElementById('lang-wrap');
       var btn=document.getElementById('lang-switcher-btn');
-      btn.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('open');});
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var r=btn.getBoundingClientRect();
+        panel.style.left=r.left+'px';
+        panel.style.bottom=(window.innerHeight-r.top+8)+'px';
+        panel.classList.toggle('open');
+      });
       document.addEventListener('click',function(){panel.classList.remove('open');});
       panel.addEventListener('click',function(e){e.stopPropagation();});
       document.querySelectorAll('.lang-option').forEach(function(opt){
         opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open');});
       });
-      window.addEventListener('DOMContentLoaded',function(){if(cur!=='zh')applyLang(cur);});
+      window.addEventListener('DOMContentLoaded',function(){
+        var sidebar=document.getElementById('sidebar');
+        if(sidebar){
+          var bottom=sidebar.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');
+          if(!bottom){
+            var divs=sidebar.querySelectorAll('div');
+            bottom=divs[divs.length-1];
+          }
+          sidebar.insertBefore(wrap,bottom);
+        }
+        if(cur!=='zh')applyLang(cur);
+      });
     })();
     </script>
 
