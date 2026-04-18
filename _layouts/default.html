@@ -202,7 +202,24 @@ layout: compress
           '条结果': 'results'}};
       var cur=localStorage.getItem('chirpy-lang')||'zh';
       function applyLang(lang){
-        var map=i18n[lang];
+           var map=i18n[lang];
+        // 大幅扩大选择器范围
+    const selectors = [
+      '#sidebar *',
+      'main *',
+      'aside *',
+      '.panel *',
+      'button',
+      'a',
+      'span',
+      'p',
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      '.text-muted',
+      '.lang-option',
+      '[data-zh-key]'
+    ].join(', ');
+
+        
         document.querySelectorAll('#sidebar a span,#sidebar nav span').forEach(function(el){
           if(!el.dataset.zhKey)el.dataset.zhKey=el.textContent.trim();
           if(map[el.dataset.zhKey])el.textContent=map[el.dataset.zhKey];
