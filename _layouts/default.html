@@ -85,13 +85,13 @@ layout: compress
 
     {% include_cached search-loader.html lang=lang %}
 
-    <!-- ── 语言切换器 ── -->
     <style>
       #lang-switcher-btn {
         position: fixed;
         bottom: 20px;
-        left: 50px;
+        left: 16px;
         z-index: 1100;
+        width: 200px;
         padding: 6px 18px;
         border-radius: 999px;
         border: 1.5px solid rgba(128,128,128,0.3);
@@ -106,14 +106,14 @@ layout: compress
         align-items: center;
         gap: 6px;
       }
-      #lang-switcher-btn:hover {
-        border-color: #f9a8c9;
-        color: #f9a8c9;
+      @media (max-width: 849px) {
+        #lang-switcher-btn, #lang-panel { display: none !important; }
       }
+      #lang-switcher-btn:hover { border-color: #f9a8c9; color: #f9a8c9; }
       #lang-panel {
         position: fixed;
         bottom: 58px;
-        left: 20px;
+        left: 16px;
         z-index: 1200;
         background: var(--card-bg, #21252b);
         border: 1.5px solid rgba(128,128,128,0.2);
@@ -123,14 +123,9 @@ layout: compress
         flex-direction: column;
         gap: 4px;
         box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-        min-width: 110px;
-        animation: langPanelIn 0.2s ease;
+        min-width: 130px;
       }
       #lang-panel.open { display: flex; }
-      @keyframes langPanelIn {
-        from { opacity: 0; transform: translateY(8px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
       .lang-option {
         padding: 8px 16px;
         border-radius: 10px;
@@ -142,122 +137,45 @@ layout: compress
         border: none;
         background: transparent;
         text-align: left;
-        letter-spacing: 0.02em;
       }
-      .lang-option:hover {
-        background: rgba(249,168,201,0.12);
-        color: #f9a8c9;
-      }
-      .lang-option.active {
-        color: #f472b6;
-        background: rgba(244,114,182,0.1);
-      }
+      .lang-option:hover { background: rgba(249,168,201,0.12); color: #f9a8c9; }
+      .lang-option.active { color: #f472b6; background: rgba(244,114,182,0.1); }
     </style>
 
-    <!-- 语言弹出面板 -->
     <div id="lang-panel">
-      <button class="lang-option active" data-lang="zh">🇨🇳 CN</button>
-      <button class="lang-option" data-lang="en">🇬🇧 EN</button>
+      <button class="lang-option active" data-lang="zh">CN 中文</button>
+      <button class="lang-option" data-lang="en">EN English</button>
     </div>
-
-    <!-- 切换按钮 -->
-    <button id="lang-switcher-btn" title="切换语言 / Switch Language">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
-      </svg>
+    <button id="lang-switcher-btn">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
       <span id="lang-btn-label">中文</span>
     </button>
-
     <script>
-    (function () {
-      // ── 对照表）──
-      var i18n = {
-        zh: {
-          '首页':   '首页',
-          '分类':   '分类',
-          '归档':   '归档',
-          '友链':   '友链',
-          '关于':   '关于',
-          '文章':   '文章',
-          '标签':   '标签',
-        },
-        en: {
-          '首页':   'Home',
-          '分类':   'Categories',
-          '归档':   'Archives',
-          '友链':   'Friends',
-          '关于':   'About',
-          '文章':   'Posts',
-          '标签':   'Tags',
-        }
-      };
-
-      var zhOriginals = {}; // 记录原始中文文字
-      var currentLang = localStorage.getItem('chirpy-lang') || 'zh';
-
-      // 收集侧边栏导航文字（只收集一次）
-      function collectOriginals() {
-        var items = document.querySelectorAll('#sidebar nav a span.label, #sidebar ul li a span');
-        items.forEach(function (el) {
-          var txt = el.textContent.trim();
-          if (txt) zhOriginals[el] = txt;
+    (function(){
+      var i18n={zh:{'首页':'首页','分类':'分类','归档':'归档','友链':'友链','关于':'关于','文章':'文章','标签':'标签'},en:{'首页':'Home','分类':'Categories','归档':'Archives','友链':'Friends','关于':'About','文章':'Posts','标签':'Tags'}};
+      var cur=localStorage.getItem('chirpy-lang')||'zh';
+      function applyLang(lang){
+        var map=i18n[lang];
+        document.querySelectorAll('#sidebar a span,#sidebar nav span').forEach(function(el){
+          if(!el.dataset.zhKey)el.dataset.zhKey=el.textContent.trim();
+          if(map[el.dataset.zhKey])el.textContent=map[el.dataset.zhKey];
         });
+        document.getElementById('lang-btn-label').textContent=lang==='zh'?'中文':'EN';
+        document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang);});
+        cur=lang;localStorage.setItem('chirpy-lang',lang);
       }
-
-      // 替换侧边栏文字
-      function applyLang(lang) {
-        var map = i18n[lang];
-        var items = document.querySelectorAll('#sidebar nav a span.label, #sidebar ul li a span');
-        items.forEach(function (el) {
-          var original = zhOriginals[el] || el.textContent.trim();
-          // 先把 key 存下来
-          if (!el.dataset.zhKey) el.dataset.zhKey = el.textContent.trim();
-          var zhKey = el.dataset.zhKey;
-          if (map[zhKey]) el.textContent = map[zhKey];
-        });
-
-        // 更新按钮文字
-        document.getElementById('lang-btn-label').textContent = lang === 'zh' ? '中文' : 'EN';
-
-        // 更新 active 状态
-        document.querySelectorAll('.lang-option').forEach(function (btn) {
-          btn.classList.toggle('active', btn.dataset.lang === lang);
-        });
-
-        currentLang = lang;
-        localStorage.setItem('chirpy-lang', lang);
-      }
-
-      // 面板开关
-      var panel = document.getElementById('lang-panel');
-      var btn   = document.getElementById('lang-switcher-btn');
-
-      btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        panel.classList.toggle('open');
+      var panel=document.getElementById('lang-panel');
+      var btn=document.getElementById('lang-switcher-btn');
+      btn.addEventListener('click',function(e){e.stopPropagation();panel.classList.toggle('open');});
+      document.addEventListener('click',function(){panel.classList.remove('open');});
+      panel.addEventListener('click',function(e){e.stopPropagation();});
+      document.querySelectorAll('.lang-option').forEach(function(opt){
+        opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open');});
       });
-
-      document.addEventListener('click', function () {
-        panel.classList.remove('open');
-      });
-
-      panel.addEventListener('click', function (e) { e.stopPropagation(); });
-
-      document.querySelectorAll('.lang-option').forEach(function (opt) {
-        opt.addEventListener('click', function () {
-          applyLang(opt.dataset.lang);
-          panel.classList.remove('open');
-        });
-      });
-
-      // 页面加载后收集并应用
-      window.addEventListener('DOMContentLoaded', function () {
-        collectOriginals();
-        if (currentLang !== 'zh') applyLang(currentLang);
-      });
+      window.addEventListener('DOMContentLoaded',function(){if(cur!=='zh')applyLang(cur);});
     })();
     </script>
-    <!-- ── 语言切换器结束 ── -->
 
   </body>
 </html>
+
