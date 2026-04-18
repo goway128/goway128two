@@ -88,32 +88,31 @@ layout: compress
     <!-- ── 语言切换器 ── -->
     <style>
       #lang-switcher-btn {
-        position: fixed;
-        bottom: 20px;
-        left: 50px;
-        z-index: 1100;
-        padding: 6px 18px;
-        border-radius: 999px;
-        border: 1.5px solid rgba(128,128,128,0.3);
-        background: var(--sidebar-bg, #1e2125);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 8px 10px;
+        margin-bottom: 4px;
+        border-radius: 8px;
+        border: none;
+        background: transparent;
         color: var(--sidebar-muted-color, #aaa);
-        font-size: 0.78rem;
+        font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
         letter-spacing: 0.04em;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        transition: background 0.15s, color 0.15s;
+        text-align: left;
       }
       #lang-switcher-btn:hover {
-        border-color: #f9a8c9;
+        background: rgba(249,168,201,0.12);
         color: #f9a8c9;
       }
       #lang-panel {
-        position: fixed;
-        bottom: 58px;
-        left: 20px;
+        position: absolute;
+        bottom: 100%;
+        left: 0;
         z-index: 1200;
         background: var(--card-bg, #21252b);
         border: 1.5px solid rgba(128,128,128,0.2);
@@ -152,19 +151,12 @@ layout: compress
         color: #f472b6;
         background: rgba(244,114,182,0.1);
       }
+      #lang-switcher-wrap {
+        position: relative;
+        padding: 0 10px;
+        width: 100%;
+      }
     </style>
-
-    <div id="lang-panel">
-      <button class="lang-option active" data-lang="zh">简中 CN</button>
-      <button class="lang-option" data-lang="en">English EN</button>
-    </div>
-
-    <button id="lang-switcher-btn" title="切换语言 / Switch Language">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
-      </svg>
-      <span id="lang-btn-label">中文</span>
-    </button>
 
     <script>
     (function () {
@@ -311,26 +303,55 @@ layout: compress
         localStorage.setItem('chirpy-lang', lang);
       }
 
-      var panel = document.getElementById('lang-panel');
-      var btn   = document.getElementById('lang-switcher-btn');
+      function insertLangSwitcher() {
+        // Chirpy 主题侧边栏底部按钮组，依次尝试几个可能的选择器
+        var bottomBar = document.querySelector('#sidebar .sidebar-bottom')
+                     || document.querySelector('#sidebar .d-flex.flex-wrap')
+                     || document.querySelector('#sidebar > .d-flex:last-child');
 
-      btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        panel.classList.toggle('open');
-      });
-      document.addEventListener('click', function () {
-        panel.classList.remove('open');
-      });
-      panel.addEventListener('click', function (e) { e.stopPropagation(); });
+        if (!bottomBar) return;
 
-      document.querySelectorAll('.lang-option').forEach(function (opt) {
-        opt.addEventListener('click', function () {
-          applyLang(opt.dataset.lang);
+        var wrap = document.createElement('div');
+        wrap.id = 'lang-switcher-wrap';
+
+        var panel = document.createElement('div');
+        panel.id = 'lang-panel';
+        panel.innerHTML = '<button class="lang-option active" data-lang="zh">&#x1F1E8;&#x1F1F3; 中文</button>'
+                        + '<button class="lang-option" data-lang="en">&#x1F1EC;&#x1F1E7; EN</button>';
+
+        var btn = document.createElement('button');
+        btn.id = 'lang-switcher-btn';
+        btn.title = '切换语言 / Switch Language';
+        btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">'
+          + '<circle cx="12" cy="12" r="10"/>'
+          + '<path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>'
+          + '</svg>'
+          + '<span id="lang-btn-label">' + (currentLang === 'zh' ? '中文' : 'EN') + '</span>';
+
+        wrap.appendChild(panel);
+        wrap.appendChild(btn);
+
+        // 插到底部按钮组上方
+        bottomBar.parentNode.insertBefore(wrap, bottomBar);
+
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          panel.classList.toggle('open');
+        });
+        document.addEventListener('click', function () {
           panel.classList.remove('open');
         });
-      });
+        panel.addEventListener('click', function (e) { e.stopPropagation(); });
+        panel.querySelectorAll('.lang-option').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            applyLang(opt.dataset.lang);
+            panel.classList.remove('open');
+          });
+        });
+      }
 
       window.addEventListener('DOMContentLoaded', function () {
+        insertLangSwitcher();
         if (currentLang !== 'zh') applyLang(currentLang);
       });
     })();
@@ -339,3 +360,4 @@ layout: compress
 
   </body>
 </html>
+
