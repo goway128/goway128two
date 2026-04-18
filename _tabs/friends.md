@@ -10,7 +10,7 @@ icon: fa-solid fa-at
 
 ```md
 name 白
-url https:goway128.online
+url https:goway0128.top
 avatar https://i.111666.best/image/AQAH3evyedaM9JXjas8PCA.jpg
 desc 白の小站
     
