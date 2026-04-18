@@ -15,28 +15,26 @@ icon: fa-solid fa-at
 
 我的信息：
 
-```md
+{% highlight md %}
 name 白
 url https://goway0128.top
 avatar https://i.111666.best/image/AQAH3evyedaM9JXjas8PCA.jpg
 desc 白の小站
-```
+{% endhighlight %}
 
-# 如果想加入这里
+## 如果想加入这里
 
-请像下面的例子发送邮件到`114514@goway128.online`或者`goway128.outlook`
+请像下面的例子发送邮件到 `goway@goway128.online` 或者 `goway128.outlook`
 
-```md
+{% highlight md %}
 name example
 url https://example...
 avatar https://example...
 desc（可选）
-```
+{% endhighlight %}
 
-<!-- 友链卡片列表 -->
-<div style="display:flex;flex-direction:column;gap:14px;max-width:680px;margin:1.5rem 0;padding:0;">
+<div style="display:flex;flex-direction:column;gap:14px;max-width:680px;margin:2rem 0;padding:0;">
 
-  <!-- 卡片 1 -->
   <a href="https://mahiro.uk/" target="_blank" rel="noopener"
     style="display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:16px;border:1.5px solid rgba(128,128,128,0.18);background:rgba(128,128,128,0.06);backdrop-filter:blur(8px);text-decoration:none!important;transition:all 0.25s;opacity:0;animation:friendSlideIn 0.5s ease forwards;animation-delay:0.05s;"
     onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';"
@@ -48,6 +46,6 @@ desc（可选）
     </div>
   </a>
 
-  <!-- animation-delay 每次加 0.07s -->
+  <!-- 添加更多友链：复制上面 <a>…</a> 块，animation-delay 每次加 0.07s -->
 
 </div>
