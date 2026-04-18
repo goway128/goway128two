@@ -15,6 +15,7 @@ commons:
     archives: 归档
     about: 关于
     guanyuwp: 首页
+    default: 起始页
     
   post:
     written_by: 作者
