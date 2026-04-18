@@ -6,6 +6,7 @@ commons:
     archives: 归档
     about: 关于
     guanyuwo: 首页
+    default: 起始页
   
   tabs:
     home: 文章列表
