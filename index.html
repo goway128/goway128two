@@ -1,4 +1,123 @@
 ---
-layout: home
-# Index page
+layout: default
+title: 首页
 ---
+
+<div class="hero-bg-blobs">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="hero-blob hero-blob-3"></div>
+</div>
+
+<div class="hero-deco hero-deco-1">✦</div>
+<div class="hero-deco hero-deco-2">◇</div>
+<div class="hero-deco hero-deco-3">✿</div>
+<div class="hero-deco hero-deco-4">⋆</div>
+
+<div class="hero-page">
+
+  <!-- 左：轮播 -->
+  <div class="hero-carousel-wrap">
+    <div class="hero-track-outer">
+      <div class="hero-track" id="heroTrack">
+
+        <div class="hero-card hero-card-1">
+          <span class="hero-card-tag">白の小站 ✦</span>
+          
+  
+            <img class="hero-avatar-art" src="https://i.111666.best/image/AQAH3evyedaM9JXjas8PCA.jpg" alt="avatar">
+          <div class="hero-card-label">
+            <span class="hero-label-name">你好</span>
+            <span class="hero-label-num">01 / 03</span>
+          </div>
+        </div>
+
+        <div class="hero-card hero-card-2">
+          <span class="hero-card-tag">博客</span>
+          <div class="hero-avatar-placeholder">📝</div>
+          <div class="hero-card-label">
+            <span class="hero-label-name">近期文章</span>
+            <span class="hero-label-num">02 / 03</span>
+          </div>
+        </div>
+
+        <div class="hero-card hero-card-3">
+          <span class="hero-card-tag">关于 ✦</span>
+          <div class="hero-avatar-placeholder">🌟</div>
+          <div class="hero-card-label">
+            <span class="hero-label-name">关于本站</span>
+            <span class="hero-label-num">03 / 03</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="hero-carousel-nav">
+      <button class="hero-nav-btn" id="heroPrev">
+        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="hero-dots" id="heroDots">
+        <div class="hero-dot active" data-i="0"></div>
+        <div class="hero-dot" data-i="1"></div>
+        <div class="hero-dot" data-i="2"></div>
+      </div>
+      <button class="hero-nav-btn" id="heroNext">
+        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 右：文字 -->
+  <div class="hero-text-side">
+    <p class="hero-eyebrow">Welcome to my space</p>
+    <h1 class="hero-title">你好，我是<br><em class="hero-em">白</em></h1>
+    <p class="hero-bio">
+      一个来自 <strong>中国</strong> 的在校中学生。<br>
+      A middle school student from China.
+    </p>
+    <div class="hero-tags">
+      <span class="hero-tag hero-tag-pink">🌸 博客</span>
+      <span class="hero-tag hero-tag-yellow">✨ 笔记</span>
+      <span class="hero-tag hero-tag-purple">💜 开发</span>
+      <span class="hero-tag hero-tag-blue">🌐 中国</span>
+    </div>
+    <div class="hero-cta-row">
+      <a href="/blog/" class="hero-btn-primary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        近期文章
+      </a>
+      <a href="/about/" class="hero-btn-secondary">关于本站</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  var track = document.getElementById('heroTrack');
+  var dots  = document.querySelectorAll('.hero-dot');
+  var total = 3, cur = 0, autoTimer, startX = 0;
+
+  function goTo(n) {
+    cur = (n + total) % total;
+    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+    dots.forEach(function(d,i){ d.classList.toggle('active', i === cur); });
+  }
+  document.getElementById('heroNext').addEventListener('click', function(){ goTo(cur+1); });
+  document.getElementById('heroPrev').addEventListener('click', function(){ goTo(cur-1); });
+  dots.forEach(function(d){ d.addEventListener('click', function(){ goTo(+d.dataset.i); }); });
+
+  function startAuto(){ autoTimer = setInterval(function(){ goTo(cur+1); }, 3500); }
+  function stopAuto(){ clearInterval(autoTimer); }
+  startAuto();
+  track.parentElement.addEventListener('mouseenter', stopAuto);
+  track.parentElement.addEventListener('mouseleave', startAuto);
+  track.addEventListener('pointerdown', function(e){ startX = e.clientX; stopAuto(); });
+  track.addEventListener('pointerup', function(e){
+    var dx = e.clientX - startX;
+    if(Math.abs(dx) > 40) goTo(dx < 0 ? cur+1 : cur-1);
+    startAuto();
+  });
+})();
+</script>
