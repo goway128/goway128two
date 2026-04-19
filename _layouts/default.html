@@ -79,64 +79,35 @@ layout: compress
     {% include_cached search-loader.html lang=lang %}
 
     <style>
+      /* 语言切换器 */
       #lang-wrap{padding:0 1rem 0.8rem;width:100%}
       #lang-switcher-btn{width:100%;padding:7px 14px;border-radius:999px;border:1.5px solid rgba(128,128,128,0.25);background:transparent;color:var(--sidebar-muted-color,#aaa);font-size:0.78rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;display:flex;align-items:center;gap:6px}
       #lang-switcher-btn:hover{border-color:#f9a8c9;color:#f9a8c9}
-      #lang-panel{position:fixed;z-index:9999;background:var(--card-bg,#21252b);border:1.5px solid rgba(128,128,128,0.2);border-radius:16px;padding:8px;display:none;flex-direction:column;gap:4px;box-shadow:0 -4px 32px rgba(0,0,0,0.3);min-width:130px}
+      #lang-panel{position:fixed;z-index:10001;background:var(--card-bg,#21252b);border:1.5px solid rgba(128,128,128,0.2);border-radius:16px;padding:8px;display:none;flex-direction:column;gap:4px;box-shadow:0 -4px 32px rgba(0,0,0,0.3);min-width:130px}
       #lang-panel.open{display:flex}
       .lang-option{padding:8px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:background 0.15s,color 0.15s;color:var(--sidebar-muted-color,#aaa);border:none;background:transparent;text-align:left}
       .lang-option:hover{background:rgba(249,168,201,0.12);color:#f9a8c9}
       .lang-option.active{color:#f472b6;background:rgba(244,114,182,0.1)}
-
-      /* ── 横向溢出修复 ── */
+      /* 溢出修复 */
       html,body{overflow-x:hidden!important;max-width:100vw}
-
-      /* ── 粒子画布 ── */
+      /* 粒子画布 */
       #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99998}
-
-      /* ── 阅读进度条 ── */
-      #read-progress{position:fixed;left:0;height:3px;width:0%;z-index:99999;display:none;background:linear-gradient(90deg,#55CDFC,#f9a8c9,#a855f7);background-size:200% auto;animation:prog-shimmer 2s linear infinite;transition:width 0.12s linear,top 0.1s linear;border-radius:0 2px 2px 0}
-      @keyframes prog-shimmer{0%{background-position:0% center}100%{background-position:200% center}}
-
-      /* ── 进场动画 ── */
+      /* 进场动画 */
       body{animation:page-enter 0.4s ease both}
       @keyframes page-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-      /* ── overlay 侧边栏遮罩 ── */
-      #sidebar-overlay{
-        display:none;position:fixed;inset:0;z-index:9999;
-        background:rgba(0,0,0,0.5);
-        backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
-        opacity:0;transition:opacity 0.3s ease;
-      }
+      /* overlay 遮罩 */
+      #sidebar-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;transition:opacity 0.3s ease}
       #sidebar-overlay.show{display:block;opacity:1}
-
-      /* ── 移动端侧边栏改为 overlay 抽屉 ── */
+      /* 移动端侧边栏 overlay 抽屉，桌面端不受影响 */
       @media(max-width:991px){
-        #sidebar{
-          position:fixed!important;top:0!important;left:0!important;
-          height:100dvh!important;width:280px!important;
-          z-index:10000!important;
-          transform:translateX(-100%)!important;
-          transition:transform 0.32s cubic-bezier(0.4,0,0.2,1)!important;
-          overflow-y:auto!important;overflow-x:hidden!important;
-          box-shadow:none!important;
-        }
-        #sidebar.sidebar-open{
-          transform:translateX(0)!important;
-          box-shadow:4px 0 40px rgba(0,0,0,0.4)!important;
-        }
+        #sidebar{position:fixed!important;top:0!important;left:0!important;height:100dvh!important;width:280px!important;z-index:10000!important;transform:translateX(-100%)!important;transition:transform 0.32s cubic-bezier(0.4,0,0.2,1)!important;overflow-y:auto!important;overflow-x:hidden!important;box-shadow:none!important}
+        #sidebar.sidebar-open{transform:translateX(0)!important;box-shadow:4px 0 40px rgba(0,0,0,0.4)!important}
         #main-wrapper{margin-left:0!important;width:100%!important;max-width:100vw!important}
       }
-      #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99998}
-      #read-progress{position:fixed;left:0;height:3px;width:0%;z-index:99999;display:none;background:linear-gradient(90deg,#55CDFC,#f9a8c9,#a855f7);background-size:200% auto;animation:prog-shimmer 2s linear infinite;transition:width 0.12s linear,top 0.1s linear;border-radius:0 2px 2px 0}
-      @keyframes prog-shimmer{0%{background-position:0% center}100%{background-position:200% center}}
-      body{animation:page-enter 0.4s ease both}
-      @keyframes page-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     </style>
 
     <canvas id="particle-canvas"></canvas>
-    <div id="read-progress"></div>
+    <div id="sidebar-overlay"></div>
 
     <div id="lang-panel">
       <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
@@ -155,12 +126,8 @@ layout: compress
       </button>
     </div>
 
-    <canvas id="particle-canvas"></canvas>
-    <div id="read-progress"></div>
-    <div id="sidebar-overlay"></div>
-
     <script>
-    /* ── 1. 粒子 ── */
+    /* 粒子 */
     (function(){
       var canvas=document.getElementById('particle-canvas'),ctx=canvas.getContext('2d'),pts=[];
       var C=['#55CDFC','#F7A8B8','#fff','#f9a8c9','#a855f7','#f472b6'];
@@ -172,84 +139,6 @@ layout: compress
       (function loop(){ctx.clearRect(0,0,canvas.width,canvas.height);for(var i=pts.length-1;i>=0;i--){var p=pts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.alpha-=p.decay;if(p.alpha<=0){pts.splice(i,1);continue}ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore()}requestAnimationFrame(loop)})();
     })();
 
-    /* ── 2. 阅读进度条 ── */
-    (function(){
-      var bar=document.getElementById('read-progress');
-      if(!document.querySelector('#post-wrapper,article,.post-content'))return;
-      bar.style.display='block';
-      function topbarBottom(){var tb=document.getElementById('topbar-wrapper')||document.querySelector('[id*="topbar"]');return tb?Math.max(0,tb.getBoundingClientRect().bottom):0;}
-      function update(){var s=window.scrollY,d=document.documentElement.scrollHeight-window.innerHeight;bar.style.width=(d>0?Math.min(s/d*100,100):0).toFixed(1)+'%';bar.style.top=topbarBottom()+'px';}
-      window.addEventListener('scroll',update,{passive:true});
-      (function loop(){bar.style.top=topbarBottom()+'px';requestAnimationFrame(loop)})();
-      update();
-    })();
-
-    /* ── 3. overlay 侧边栏 ── */
-    window.addEventListener('DOMContentLoaded',function(){
-      var sidebar=document.getElementById('sidebar');
-      var overlay=document.getElementById('sidebar-overlay');
-      if(!sidebar||!overlay)return;
-      function isMobile(){return window.innerWidth<=991;}
-      function open(){sidebar.classList.add('sidebar-open');overlay.classList.add('show');document.body.style.overflow='hidden';}
-      function close(){sidebar.classList.remove('sidebar-open');overlay.classList.remove('show');document.body.style.overflow='';}
-      overlay.addEventListener('click',close);
-      document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
-      window.addEventListener('resize',function(){if(!isMobile())close();});
-      /* 找汉堡按钮并替换事件 */
-      var hb=document.getElementById('sidebar-trigger')||document.getElementById('sidebar-toggle')||document.querySelector('[data-bs-target="#sidebar"]')||document.querySelector('button[class*="sidebar"]');
-      if(hb){
-        var clone=hb.cloneNode(true);
-        hb.parentNode.replaceChild(clone,hb);
-        clone.addEventListener('click',function(e){
-          if(!isMobile())return;
-          e.preventDefault();e.stopPropagation();
-          sidebar.classList.contains('sidebar-open')?close():open();
-        });
-      }
-      var mask=document.getElementById('mask');
-      if(mask)mask.addEventListener('click',function(){if(isMobile())close();});
-    });
-    </script>
-
-    <script>
-    (function(){
-      var canvas=document.getElementById('particle-canvas'),ctx=canvas.getContext('2d'),pts=[];
-      var COLORS=['#55CDFC','#F7A8B8','#ffffff','#f9a8c9','#a855f7','#f472b6'];
-      function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
-      resize();window.addEventListener('resize',resize);
-      function spawn(x,y){pts.push({x:x,y:y,vx:(Math.random()-.5)*2.5,vy:(Math.random()-.5)*2.5-1,r:Math.random()*3+1.5,alpha:1,color:COLORS[Math.floor(Math.random()*COLORS.length)],decay:Math.random()*.02+.015})}
-      window.addEventListener('mousemove',function(e){for(var i=0;i<5;i++)spawn(e.clientX,e.clientY)});
-      window.addEventListener('touchmove',function(e){var t=e.touches[0];for(var i=0;i<5;i++)spawn(t.clientX,t.clientY)},{passive:true});
-      (function loop(){ctx.clearRect(0,0,canvas.width,canvas.height);for(var i=pts.length-1;i>=0;i--){var p=pts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.alpha-=p.decay;if(p.alpha<=0){pts.splice(i,1);continue}ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore()}requestAnimationFrame(loop)})();
-    })();
-
-    (function(){
-      var bar=document.getElementById('read-progress');
-      var content=document.querySelector('#post-wrapper,article,.post-content');
-      if(!content)return;
-      bar.style.display='block';
-
-      /* 每帧检测 topbar 底部位置，让进度条紧贴其下 */
-      function getTopbarBottom(){
-        var tb=document.getElementById('topbar-wrapper')||document.querySelector('#topbar,.topbar,[id*="topbar"]');
-        if(!tb)return 0;
-        var r=tb.getBoundingClientRect();
-        /* topbar 滚出视口上方时 bottom 为负，此时进度条贴顶 */
-        return Math.max(0, r.bottom);
-      }
-
-      function update(){
-        var s=window.scrollY||document.documentElement.scrollTop;
-        var d=document.documentElement.scrollHeight-window.innerHeight;
-        bar.style.width=(d>0?Math.min(s/d*100,100):0).toFixed(1)+'%';
-        bar.style.top=getTopbarBottom()+'px';
-      }
-      window.addEventListener('scroll',update,{passive:true});
-      /* 也用 rAF 持续更新 top，应对 topbar 滑入/滑出的动画 */
-      (function loop(){bar.style.top=getTopbarBottom()+'px';requestAnimationFrame(loop)})();
-      update();
-    })();
-
     (function(){
       var i18n={
         zh:{'文章列表':'文章列表','分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页','起始页':'起始页','友链':'友链','作者':'作者','发表于':'发表于','更新于':'更新于','字':'字','次浏览':'次浏览','分钟':'分钟','阅读':'阅读','相关文章':'相关文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','文章':'文章','已复制！':'已复制！','复制链接':'复制链接','链接已复制！':'链接已复制！','本文由作者按照':'本文由作者按照','进行授权':'进行授权','搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果','找到':'找到','条结果':'条结果','最近更新':'最近更新','热门标签':'热门标签','目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新','篇文章':'篇文章','云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向','心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','日常':'日常','关于本站':'关于本站','图床':'图床','开发':'开发','AI服务':'AI服务','16图床':'16图床','路过图床':'路过图床','测速':'测速','ip纯净度':'ip纯净度','dns查询':'dns查询','lcon图标':'lcon图标','10点官网':'10点官网','Some rights reserved.':'Some rights reserved.'},
@@ -259,4 +148,54 @@ layout: compress
         ru:{'文章列表':'Статьи','分类':'Категории','标签':'Теги','归档':'Архив','关于':'О сайте','首页':'Главная','起始页':'Начало','友链':'Друзья','作者':'Автор','发表于':'Опубликовано','更新于':'Обновлено','字':'слов','次浏览':'просм.','分钟':'мин','阅读':'читать','相关文章':'Похожие статьи','分享':'Поделиться','下一篇':'Следующая','上一篇':'Предыдущая','文章':'Статьи','已复制！':'Скопировано!','复制链接':'Копировать ссылку','链接已复制！':'Ссылка скопирована!','本文由作者按照':'Лицензия','进行授权':'от автора','搜索':'Поиск','取消':'Отмена','没有找到相关结果':'Ничего не найдено','找到':'Найдено','条结果':'результатов','最近更新':'Недавно обновлено','热门标签':'Популярные теги','目录':'Содержание','发现新版本的内容。':'Доступен новый контент.','更新':'Обновить','篇文章':'статей','云服务与厂商':'Облачные сервисы','多元性别/取向':'ЛГБТК+','心理疾病':'Психическое здоровье','素材':'Ресурсы','药品':'Лекарства','杂谈':'Разное','日常':'Повседневное','关于本站':'Об этом сайте','图床':'Хостинг фото','开发':'Инструменты','AI服务':'ИИ-сервисы','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Тест скорости','ip纯净度':'Проверка IP','dns查询':'DNS-запрос','lcon图标':'Иконки','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
         fr:{'文章列表':'Articles','分类':'Catégories','标签':'Tags','归档':'Archives','关于':'À propos','首页':'Accueil','起始页':'Début','友链':'Liens amis','作者':'Auteur','发表于':'Publié','更新于':'Mis à jour','字':'mots','次浏览':'vues','分钟':'min','阅读':'lire','相关文章':'Articles liés','分享':'Partager','下一篇':'Suivant','上一篇':'Précédent','文章':'Articles','已复制！':'Copié!','复制链接':'Copier le lien','链接已复制！':'Lien copié!','本文由作者按照':'Licence','进行授权':"par l'auteur",'搜索':'Rechercher','取消':'Annuler','没有找到相关结果':'Aucun résultat','找到':'Trouvé','条结果':'résultats','最近更新':'Récemment mis à jour','热门标签':'Tags populaires','目录':'Sommaire','发现新版本的内容。':'Nouveau contenu.','更新':'Mettre à jour','篇文章':'articles','云服务与厂商':'Services Cloud','多元性别/取向':'LGBTQ+','心理疾病':'Santé mentale','素材':'Ressources','药品':'Médicaments','杂谈':'Divers','日常':'Quotidien','关于本站':'À propos du site','图床':'Hébergement','开发':'Outils Dev','AI服务':'Services IA','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Test de vitesse','ip纯净度':'Vérif IP','dns查询':'DNS Lookup','lcon图标':'Icônes','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
         de:{'文章列表':'Beiträge','分类':'Kategorien','标签':'Tags','归档':'Archiv','关于':'Über','首页':'Startseite','起始页':'Start','友链':'Freunde','作者':'Autor','发表于':'Veröffentlicht','更新于':'Aktualisiert','字':'Wörter','次浏览':'Aufrufe','分钟':'Min','阅读':'Lesen','相关文章':'Ähnliche Beiträge','分享':'Teilen','下一篇':'Weiter','上一篇':'Zurück','文章':'Beiträge','已复制！':'Kopiert!','复制链接':'Link kopieren','链接已复制！':'Link kopiert!','本文由作者按照':'Lizenz','进行授权':'vom Autor','搜索':'Suchen','取消':'Abbrechen','没有找到相关结果':'Keine Ergebnisse','找到':'Gefunden','条结果':'Ergebnisse','最近更新':'Zuletzt aktualisiert','热门标签':'Beliebte Tags','目录':'Inhalt','发现新版本的内容。':'Neue Inhalte.','更新':'Aktualisieren','篇文章':'Artikel','云服务与厂商':'Cloud-Dienste','多元性别/取向':'LGBTQ+','心理疾病':'Psychische Gesundheit','素材':'Ressourcen','药品':'Medikamente','杂谈':'Verschiedenes','日常':'Alltag','关于本站':'Über diese Seite','图床':'Bild-Hosting','开发':'Dev-Tools','AI服务':'KI-Dienste','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Speedtest','ip纯净度':'IP-Check','dns查询':'DNS-Abfrage','lcon图标':'Icons','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
-        es:{'文章列表':'Artículos','分类':'Categorías','标签':'Etiquetas','归档':'Archivo','关于':'Acerca de','首页':'Inicio','起始页':'Inicio','友链':'Amigos','作者':'Autor','发表于':'Publicado','更新于':'Actualizado','字':'palabras','次浏览':'vistas','分钟':'min','阅读':'leer','相关文章':'Relacionados','分享':'Compartir','下一篇':'Siguiente','上一篇':'Anterior','文章':'Artículos','已复制！':
+        es:{'文章列表':'Artículos','分类':'Categorías','标签':'Etiquetas','归档':'Archivo','关于':'Acerca de','首页':'Inicio','起始页':'Inicio','友链':'Amigos','作者':'Autor','发表于':'Publicado','更新于':'Actualizado','字':'palabras','次浏览':'vistas','分钟':'min','阅读':'leer','相关文章':'Relacionados','分享':'Compartir','下一篇':'Siguiente','上一篇':'Anterior','文章':'Artículos','已复制！':'¡Copiado!','复制链接':'Copiar enlace','链接已复制！':'¡Enlace copiado!','本文由作者按照':'Licencia','进行授权':'por el autor','搜索':'Buscar','取消':'Cancelar','没有找到相关结果':'Sin resultados','找到':'Encontrado','条结果':'resultados','最近更新':'Actualizado recientemente','热门标签':'Tags populares','目录':'Índice','发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar','篇文章':'artículos','云服务与厂商':'Servicios Cloud','多元性别/取向':'LGBTQ+','心理疾病':'Salud mental','素材':'Recursos','药品':'Medicamentos','杂谈':'Varios','日常':'Cotidiano','关于本站':'Sobre este sitio','图床':'Hosting imágenes','开发':'Herramientas','AI服务':'Servicios IA','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Test de velocidad','ip纯净度':'Check IP','dns查询':'DNS Lookup','lcon图标':'Iconos','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'}
+      };
+      var cur=localStorage.getItem('chirpy-lang')||'zh';
+      var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
+      var SKIP_CLASSES=['post-content','highlight','rouge','language-'];
+      var NO_TRANSLATE={'保留所有权利':1};
+      function shouldSkip(node){var p=node.parentElement;while(p){if(SKIP_TAGS[p.tagName])return true;for(var i=0;i<SKIP_CLASSES.length;i++){if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true}p=p.parentElement}return false}
+      function applyLang(lang){
+        var map=i18n[lang];
+        var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false),node;
+        while((node=walker.nextNode())){var raw=node.nodeValue,txt=raw.trim();if(!txt||txt.length<2)continue;if(shouldSkip(node))continue;if(NO_TRANSLATE[txt])continue;if(!node._zhKey)node._zhKey=txt;if(map[node._zhKey])node.nodeValue=raw.replace(node._zhKey,map[node._zhKey])}
+        var inp=document.querySelector('input[type="search"],#search-input');
+        if(inp){if(!inp._zhPh)inp._zhPh=inp.placeholder;if(map[inp._zhPh])inp.placeholder=map[inp._zhPh]}
+        document.querySelectorAll('[data-bs-original-title]').forEach(function(el){if(!el._zhTitle)el._zhTitle=el.getAttribute('data-bs-original-title');if(map[el._zhTitle])el.setAttribute('data-bs-original-title',map[el._zhTitle])});
+        var labels={zh:'简中',tw:'繁中',en:'EN',ja:'日本語',ru:'RU',fr:'FR',de:'DE',es:'ES'};
+        document.getElementById('lang-btn-label').textContent=labels[lang]||lang;
+        document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang)});
+        cur=lang;localStorage.setItem('chirpy-lang',lang);
+      }
+      window.addEventListener('DOMContentLoaded',function(){
+        /* ── overlay 侧边栏 ── */
+        var sidebar=document.getElementById('sidebar');
+        var overlay=document.getElementById('sidebar-overlay');
+        if(sidebar&&overlay){
+          function isMobile(){return window.innerWidth<=991;}
+          function openSB(){sidebar.classList.add('sidebar-open');overlay.classList.add('show');document.body.style.overflow='hidden';}
+          function closeSB(){sidebar.classList.remove('sidebar-open');overlay.classList.remove('show');document.body.style.overflow='';}
+          overlay.addEventListener('click',closeSB);
+          document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSB();});
+          window.addEventListener('resize',function(){if(!isMobile())closeSB();});
+          var hb=document.getElementById('sidebar-trigger')||document.getElementById('sidebar-toggle')||document.querySelector('[data-bs-target="#sidebar"]')||document.querySelector('button[class*="sidebar"]');
+          if(hb){var hbClone=hb.cloneNode(true);hb.parentNode.replaceChild(hbClone,hb);hbClone.addEventListener('click',function(e){if(!isMobile())return;e.preventDefault();e.stopPropagation();sidebar.classList.contains('sidebar-open')?closeSB():openSB();});}
+          var mask=document.getElementById('mask');
+          if(mask)mask.addEventListener('click',function(){if(isMobile())closeSB();});
+        }
+        /* ── 语言切换器 ── */
+        var panel=document.getElementById('lang-panel'),wrap=document.getElementById('lang-wrap'),btn=document.getElementById('lang-switcher-btn');
+        btn.addEventListener('click',function(e){e.stopPropagation();var r=btn.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.bottom=(window.innerHeight-r.top+8)+'px';panel.classList.toggle('open')});
+        document.addEventListener('click',function(){panel.classList.remove('open')});
+        panel.addEventListener('click',function(e){e.stopPropagation()});
+        document.querySelectorAll('.lang-option').forEach(function(opt){opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open')})});
+        var sb=document.getElementById('sidebar');
+        if(sb){var bottom=sb.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');if(!bottom){var divs=sb.querySelectorAll('div');bottom=divs[divs.length-1]}sb.insertBefore(wrap,bottom)}
+        if(cur!=='zh')applyLang(cur);
+      });
+    })();
+    </script>
+
+  </body>
+</html>
+
