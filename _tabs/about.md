@@ -231,6 +231,33 @@ order: 5
     <div class="hero-bio">一个普通的人类</div>
   </div>
 
+
+<script>
+(function(){
+  var words = ['编程', '音乐', '二次元', '心理健康', '药学', ];
+  var el = document.getElementById('ab-typed');
+  if (!el) return;
+  var wi = 0, ci = 0, deleting = false, pause = false;
+  var TYPE_SPEED = 120, DEL_SPEED = 70, PAUSE_MS = 1400;
+
+  function tick() {
+    var word = words[wi];
+    if (pause) { pause = false; setTimeout(tick, PAUSE_MS); return; }
+    if (!deleting) {
+      el.textContent = word.slice(0, ++ci);
+      if (ci === word.length) { pause = true; deleting = true; setTimeout(tick, TYPE_SPEED); return; }
+      setTimeout(tick, TYPE_SPEED);
+    } else {
+      el.textContent = word.slice(0, --ci);
+      if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; setTimeout(tick, TYPE_SPEED); return; }
+      setTimeout(tick, DEL_SPEED);
+    }
+  }
+  setTimeout(tick, 800);
+})();
+</script>
+
+
   <div class="card d1">
     <div class="section-label">座右铭</div>
     <div class="motto-text">
