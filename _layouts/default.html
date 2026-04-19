@@ -82,6 +82,51 @@ layout: compress
       #lang-wrap{padding:0 1rem 0.8rem;width:100%}
       #lang-switcher-btn{width:100%;padding:7px 14px;border-radius:999px;border:1.5px solid rgba(128,128,128,0.25);background:transparent;color:var(--sidebar-muted-color,#aaa);font-size:0.78rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;display:flex;align-items:center;gap:6px}
       #lang-switcher-btn:hover{border-color:#f9a8c9;color:#f9a8c9}
+
+      /* ── overlay 侧边栏 ── */
+      /* 修复横向溢出 */
+      html,body{overflow-x:hidden!important;max-width:100vw}
+
+      /* 桌面端保持原样，只在移动端（<= lg）生效 */
+      @media(max-width:991px){
+        /* 侧边栏变成 fixed overlay，默认隐藏在左侧屏外 */
+        #sidebar{
+          position:fixed!important;
+          top:0!important;left:0!important;
+          height:100vh!important;
+          width:280px!important;
+          z-index:10000!important;
+          transform:translateX(-100%)!important;
+          transition:transform 0.32s cubic-bezier(0.4,0,0.2,1)!important;
+          overflow-y:auto!important;
+          box-shadow:none!important;
+        }
+        /* 侧边栏打开时滑入 */
+        #sidebar.sidebar-open{
+          transform:translateX(0)!important;
+          box-shadow:4px 0 32px rgba(0,0,0,0.35)!important;
+        }
+        /* main-wrapper 不再被推开 */
+        #main-wrapper{
+          margin-left:0!important;
+          width:100%!important;
+        }
+        /* 半透明遮罩 */
+        #sidebar-overlay{
+          display:none;
+          position:fixed;inset:0;
+          z-index:9999;
+          background:rgba(0,0,0,0.5);
+          backdrop-filter:blur(2px);
+          -webkit-backdrop-filter:blur(2px);
+          transition:opacity 0.32s ease;
+          opacity:0;
+        }
+        #sidebar-overlay.show{
+          display:block;
+          opacity:1;
+        }
+      }
       #lang-panel{position:fixed;z-index:9999;background:var(--card-bg,#21252b);border:1.5px solid rgba(128,128,128,0.2);border-radius:16px;padding:8px;display:none;flex-direction:column;gap:4px;box-shadow:0 -4px 32px rgba(0,0,0,0.3);min-width:130px}
       #lang-panel.open{display:flex}
       .lang-option{padding:8px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:background 0.15s,color 0.15s;color:var(--sidebar-muted-color,#aaa);border:none;background:transparent;text-align:left}
@@ -96,6 +141,9 @@ layout: compress
 
     <canvas id="particle-canvas"></canvas>
     <div id="read-progress"></div>
+
+    <!-- 侧边栏遮罩层 -->
+    <div id="sidebar-overlay"></div>
 
     <div id="lang-panel">
       <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
@@ -115,6 +163,157 @@ layout: compress
     </div>
 
     <script>
+    /* ── 修复横向溢出 ── */
+    document.documentElement.style.overflowX = 'hidden';
+    document.documentElement.style.maxWidth = '100vw';
+
+    /* ── Overlay 侧边栏（纯 JS，不改任何 CSS 文件）── */
+    (function(){
+      window.addEventListener('DOMContentLoaded', function(){
+        var sidebar = document.getElementById('sidebar');
+        var mainWrapper = document.getElementById('main-wrapper');
+        if(!sidebar) return;
+
+        /* 1. 把侧边栏改为 overlay 模式 */
+        Object.assign(sidebar.style, {
+          position:   'fixed',
+          top:        '0',
+          left:       '0',
+          height:     '100vh',
+          zIndex:     '10000',
+          transform:  'translateX(-100%)',
+          transition: 'transform 0.32s cubic-bezier(0.4,0,0.2,1)',
+          boxShadow:  '4px 0 32px rgba(0,0,0,0.35)',
+          overflowY:  'auto',
+          overflowX:  'hidden'
+        });
+
+        /* 2. 主内容区不再被推走 */
+        if(mainWrapper){
+          mainWrapper.style.marginLeft = '0';
+          mainWrapper.style.width = '100%';
+          mainWrapper.style.maxWidth = '100%';
+        }
+
+        /* 3. 创建半透明遮罩 */
+        var overlay = document.createElement('div');
+        Object.assign(overlay.style, {
+          position:   'fixed',
+          inset:      '0',
+          zIndex:     '9999',
+          background: 'rgba(0,0,0,0.45)',
+          opacity:    '0',
+          transition: 'opacity 0.32s ease',
+          display:    'none',
+          cursor:     'pointer'
+        });
+        document.body.appendChild(overlay);
+
+        var isOpen = false;
+
+        function openSidebar(){
+          isOpen = true;
+          sidebar.style.transform = 'translateX(0)';
+          overlay.style.display = 'block';
+          /* 下一帧再设 opacity，触发过渡动画 */
+          requestAnimationFrame(function(){
+            overlay.style.opacity = '1';
+          });
+          document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar(){
+          isOpen = false;
+          sidebar.style.transform = 'translateX(-100%)';
+          overlay.style.opacity = '0';
+          document.body.style.overflow = '';
+          setTimeout(function(){ overlay.style.display = 'none'; }, 320);
+        }
+
+        /* 4. 点遮罩关闭 */
+        overlay.addEventListener('click', closeSidebar);
+
+        /* 5. 拦截 Chirpy 原有的汉堡按钮事件，换成我们的逻辑 */
+        var toggleBtn = document.querySelector('#sidebar-trigger, [data-sidebar-trigger], .sidebar-trigger, #menu-trigger, #hamburger');
+        /* Chirpy topbar 里的按钮通常带 #sidebar-trigger 或触发 sidebar-toggle 类 */
+        if(!toggleBtn){
+          /* 找 topbar 里所有按钮，选第一个没有明确其他用途的 */
+          var topbarBtns = document.querySelectorAll('#topbar-wrapper button, #topbar button, .topbar button');
+          topbarBtns.forEach(function(b){
+            if(!b.id || b.id.indexOf('search') === -1){
+              toggleBtn = toggleBtn || b;
+            }
+          });
+        }
+
+        if(toggleBtn){
+          /* 克隆按钮去除原有监听器，再重新绑定 */
+          var newBtn = toggleBtn.cloneNode(true);
+          toggleBtn.parentNode.replaceChild(newBtn, toggleBtn);
+          newBtn.addEventListener('click', function(e){
+            e.stopPropagation();
+            isOpen ? closeSidebar() : openSidebar();
+          });
+        }
+
+        /* 6. 也监听 Chirpy 原生的 sidebar-toggled 事件（有些版本用这个） */
+        document.addEventListener('click', function(e){
+          /* 如果点到了 sidebar 内部以外的地方且 sidebar 是开着的，关闭 */
+          if(isOpen && !sidebar.contains(e.target) && e.target !== overlay){
+            closeSidebar();
+          }
+        });
+
+        /* 7. ESC 键关闭 */
+        document.addEventListener('keydown', function(e){
+          if(e.key === 'Escape' && isOpen) closeSidebar();
+        });
+      });
+    })();
+    </script>
+
+    <script>
+    /* ── overlay 侧边栏逻辑 ── */
+    (function(){
+      window.addEventListener('DOMContentLoaded',function(){
+        var sidebar=document.getElementById('sidebar');
+        var overlay=document.getElementById('sidebar-overlay');
+        var mask=document.getElementById('mask');
+        if(!sidebar||!overlay)return;
+
+        function isMobile(){return window.innerWidth<=991;}
+
+        function openSidebar(){
+          sidebar.classList.add('sidebar-open');
+          overlay.classList.add('show');
+          document.body.style.overflow='hidden';
+        }
+        function closeSidebar(){
+          sidebar.classList.remove('sidebar-open');
+          overlay.classList.remove('show');
+          document.body.style.overflow='';
+        }
+
+        overlay.addEventListener('click',closeSidebar);
+
+        /* 拦截 Chirpy 汉堡按钮 */
+        var btn=document.getElementById('sidebar-trigger');
+        if(btn){
+          var clone=btn.cloneNode(true);
+          btn.parentNode.replaceChild(clone,btn);
+          clone.addEventListener('click',function(e){
+            if(!isMobile())return;
+            e.stopPropagation();
+            sidebar.classList.contains('sidebar-open')?closeSidebar():openSidebar();
+          });
+        }
+
+        if(mask){mask.addEventListener('click',function(){if(isMobile())closeSidebar();});}
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar();});
+        window.addEventListener('resize',function(){if(!isMobile())closeSidebar();});
+      });
+    })();
+
     (function(){
       var canvas=document.getElementById('particle-canvas'),ctx=canvas.getContext('2d'),pts=[];
       var COLORS=['#55CDFC','#F7A8B8','#ffffff','#f9a8c9','#a855f7','#f472b6'];
@@ -161,39 +360,4 @@ layout: compress
         ja:{'文章列表':'記事一覧','分类':'カテゴリ','标签':'タグ','归档':'アーカイブ','关于':'概要','首页':'ホーム','起始页':'スタート','友链':'リンク集','作者':'著者','发表于':'投稿日','更新于':'更新日','字':'文字','次浏览':'閲覧','分钟':'分','阅读':'読む','相关文章':'関連記事','分享':'共有','下一篇':'次へ','上一篇':'前へ','文章':'記事','已复制！':'コピー完了!','复制链接':'リンクをコピー','链接已复制！':'コピーしました!','本文由作者按照':'ライセンス','进行授权':'で公開','搜索':'検索','取消':'キャンセル','没有找到相关结果':'結果なし','找到':'見つかりました','条结果':'件','最近更新':'最近の更新','热门标签':'人気タグ','目录':'目次','发现新版本的内容。':'新しいコンテンツ。','更新':'更新','篇文章':'本','云服务与厂商':'クラウドサービス','多元性别/取向':'LGBTQ+','心理疾病':'心の病気','素材':'素材','药品':'医薬品','杂谈':'雑談','日常':'日常','关于本站':'このサイトについて','图床':'画像ホスト','开发':'開発ツール','AI服务':'AIサービス','16图床':'16 Hosting','路过图床':'Imgchr','测速':'速度テスト','ip纯净度':'IP確認','dns查询':'DNS検索','lcon图标':'アイコン','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
         ru:{'文章列表':'Статьи','分类':'Категории','标签':'Теги','归档':'Архив','关于':'О сайте','首页':'Главная','起始页':'Начало','友链':'Друзья','作者':'Автор','发表于':'Опубликовано','更新于':'Обновлено','字':'слов','次浏览':'просм.','分钟':'мин','阅读':'читать','相关文章':'Похожие статьи','分享':'Поделиться','下一篇':'Следующая','上一篇':'Предыдущая','文章':'Статьи','已复制！':'Скопировано!','复制链接':'Копировать ссылку','链接已复制！':'Ссылка скопирована!','本文由作者按照':'Лицензия','进行授权':'от автора','搜索':'Поиск','取消':'Отмена','没有找到相关结果':'Ничего не найдено','找到':'Найдено','条结果':'результатов','最近更新':'Недавно обновлено','热门标签':'Популярные теги','目录':'Содержание','发现新版本的内容。':'Доступен новый контент.','更新':'Обновить','篇文章':'статей','云服务与厂商':'Облачные сервисы','多元性别/取向':'ЛГБТК+','心理疾病':'Психическое здоровье','素材':'Ресурсы','药品':'Лекарства','杂谈':'Разное','日常':'Повседневное','关于本站':'Об этом сайте','图床':'Хостинг фото','开发':'Инструменты','AI服务':'ИИ-сервисы','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Тест скорости','ip纯净度':'Проверка IP','dns查询':'DNS-запрос','lcon图标':'Иконки','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
         fr:{'文章列表':'Articles','分类':'Catégories','标签':'Tags','归档':'Archives','关于':'À propos','首页':'Accueil','起始页':'Début','友链':'Liens amis','作者':'Auteur','发表于':'Publié','更新于':'Mis à jour','字':'mots','次浏览':'vues','分钟':'min','阅读':'lire','相关文章':'Articles liés','分享':'Partager','下一篇':'Suivant','上一篇':'Précédent','文章':'Articles','已复制！':'Copié!','复制链接':'Copier le lien','链接已复制！':'Lien copié!','本文由作者按照':'Licence','进行授权':"par l'auteur",'搜索':'Rechercher','取消':'Annuler','没有找到相关结果':'Aucun résultat','找到':'Trouvé','条结果':'résultats','最近更新':'Récemment mis à jour','热门标签':'Tags populaires','目录':'Sommaire','发现新版本的内容。':'Nouveau contenu.','更新':'Mettre à jour','篇文章':'articles','云服务与厂商':'Services Cloud','多元性别/取向':'LGBTQ+','心理疾病':'Santé mentale','素材':'Ressources','药品':'Médicaments','杂谈':'Divers','日常':'Quotidien','关于本站':'À propos du site','图床':'Hébergement','开发':'Outils Dev','AI服务':'Services IA','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Test de vitesse','ip纯净度':'Vérif IP','dns查询':'DNS Lookup','lcon图标':'Icônes','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
-        de:{'文章列表':'Beiträge','分类':'Kategorien','标签':'Tags','归档':'Archiv','关于':'Über','首页':'Startseite','起始页':'Start','友链':'Freunde','作者':'Autor','发表于':'Veröffentlicht','更新于':'Aktualisiert','字':'Wörter','次浏览':'Aufrufe','分钟':'Min','阅读':'Lesen','相关文章':'Ähnliche Beiträge','分享':'Teilen','下一篇':'Weiter','上一篇':'Zurück','文章':'Beiträge','已复制！':'Kopiert!','复制链接':'Link kopieren','链接已复制！':'Link kopiert!','本文由作者按照':'Lizenz','进行授权':'vom Autor','搜索':'Suchen','取消':'Abbrechen','没有找到相关结果':'Keine Ergebnisse','找到':'Gefunden','条结果':'Ergebnisse','最近更新':'Zuletzt aktualisiert','热门标签':'Beliebte Tags','目录':'Inhalt','发现新版本的内容。':'Neue Inhalte.','更新':'Aktualisieren','篇文章':'Artikel','云服务与厂商':'Cloud-Dienste','多元性别/取向':'LGBTQ+','心理疾病':'Psychische Gesundheit','素材':'Ressourcen','药品':'Medikamente','杂谈':'Verschiedenes','日常':'Alltag','关于本站':'Über diese Seite','图床':'Bild-Hosting','开发':'Dev-Tools','AI服务':'KI-Dienste','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Speedtest','ip纯净度':'IP-Check','dns查询':'DNS-Abfrage','lcon图标':'Icons','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
-        es:{'文章列表':'Artículos','分类':'Categorías','标签':'Etiquetas','归档':'Archivo','关于':'Acerca de','首页':'Inicio','起始页':'Inicio','友链':'Amigos','作者':'Autor','发表于':'Publicado','更新于':'Actualizado','字':'palabras','次浏览':'vistas','分钟':'min','阅读':'leer','相关文章':'Relacionados','分享':'Compartir','下一篇':'Siguiente','上一篇':'Anterior','文章':'Artículos','已复制！':'¡Copiado!','复制链接':'Copiar enlace','链接已复制！':'¡Enlace copiado!','本文由作者按照':'Licencia','进行授权':'por el autor','搜索':'Buscar','取消':'Cancelar','没有找到相关结果':'Sin resultados','找到':'Encontrado','条结果':'resultados','最近更新':'Actualizado recientemente','热门标签':'Tags populares','目录':'Índice','发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar','篇文章':'artículos','云服务与厂商':'Servicios Cloud','多元性别/取向':'LGBTQ+','心理疾病':'Salud mental','素材':'Recursos','药品':'Medicamentos','杂谈':'Varios','日常':'Cotidiano','关于本站':'Sobre este sitio','图床':'Hosting imágenes','开发':'Herramientas','AI服务':'Servicios IA','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Test de velocidad','ip纯净度':'Check IP','dns查询':'DNS Lookup','lcon图标':'Iconos','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'}
-      };
-      var cur=localStorage.getItem('chirpy-lang')||'zh';
-      var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
-      var SKIP_CLASSES=['post-content','highlight','rouge','language-'];
-      var NO_TRANSLATE={'保留所有权利':1};
-      function shouldSkip(node){var p=node.parentElement;while(p){if(SKIP_TAGS[p.tagName])return true;for(var i=0;i<SKIP_CLASSES.length;i++){if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true}p=p.parentElement}return false}
-      function applyLang(lang){
-        var map=i18n[lang];
-        var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false),node;
-        while((node=walker.nextNode())){var raw=node.nodeValue,txt=raw.trim();if(!txt||txt.length<2)continue;if(shouldSkip(node))continue;if(NO_TRANSLATE[txt])continue;if(!node._zhKey)node._zhKey=txt;if(map[node._zhKey])node.nodeValue=raw.replace(node._zhKey,map[node._zhKey])}
-        var inp=document.querySelector('input[type="search"],#search-input');
-        if(inp){if(!inp._zhPh)inp._zhPh=inp.placeholder;if(map[inp._zhPh])inp.placeholder=map[inp._zhPh]}
-        document.querySelectorAll('[data-bs-original-title]').forEach(function(el){if(!el._zhTitle)el._zhTitle=el.getAttribute('data-bs-original-title');if(map[el._zhTitle])el.setAttribute('data-bs-original-title',map[el._zhTitle])});
-        var labels={zh:'简中',tw:'繁中',en:'EN',ja:'日本語',ru:'RU',fr:'FR',de:'DE',es:'ES'};
-        document.getElementById('lang-btn-label').textContent=labels[lang]||lang;
-        document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang)});
-        cur=lang;localStorage.setItem('chirpy-lang',lang);
-      }
-      window.addEventListener('DOMContentLoaded',function(){
-        var panel=document.getElementById('lang-panel'),wrap=document.getElementById('lang-wrap'),btn=document.getElementById('lang-switcher-btn');
-        btn.addEventListener('click',function(e){e.stopPropagation();var r=btn.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.bottom=(window.innerHeight-r.top+8)+'px';panel.classList.toggle('open')});
-        document.addEventListener('click',function(){panel.classList.remove('open')});
-        panel.addEventListener('click',function(e){e.stopPropagation()});
-        document.querySelectorAll('.lang-option').forEach(function(opt){opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open')})});
-        var sidebar=document.getElementById('sidebar');
-        if(sidebar){var bottom=sidebar.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');if(!bottom){var divs=sidebar.querySelectorAll('div');bottom=divs[divs.length-1]}sidebar.insertBefore(wrap,bottom)}
-        if(cur!=='zh')applyLang(cur);
-      });
-    })();
-    </script>
-
-  </body>
-</html>
-
+        de:{'文章列表':'Beiträge','分类':'Kategorien','标签':'Tags','归档':'Archiv','关于':'Über','首页':'Startseite','起始页':'Start','友链':'Freunde','作者':'Autor','发表于':'Veröffentlicht','更新于':'Aktualisiert','字':'Wörter','次浏
