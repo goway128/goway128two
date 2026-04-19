@@ -79,23 +79,60 @@ layout: compress
     {% include_cached search-loader.html lang=lang %}
 
     <style>
+      /* 语言切换器 */
       #lang-wrap{padding:0 1rem 0.8rem;width:100%}
       #lang-switcher-btn{width:100%;padding:7px 14px;border-radius:999px;border:1.5px solid rgba(128,128,128,0.25);background:transparent;color:var(--sidebar-muted-color,#aaa);font-size:0.78rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;display:flex;align-items:center;gap:6px}
       #lang-switcher-btn:hover{border-color:#f9a8c9;color:#f9a8c9}
-      #lang-panel{position:fixed;z-index:9999;background:var(--card-bg,#21252b);border:1.5px solid rgba(128,128,128,0.2);border-radius:16px;padding:8px;display:none;flex-direction:column;gap:4px;box-shadow:0 -4px 32px rgba(0,0,0,0.3);min-width:130px}
+      #lang-panel{position:fixed;z-index:10001;background:var(--card-bg,#21252b);border:1.5px solid rgba(128,128,128,0.2);border-radius:16px;padding:8px;display:none;flex-direction:column;gap:4px;box-shadow:0 -4px 32px rgba(0,0,0,0.3);min-width:130px}
       #lang-panel.open{display:flex}
       .lang-option{padding:8px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:background 0.15s,color 0.15s;color:var(--sidebar-muted-color,#aaa);border:none;background:transparent;text-align:left}
       .lang-option:hover{background:rgba(249,168,201,0.12);color:#f9a8c9}
       .lang-option.active{color:#f472b6;background:rgba(244,114,182,0.1)}
+
+      /* 粒子画布 */
       #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99998}
+
+      /* 阅读进度条 */
       #read-progress{position:fixed;left:0;height:3px;width:0%;z-index:99999;display:none;background:linear-gradient(90deg,#55CDFC,#f9a8c9,#a855f7);background-size:200% auto;animation:prog-shimmer 2s linear infinite;transition:width 0.12s linear,top 0.1s linear;border-radius:0 2px 2px 0}
       @keyframes prog-shimmer{0%{background-position:0% center}100%{background-position:200% center}}
-      body{animation:page-enter 0.4s ease both}
+
+      /* 进场动画 */
+      body{animation:page-enter 0.4s ease both;overflow-x:hidden!important}
+      html{overflow-x:hidden!important;max-width:100vw}
       @keyframes page-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+      /* overlay 侧边栏遮罩 */
+      #sidebar-overlay{
+        display:none;position:fixed;inset:0;z-index:9999;
+        background:rgba(0,0,0,0.5);
+        backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+        opacity:0;transition:opacity 0.3s ease;
+      }
+      #sidebar-overlay.show{display:block;opacity:1}
+
+      /* 移动端侧边栏改为 overlay 抽屉 */
+      @media(max-width:991px){
+        #sidebar{
+          position:fixed!important;top:0!important;left:0!important;
+          height:100dvh!important;width:280px!important;
+          z-index:10000!important;
+          transform:translateX(-100%)!important;
+          transition:transform 0.32s cubic-bezier(0.4,0,0.2,1),box-shadow 0.32s!important;
+          overflow-y:auto!important;overflow-x:hidden!important;
+          box-shadow:none!important;
+        }
+        #sidebar.sidebar-open{
+          transform:translateX(0)!important;
+          box-shadow:4px 0 40px rgba(0,0,0,0.4)!important;
+        }
+        /* 主内容不被推走 */
+        #main-wrapper{margin-left:0!important;width:100%!important;max-width:100vw!important}
+      }
     </style>
 
     <canvas id="particle-canvas"></canvas>
     <div id="read-progress"></div>
+    <div id="sidebar-overlay"></div>
 
     <div id="lang-panel">
       <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
@@ -115,6 +152,7 @@ layout: compress
     </div>
 
     <script>
+    /* ── 粒子（立即启动，不需要等 DOM）── */
     (function(){
       var canvas=document.getElementById('particle-canvas'),ctx=canvas.getContext('2d'),pts=[];
       var COLORS=['#55CDFC','#F7A8B8','#ffffff','#f9a8c9','#a855f7','#f472b6'];
@@ -126,21 +164,17 @@ layout: compress
       (function loop(){ctx.clearRect(0,0,canvas.width,canvas.height);for(var i=pts.length-1;i>=0;i--){var p=pts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.alpha-=p.decay;if(p.alpha<=0){pts.splice(i,1);continue}ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore()}requestAnimationFrame(loop)})();
     })();
 
+    /* ── 阅读进度条（立即启动）── */
     (function(){
       var bar=document.getElementById('read-progress');
       var content=document.querySelector('#post-wrapper,article,.post-content');
       if(!content)return;
       bar.style.display='block';
-
-      /* 每帧检测 topbar 底部位置，让进度条紧贴其下 */
       function getTopbarBottom(){
         var tb=document.getElementById('topbar-wrapper')||document.querySelector('#topbar,.topbar,[id*="topbar"]');
         if(!tb)return 0;
-        var r=tb.getBoundingClientRect();
-        /* topbar 滚出视口上方时 bottom 为负，此时进度条贴顶 */
-        return Math.max(0, r.bottom);
+        return Math.max(0,tb.getBoundingClientRect().bottom);
       }
-
       function update(){
         var s=window.scrollY||document.documentElement.scrollTop;
         var d=document.documentElement.scrollHeight-window.innerHeight;
@@ -148,12 +182,45 @@ layout: compress
         bar.style.top=getTopbarBottom()+'px';
       }
       window.addEventListener('scroll',update,{passive:true});
-      /* 也用 rAF 持续更新 top，应对 topbar 滑入/滑出的动画 */
       (function loop(){bar.style.top=getTopbarBottom()+'px';requestAnimationFrame(loop)})();
       update();
     })();
 
-    (function(){
+    /* ── 所有需要 DOM 的逻辑统一放这里 ── */
+    window.addEventListener('DOMContentLoaded',function(){
+
+      /* ── overlay 侧边栏 ── */
+      var sidebar=document.getElementById('sidebar');
+      var overlay=document.getElementById('sidebar-overlay');
+      if(sidebar&&overlay){
+        function isMobile(){return window.innerWidth<=991;}
+        function openSidebar(){sidebar.classList.add('sidebar-open');overlay.classList.add('show');document.body.style.overflow='hidden';}
+        function closeSidebar(){sidebar.classList.remove('sidebar-open');overlay.classList.remove('show');document.body.style.overflow='';}
+        overlay.addEventListener('click',closeSidebar);
+        document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSidebar();});
+        window.addEventListener('resize',function(){if(!isMobile())closeSidebar();});
+
+        /* 找汉堡按钮，兼容多种 Chirpy 版本的 id/class */
+        var hamburger=document.getElementById('sidebar-trigger')
+          ||document.getElementById('sidebar-toggle')
+          ||document.querySelector('[data-bs-target="#sidebar"]')
+          ||document.querySelector('button[class*="sidebar-toggle"]')
+          ||document.querySelector('label[for="sidebar-trigger"]');
+        if(hamburger){
+          var clone=hamburger.cloneNode(true);
+          hamburger.parentNode.replaceChild(clone,hamburger);
+          clone.addEventListener('click',function(e){
+            if(!isMobile())return;
+            e.preventDefault();e.stopPropagation();
+            sidebar.classList.contains('sidebar-open')?closeSidebar():openSidebar();
+          });
+        }
+        /* 兼容 Chirpy 原有 #mask 遮罩的关闭行为 */
+        var mask=document.getElementById('mask');
+        if(mask){mask.addEventListener('click',function(){if(isMobile())closeSidebar();});}
+      }
+
+      /* ── 语言切换器 ── */
       var i18n={
         zh:{'文章列表':'文章列表','分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页','起始页':'起始页','友链':'友链','作者':'作者','发表于':'发表于','更新于':'更新于','字':'字','次浏览':'次浏览','分钟':'分钟','阅读':'阅读','相关文章':'相关文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','文章':'文章','已复制！':'已复制！','复制链接':'复制链接','链接已复制！':'链接已复制！','本文由作者按照':'本文由作者按照','进行授权':'进行授权','搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果','找到':'找到','条结果':'条结果','最近更新':'最近更新','热门标签':'热门标签','目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新','篇文章':'篇文章','云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向','心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','日常':'日常','关于本站':'关于本站','图床':'图床','开发':'开发','AI服务':'AI服务','16图床':'16图床','路过图床':'路过图床','测速':'测速','ip纯净度':'ip纯净度','dns查询':'dns查询','lcon图标':'lcon图标','10点官网':'10点官网','Some rights reserved.':'Some rights reserved.'},
         tw:{'文章列表':'文章列表','分类':'分類','标签':'標籤','归档':'歸檔','关于':'關於','首页':'首頁','起始页':'起始頁','友链':'友鏈','作者':'作者','发表于':'發表於','更新于':'更新於','字':'字','次浏览':'次瀏覽','分钟':'分鐘','阅读':'閱讀','相关文章':'相關文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','文章':'文章','已复制！':'已複製！','复制链接':'複製連結','链接已复制！':'連結已複製！','本文由作者按照':'本文由作者按照','进行授权':'進行授權','搜索':'搜尋','取消':'取消','没有找到相关结果':'找不到相關結果','找到':'找到','条结果':'筆結果','最近更新':'最近更新','热门标签':'熱門標籤','目录':'目錄','发现新版本的内容。':'發現新版本的內容。','更新':'更新','篇文章':'篇文章','云服务与厂商':'雲服務與廠商','多元性别/取向':'多元性別/取向','心理疾病':'心理疾病','素材':'素材','药品':'藥品','杂谈':'雜談','日常':'日常','关于本站':'關於本站','图床':'圖床','开发':'開發','AI服务':'AI服務','16图床':'16圖床','路过图床':'路過圖床','测速':'測速','ip纯净度':'IP純淨度','dns查询':'DNS查詢','lcon图标':'圖示','10点官网':'10點官網','Some rights reserved.':'Some rights reserved.'},
@@ -179,21 +246,4 @@ layout: compress
         var labels={zh:'简中',tw:'繁中',en:'EN',ja:'日本語',ru:'RU',fr:'FR',de:'DE',es:'ES'};
         document.getElementById('lang-btn-label').textContent=labels[lang]||lang;
         document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang)});
-        cur=lang;localStorage.setItem('chirpy-lang',lang);
-      }
-      window.addEventListener('DOMContentLoaded',function(){
-        var panel=document.getElementById('lang-panel'),wrap=document.getElementById('lang-wrap'),btn=document.getElementById('lang-switcher-btn');
-        btn.addEventListener('click',function(e){e.stopPropagation();var r=btn.getBoundingClientRect();panel.style.left=r.left+'px';panel.style.bottom=(window.innerHeight-r.top+8)+'px';panel.classList.toggle('open')});
-        document.addEventListener('click',function(){panel.classList.remove('open')});
-        panel.addEventListener('click',function(e){e.stopPropagation()});
-        document.querySelectorAll('.lang-option').forEach(function(opt){opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open')})});
-        var sidebar=document.getElementById('sidebar');
-        if(sidebar){var bottom=sidebar.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');if(!bottom){var divs=sidebar.querySelectorAll('div');bottom=divs[divs.length-1]}sidebar.insertBefore(wrap,bottom)}
-        if(cur!=='zh')applyLang(cur);
-      });
-    })();
-    </script>
-
-  </body>
-</html>
-
+        cur=lang;localStorage.setItem('chi
