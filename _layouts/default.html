@@ -88,17 +88,14 @@ layout: compress
       .lang-option:hover{background:rgba(249,168,201,0.12);color:#f9a8c9}
       .lang-option.active{color:#f472b6;background:rgba(244,114,182,0.1)}
       #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99998}
-      #read-progress{position:fixed;top:0;left:0;height:3px;width:0%;z-index:99999;display:none;background:linear-gradient(90deg,#55CDFC,#f9a8c9,#a855f7);background-size:200% auto;animation:prog-shimmer 2s linear infinite;transition:width 0.1s linear;border-radius:0 2px 2px 0}
+      #read-progress{position:fixed;left:0;height:3px;width:0%;z-index:99999;display:none;background:linear-gradient(90deg,#55CDFC,#f9a8c9,#a855f7);background-size:200% auto;animation:prog-shimmer 2s linear infinite;transition:width 0.12s linear,top 0.1s linear;border-radius:0 2px 2px 0}
       @keyframes prog-shimmer{0%{background-position:0% center}100%{background-position:200% center}}
-      #page-transition{position:fixed;inset:0;z-index:99997;pointer-events:none;background:linear-gradient(135deg,#55cdfc18,#f9a8c918,#a855f718);opacity:0;transition:opacity 0.32s ease}
-      #page-transition.fade-in{opacity:1;pointer-events:all}
       body{animation:page-enter 0.4s ease both}
       @keyframes page-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     </style>
 
     <canvas id="particle-canvas"></canvas>
     <div id="read-progress"></div>
-    <div id="page-transition"></div>
 
     <div id="lang-panel">
       <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
@@ -124,28 +121,36 @@ layout: compress
       function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
       resize();window.addEventListener('resize',resize);
       function spawn(x,y){pts.push({x:x,y:y,vx:(Math.random()-.5)*2.5,vy:(Math.random()-.5)*2.5-1,r:Math.random()*3+1.5,alpha:1,color:COLORS[Math.floor(Math.random()*COLORS.length)],decay:Math.random()*.02+.015})}
-      window.addEventListener('mousemove',function(e){spawn(e.clientX,e.clientY);spawn(e.clientX,e.clientY)});
-      window.addEventListener('touchmove',function(e){var t=e.touches[0];spawn(t.clientX,t.clientY);spawn(t.clientX,t.clientY)},{passive:true});
+      window.addEventListener('mousemove',function(e){for(var i=0;i<5;i++)spawn(e.clientX,e.clientY)});
+      window.addEventListener('touchmove',function(e){var t=e.touches[0];for(var i=0;i<5;i++)spawn(t.clientX,t.clientY)},{passive:true});
       (function loop(){ctx.clearRect(0,0,canvas.width,canvas.height);for(var i=pts.length-1;i>=0;i--){var p=pts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.alpha-=p.decay;if(p.alpha<=0){pts.splice(i,1);continue}ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore()}requestAnimationFrame(loop)})();
-    })();
-
-    (function(){
-      var overlay=document.getElementById('page-transition');
-      document.addEventListener('click',function(e){
-        var a=e.target.closest('a');if(!a)return;
-        var href=a.getAttribute('href');if(!href||href.startsWith('#')||href.startsWith('javascript'))return;
-        try{var url=new URL(href,location.href);if(url.hostname!==location.hostname)return}catch(err){return}
-        e.preventDefault();overlay.classList.add('fade-in');
-        setTimeout(function(){window.location.href=href},300);
-      });
     })();
 
     (function(){
       var bar=document.getElementById('read-progress');
       var content=document.querySelector('#post-wrapper,article,.post-content');
-      if(!content)return;bar.style.display='block';
-      function update(){var s=window.scrollY||document.documentElement.scrollTop,d=document.documentElement.scrollHeight-window.innerHeight;bar.style.width=(d>0?Math.min(s/d*100,100):0).toFixed(1)+'%'}
-      window.addEventListener('scroll',update,{passive:true});update();
+      if(!content)return;
+      bar.style.display='block';
+
+      /* 每帧检测 topbar 底部位置，让进度条紧贴其下 */
+      function getTopbarBottom(){
+        var tb=document.getElementById('topbar-wrapper')||document.querySelector('#topbar,.topbar,[id*="topbar"]');
+        if(!tb)return 0;
+        var r=tb.getBoundingClientRect();
+        /* topbar 滚出视口上方时 bottom 为负，此时进度条贴顶 */
+        return Math.max(0, r.bottom);
+      }
+
+      function update(){
+        var s=window.scrollY||document.documentElement.scrollTop;
+        var d=document.documentElement.scrollHeight-window.innerHeight;
+        bar.style.width=(d>0?Math.min(s/d*100,100):0).toFixed(1)+'%';
+        bar.style.top=getTopbarBottom()+'px';
+      }
+      window.addEventListener('scroll',update,{passive:true});
+      /* 也用 rAF 持续更新 top，应对 topbar 滑入/滑出的动画 */
+      (function loop(){bar.style.top=getTopbarBottom()+'px';requestAnimationFrame(loop)})();
+      update();
     })();
 
     (function(){
@@ -191,3 +196,4 @@ layout: compress
 
   </body>
 </html>
+
