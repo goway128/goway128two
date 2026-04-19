@@ -135,7 +135,41 @@ layout: compress
       }
       .lang-option:hover { background: rgba(249,168,201,0.12); color: #f9a8c9; }
       .lang-option.active { color: #f472b6; background: rgba(244,114,182,0.1); }
+
+      /* 翻译加载中遮罩 */
+      #translate-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 8888;
+        background: rgba(0,0,0,0.45);
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 14px;
+      }
+      #translate-overlay.show { display: flex; }
+      #translate-overlay .spinner {
+        width: 36px; height: 36px;
+        border: 3px solid rgba(249,168,201,0.3);
+        border-top-color: #f9a8c9;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      #translate-overlay .tip {
+        color: #f9a8c9;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
     </style>
+
+    <!-- 翻译加载遮罩 -->
+    <div id="translate-overlay">
+      <div class="spinner"></div>
+      <div class="tip" id="translate-tip">正在翻译...</div>
+    </div>
 
     <div id="lang-panel">
       <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
@@ -156,6 +190,19 @@ layout: compress
 
     <script>
     (function(){
+
+      /* ── 配置 ── */
+      var API_ENDPOINT = 'https://n.api.10dian-ai.top/v1/chat/completions';
+      var API_KEY      = 'sk-7fQqUC5CXfxp7lj4yUOTuS2JfjV4TE0iWGvURQBUECrU2ssH';
+      var API_MODEL    = 'gpt-4o-mini';
+
+      /* ── 语言名称映射（用于给 AI 的指令）── */
+      var LANG_NAMES = {
+        zh:'简体中文', tw:'繁體中文', en:'English',
+        ja:'日本語', ru:'Русский', fr:'Français', de:'Deutsch', es:'Español'
+      };
+
+      /* ── UI 词典（导航/meta/按钮等固定文字）── */
       var i18n={
         zh:{
           '文章列表':'文章列表','分类':'分类','标签':'标签','归档':'归档','关于':'关于',
@@ -168,16 +215,14 @@ layout: compress
           '搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果',
           '找到':'找到','条结果':'条结果',
           '最近更新':'最近更新','热门标签':'热门标签','目录':'目录',
-          '发现新版本的内容。':'发现新版本的内容。','更新':'更新',
-          '篇文章':'篇文章',
+          '发现新版本的内容。':'发现新版本的内容。','更新':'更新','篇文章':'篇文章',
           '云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向',
           '心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','日常':'日常',
           '关于本站':'关于本站',
           '图床':'图床','开发':'开发','AI服务':'AI服务',
           '16图床':'16图床','路过图床':'路过图床',
           '测速':'测速','ip纯净度':'ip纯净度','dns查询':'dns查询','lcon图标':'lcon图标',
-          '10点官网':'10点官网',
-          'Some rights reserved.':'Some rights reserved.'
+          '10点官网':'10点官网','Some rights reserved.':'Some rights reserved.'
         },
         tw:{
           '文章列表':'文章列表','分类':'分類','标签':'標籤','归档':'歸檔','关于':'關於',
@@ -190,16 +235,14 @@ layout: compress
           '搜索':'搜尋','取消':'取消','没有找到相关结果':'找不到相關結果',
           '找到':'找到','条结果':'筆結果',
           '最近更新':'最近更新','热门标签':'熱門標籤','目录':'目錄',
-          '发现新版本的内容。':'發現新版本的內容。','更新':'更新',
-          '篇文章':'篇文章',
+          '发现新版本的内容。':'發現新版本的內容。','更新':'更新','篇文章':'篇文章',
           '云服务与厂商':'雲服務與廠商','多元性别/取向':'多元性別/取向',
           '心理疾病':'心理疾病','素材':'素材','药品':'藥品','杂谈':'雜談','日常':'日常',
           '关于本站':'關於本站',
           '图床':'圖床','开发':'開發','AI服务':'AI服務',
           '16图床':'16圖床','路过图床':'路過圖床',
           '测速':'測速','ip纯净度':'IP純淨度','dns查询':'DNS查詢','lcon图标':'圖示',
-          '10点官网':'10點官網',
-          'Some rights reserved.':'Some rights reserved.'
+          '10点官网':'10點官網','Some rights reserved.':'Some rights reserved.'
         },
         en:{
           '文章列表':'Posts','分类':'Categories','标签':'Tags','归档':'Archives',
@@ -212,17 +255,14 @@ layout: compress
           '搜索':'Search','取消':'Cancel','没有找到相关结果':'No results found',
           '找到':'Found','条结果':'results',
           '最近更新':'Recently Updated','热门标签':'Trending Tags','目录':'Contents',
-          '发现新版本的内容。':'New content available.','更新':'Update',
-          '篇文章':'articles',
+          '发现新版本的内容。':'New content available.','更新':'Update','篇文章':'articles',
           '云服务与厂商':'Cloud Services','多元性别/取向':'LGBTQ+',
           '心理疾病':'Mental Health','素材':'Resources','药品':'Medications',
-          '杂谈':'Misc','日常':'Daily',
-          '关于本站':'About This Site',
+          '杂谈':'Misc','日常':'Daily','关于本站':'About This Site',
           '图床':'Image Hosting','开发':'Dev Tools','AI服务':'AI Services',
           '16图床':'16 Hosting','路过图床':'Imgchr',
           '测速':'Speed Test','ip纯净度':'IP Check','dns查询':'DNS Lookup','lcon图标':'Icons',
-          '10点官网':'10dian AI',
-          'Some rights reserved.':'Some rights reserved.'
+          '10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'
         },
         ja:{
           '文章列表':'記事一覧','分类':'カテゴリ','标签':'タグ','归档':'アーカイブ',
@@ -235,16 +275,14 @@ layout: compress
           '搜索':'検索','取消':'キャンセル','没有找到相关结果':'結果なし',
           '找到':'見つかりました','条结果':'件',
           '最近更新':'最近の更新','热门标签':'人気タグ','目录':'目次',
-          '发现新版本的内容。':'新しいコンテンツ。','更新':'更新',
-          '篇文章':'本',
+          '发现新版本的内容。':'新しいコンテンツ。','更新':'更新','篇文章':'本',
           '云服务与厂商':'クラウドサービス','多元性别/取向':'LGBTQ+',
           '心理疾病':'心の病気','素材':'素材','药品':'医薬品','杂谈':'雑談','日常':'日常',
           '关于本站':'このサイトについて',
           '图床':'画像ホスト','开发':'開発ツール','AI服务':'AIサービス',
           '16图床':'16 Hosting','路过图床':'Imgchr',
           '测速':'速度テスト','ip纯净度':'IP確認','dns查询':'DNS検索','lcon图标':'アイコン',
-          '10点官网':'10dian AI',
-          'Some rights reserved.':'Some rights reserved.'
+          '10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'
         },
         ru:{
           '文章列表':'Статьи','分类':'Категории','标签':'Теги','归档':'Архив',
@@ -257,17 +295,14 @@ layout: compress
           '搜索':'Поиск','取消':'Отмена','没有找到相关结果':'Ничего не найдено',
           '找到':'Найдено','条结果':'результатов',
           '最近更新':'Недавно обновлено','热门标签':'Популярные теги','目录':'Содержание',
-          '发现新版本的内容。':'Доступен новый контент.','更新':'Обновить',
-          '篇文章':'статей',
+          '发现新版本的内容。':'Доступен новый контент.','更新':'Обновить','篇文章':'статей',
           '云服务与厂商':'Облачные сервисы','多元性别/取向':'ЛГБТК+',
           '心理疾病':'Психическое здоровье','素材':'Ресурсы','药品':'Лекарства',
-          '杂谈':'Разное','日常':'Повседневное',
-          '关于本站':'Об этом сайте',
+          '杂谈':'Разное','日常':'Повседневное','关于本站':'Об этом сайте',
           '图床':'Хостинг фото','开发':'Инструменты','AI服务':'ИИ-сервисы',
           '16图床':'16 Hosting','路过图床':'Imgchr',
           '测速':'Тест скорости','ip纯净度':'Проверка IP','dns查询':'DNS-запрос','lcon图标':'Иконки',
-          '10点官网':'10dian AI',
-          'Some rights reserved.':'Some rights reserved.'
+          '10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'
         },
         fr:{
           '文章列表':'Articles','分类':'Catégories','标签':'Tags','归档':'Archives',
@@ -280,17 +315,14 @@ layout: compress
           '搜索':'Rechercher','取消':'Annuler','没有找到相关结果':'Aucun résultat',
           '找到':'Trouvé','条结果':'résultats',
           '最近更新':'Récemment mis à jour','热门标签':'Tags populaires','目录':'Sommaire',
-          '发现新版本的内容。':'Nouveau contenu.','更新':'Mettre à jour',
-          '篇文章':'articles',
+          '发现新版本的内容。':'Nouveau contenu.','更新':'Mettre à jour','篇文章':'articles',
           '云服务与厂商':'Services Cloud','多元性别/取向':'LGBTQ+',
           '心理疾病':'Santé mentale','素材':'Ressources','药品':'Médicaments',
-          '杂谈':'Divers','日常':'Quotidien',
-          '关于本站':'À propos du site',
+          '杂谈':'Divers','日常':'Quotidien','关于本站':'À propos du site',
           '图床':'Hébergement','开发':'Outils Dev','AI服务':'Services IA',
           '16图床':'16 Hosting','路过图床':'Imgchr',
           '测速':'Test de vitesse','ip纯净度':'Vérif IP','dns查询':'DNS Lookup','lcon图标':'Icônes',
-          '10点官网':'10dian AI',
-          'Some rights reserved.':'Some rights reserved.'
+          '10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'
         },
         de:{
           '文章列表':'Beiträge','分类':'Kategorien','标签':'Tags','归档':'Archiv',
@@ -303,17 +335,14 @@ layout: compress
           '搜索':'Suchen','取消':'Abbrechen','没有找到相关结果':'Keine Ergebnisse',
           '找到':'Gefunden','条结果':'Ergebnisse',
           '最近更新':'Zuletzt aktualisiert','热门标签':'Beliebte Tags','目录':'Inhalt',
-          '发现新版本的内容。':'Neue Inhalte.','更新':'Aktualisieren',
-          '篇文章':'Artikel',
+          '发现新版本的内容。':'Neue Inhalte.','更新':'Aktualisieren','篇文章':'Artikel',
           '云服务与厂商':'Cloud-Dienste','多元性别/取向':'LGBTQ+',
           '心理疾病':'Psychische Gesundheit','素材':'Ressourcen','药品':'Medikamente',
-          '杂谈':'Verschiedenes','日常':'Alltag',
-          '关于本站':'Über diese Seite',
+          '杂谈':'Verschiedenes','日常':'Alltag','关于本站':'Über diese Seite',
           '图床':'Bild-Hosting','开发':'Dev-Tools','AI服务':'KI-Dienste',
           '16图床':'16 Hosting','路过图床':'Imgchr',
           '测速':'Speedtest','ip纯净度':'IP-Check','dns查询':'DNS-Abfrage','lcon图标':'Icons',
-          '10点官网':'10dian AI',
-          'Some rights reserved.':'Some rights reserved.'
+          '10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'
         },
         es:{
           '文章列表':'Artículos','分类':'Categorías','标签':'Etiquetas','归档':'Archivo',
@@ -326,26 +355,106 @@ layout: compress
           '搜索':'Buscar','取消':'Cancelar','没有找到相关结果':'Sin resultados',
           '找到':'Encontrado','条结果':'resultados',
           '最近更新':'Actualizado recientemente','热门标签':'Tags populares','目录':'Índice',
-          '发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar',
-          '篇文章':'artículos',
+          '发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar','篇文章':'artículos',
           '云服务与厂商':'Servicios Cloud','多元性别/取向':'LGBTQ+',
           '心理疾病':'Salud mental','素材':'Recursos','药品':'Medicamentos',
-          '杂谈':'Varios','日常':'Cotidiano',
-          '关于本站':'Sobre este sitio',
+          '杂谈':'Varios','日常':'Cotidiano','关于本站':'Sobre este sitio',
           '图床':'Hosting imágenes','开发':'Herramientas','AI服务':'Servicios IA',
           '16图床':'16 Hosting','路过图床':'Imgchr',
           '测速':'Test de velocidad','ip纯净度':'Check IP','dns查询':'DNS Lookup','lcon图标':'Iconos',
-          '10点官网':'10dian AI',
-          'Some rights reserved.':'Some rights reserved.'
+          '10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'
         }
       };
 
       var cur = localStorage.getItem('chirpy-lang') || 'zh';
-
       var SKIP_TAGS = {SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
       var SKIP_CLASSES = ['post-content','highlight','rouge','language-'];
       var NO_TRANSLATE = {'保留所有权利':1};
 
+      /* ── 判断当前是否是文章页 ── */
+      function isPostPage() {
+        return !!document.querySelector('#post-wrapper, article.post-content, .post-content');
+      }
+
+      /* ── 获取文章正文容器 ── */
+      function getPostContent() {
+        return document.querySelector('#post-wrapper')
+          || document.querySelector('article')
+          || document.querySelector('.post-content');
+      }
+
+      /* ── 缓存 ── */
+      function cacheKey(lang) {
+        return 'post-trans:' + lang + ':' + location.pathname;
+      }
+
+      /* ── 保存/恢复原始 HTML ── */
+      var originalHTML = null;
+      function saveOriginal() {
+        var el = getPostContent();
+        if (el && !originalHTML) originalHTML = el.innerHTML;
+      }
+      function restoreOriginal() {
+        var el = getPostContent();
+        if (el && originalHTML) el.innerHTML = originalHTML;
+      }
+
+      /* ── 正文 ── */
+      function translatePost(lang, callback) {
+        var cached = sessionStorage.getItem(cacheKey(lang));
+        if (cached) { callback(cached); return; }
+
+        var el = getPostContent();
+        if (!el) { callback(null); return; }
+
+        /* 只取文字内容，保留 HTML 结构由 AI 翻译后回填 */
+        var html = el.innerHTML;
+        var tip = document.getElementById('translate-tip');
+        var overlay = document.getElementById('translate-overlay');
+        var langName = LANG_NAMES[lang] || lang;
+
+        if (tip) tip.textContent = '正在翻译为 ' + langName + '...';
+        if (overlay) overlay.classList.add('show');
+
+        fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + API_KEY
+          },
+          body: JSON.stringify({
+            model: API_MODEL,
+            messages: [
+              {
+                role: 'system',
+                content: '你是一个专业翻译助手。用户会给你一段 HTML 内容，请将其中所有的自然语言文本翻译为' + langName + '，同时严格保留所有 HTML 标签、属性、代码块（<code>、<pre> 内的内容不翻译）、链接和图片不变。只返回翻译后的 HTML，不要有任何解释或额外内容。'
+              },
+              {
+                role: 'user',
+                content: html
+              }
+            ],
+            max_tokens: 4000
+          })
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if (overlay) overlay.classList.remove('show');
+          var result = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+          if (result) {
+            sessionStorage.setItem(cacheKey(lang), result);
+            callback(result);
+          } else {
+            callback(null);
+          }
+        })
+        .catch(function(){
+          if (overlay) overlay.classList.remove('show');
+          callback(null);
+        });
+      }
+
+      /* ── 固定文字）── */
       function shouldSkip(node) {
         var p = node.parentElement;
         while (p) {
@@ -358,7 +467,7 @@ layout: compress
         return false;
       }
 
-      function applyLang(lang) {
+      function applyUI(lang) {
         var map = i18n[lang];
         var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         var node;
@@ -371,62 +480,4 @@ layout: compress
           if (!node._zhKey) node._zhKey = txt;
           if (map[node._zhKey]) node.nodeValue = raw.replace(node._zhKey, map[node._zhKey]);
         }
-
-        var inp = document.querySelector('input[type="search"],#search-input');
-        if (inp) {
-          if (!inp._zhPh) inp._zhPh = inp.placeholder;
-          if (map[inp._zhPh]) inp.placeholder = map[inp._zhPh];
-        }
-
-        document.querySelectorAll('[data-bs-original-title]').forEach(function(el) {
-          if (!el._zhTitle) el._zhTitle = el.getAttribute('data-bs-original-title');
-          if (map[el._zhTitle]) el.setAttribute('data-bs-original-title', map[el._zhTitle]);
-        });
-
-        var labels = {zh:'简中',tw:'繁中',en:'EN',ja:'日本語',ru:'RU',fr:'FR',de:'DE',es:'ES'};
-        document.getElementById('lang-btn-label').textContent = labels[lang] || lang;
-        document.querySelectorAll('.lang-option').forEach(function(b) {
-          b.classList.toggle('active', b.dataset.lang === lang);
-        });
-        cur = lang;
-        localStorage.setItem('chirpy-lang', lang);
-      }
-
-      var panel = document.getElementById('lang-panel');
-      var wrap  = document.getElementById('lang-wrap');
-      var btn   = document.getElementById('lang-switcher-btn');
-
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var r = btn.getBoundingClientRect();
-        panel.style.left   = r.left + 'px';
-        panel.style.bottom = (window.innerHeight - r.top + 8) + 'px';
-        panel.classList.toggle('open');
-      });
-      document.addEventListener('click', function() { panel.classList.remove('open'); });
-      panel.addEventListener('click', function(e) { e.stopPropagation(); });
-      document.querySelectorAll('.lang-option').forEach(function(opt) {
-        opt.addEventListener('click', function() {
-          applyLang(opt.dataset.lang);
-          panel.classList.remove('open');
-        });
-      });
-
-      window.addEventListener('DOMContentLoaded', function() {
-        var sidebar = document.getElementById('sidebar');
-        if (sidebar) {
-          var bottom = sidebar.querySelector('.sidebar-bottom, .d-flex.w-100, div[class*="bottom"]');
-          if (!bottom) {
-            var divs = sidebar.querySelectorAll('div');
-            bottom = divs[divs.length - 1];
-          }
-          sidebar.insertBefore(wrap, bottom);
-        }
-        if (cur !== 'zh') applyLang(cur);
-      });
-    })();
-    </script>
-
-  </body>
-</html>
-
+        var inp = document.querySelector(
