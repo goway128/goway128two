@@ -27,6 +27,7 @@ layout: compress
   animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 #sidebar {
+  z-index: 99 !important;
   background: linear-gradient(180deg,
     rgba(85,205,252,0.55) 0%,
     rgba(247,168,184,0.55) 30%,
@@ -37,11 +38,11 @@ layout: compress
 }
 [data-mode="dark"] #sidebar {
   background: linear-gradient(180deg,
-    rgba(85,205,252,0.18) 0%,
-    rgba(247,168,184,0.18) 30%,
-    rgba(255,255,255,0.08) 50%,
-    rgba(247,168,184,0.18) 70%,
-    rgba(85,205,252,0.18) 100%
+    rgba(85,205,252,0.45) 0%,
+    rgba(247,168,184,0.45) 30%,
+    rgba(200,200,220,0.25) 50%,
+    rgba(247,168,184,0.45) 70%,
+    rgba(85,205,252,0.45) 100%
   ) !important;
 }
 #sidebar .site-title a,
@@ -58,11 +59,15 @@ layout: compress
 [data-mode="dark"] #sidebar .sidebar-bottom a,
 [data-mode="dark"] #sidebar .sidebar-bottom span,
 [data-mode="dark"] #sidebar nav span {
-  color: #e0e0e0 !important;
+  color: #f0f0f0 !important;
 }
-[data-mode="dark"] #sidebar li.active a,
-[data-mode="dark"] #sidebar a.active {
-  background: rgba(85,205,252,0.15) !important;
+[data-mode="dark"] #sidebar li.active,
+[data-mode="dark"] #sidebar li.active a {
+  background: rgba(85,205,252,0.28) !important;
+  border-radius: 8px;
+}
+[data-mode="dark"] #sidebar li.active a span,
+[data-mode="dark"] #sidebar li.active span {
   color: #55CDFC !important;
 }
 </style>
@@ -197,7 +202,7 @@ layout: compress
     <div id="lang-wrap">
       <button id="lang-switcher-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-        <span id="lang-btn-label">简体中文</span>
+        <span id="lang-btn-label">简中</span>
       </button>
     </div>
     <script>
