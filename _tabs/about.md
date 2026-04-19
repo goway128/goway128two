@@ -2,44 +2,61 @@
 layout: page
 title: 关于
 permalink: /about/
-icon: fa-brands fa-codepen
+icon: fa-brands fa-squarespace
 order: 5
 ---
 
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
   .about-wrap {
     padding: 1rem 0 3rem;
     max-width: 680px;
     font-family: var(--font-sans, sans-serif);
   }
 
-  /* hero */
+  /* ── 配色变量 ── */
+  
+  .about-wrap {
+    --g1: #7c3aed;
+    --g2: #e11d75;
+    --g3: #a855f7;
+    --card-border-opacity: 0.55;
+  }
+  /* 亮色：Trans 旗 蓝-粉-白 */
+  @media (prefers-color-scheme: light) {
+    .about-wrap { --g1: #55CDFC; --g2: #F7A8B8; --g3: #ffffff; --card-border-opacity: 0.7; }
+  }
+  [data-mode="light"] .about-wrap { --g1: #55CDFC; --g2: #F7A8B8; --g3: #ffffff; --card-border-opacity: 0.7; }
+  [data-mode="dark"]  .about-wrap { --g1: #7c3aed; --g2: #e11d75; --g3: #a855f7; --card-border-opacity: 0.55; }
+
+  /* ── hero ── */
   .hero {
     text-align: center;
-    padding: 2rem 1rem 2rem;
+    padding: 2rem 1rem 1.8rem;
     opacity: 0;
     transform: translateY(24px);
-    animation: fadeUp 0.6s ease forwards 0.1s;
+    animation: ab-fadeUp 0.6s ease forwards 0.1s;
   }
   .hero-name {
     font-size: 36px;
     font-weight: 500;
+    margin-bottom: 10px;
+    /* 渐变文字兼容写法 */
+    background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3), var(--g2), var(--g1));
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    background-size: 200% auto;
-    animation: shimmer 4s linear infinite;
-    margin-bottom: 10px;
+    color: transparent;
+    display: inline-block;
+    animation: ab-shimmer 4s linear infinite;
   }
   .hero-bio {
     font-size: 15px;
-    color: var(--text-muted-color, #aaa);
+    color: var(--text-muted-color, #999);
     letter-spacing: 0.04em;
   }
 
-  /* card */
+  /* ── card ── */
   .card {
     border-radius: 16px;
     position: relative;
@@ -49,40 +66,58 @@ order: 5
     opacity: 0;
     transform: translateY(20px);
     z-index: 0;
+    overflow: visible;
   }
+  /* 渐变边框：降低亮度用 opacity */
   .card::before {
     content: '';
     position: absolute;
     inset: -1.5px;
     border-radius: 18px;
+    background: linear-gradient(135deg, var(--g1), var(--g2), var(--g3), var(--g2), var(--g1));
     background-size: 300% 300%;
-    animation: borderFlow 5s ease infinite;
+    animation: ab-borderFlow 5s ease infinite;
+    opacity: var(--card-border-opacity, 0.55);
     z-index: -1;
   }
-  .card.d1 { animation: fadeUp 0.6s ease forwards 0.25s; }
-  .card.d2 { animation: fadeUp 0.6s ease forwards 0.4s; }
-  .card.d3 { animation: fadeUp 0.6s ease forwards 0.55s; }
+  /* 卡片内部遮住边框底层，防止背景透出 */
+  .card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: var(--card-bg, #1e2125);
+    z-index: -1;
+  }
+  .card.d1 { animation: ab-fadeUp 0.6s ease forwards 0.25s; }
+  .card.d2 { animation: ab-fadeUp 0.6s ease forwards 0.4s; }
+  .card.d3 { animation: ab-fadeUp 0.6s ease forwards 0.55s; }
 
+  /* ── section label ── */
   .section-label {
     font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     margin-bottom: 12px;
+    /* inline-block 才能让 background-clip: text 正常工作 */
+    display: inline-block;
+    background: linear-gradient(90deg, var(--g1), var(--g2));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    color: transparent;
   }
 
-  /* motto */
+  /* ── motto ── */
   .motto-text {
     font-size: 14px;
-    color: var(--text-muted-color, #aaa);
+    color: var(--text-muted-color, #999);
     line-height: 1.9;
     font-style: italic;
   }
 
-  /* tags */
+  /* ── tags ── */
   .tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .tag {
     padding: 5px 16px;
@@ -90,21 +125,25 @@ order: 5
     font-size: 13px;
     font-weight: 500;
     color: var(--text-color, #eee);
-    background: rgba(255,255,255,0.05);
+    background: var(--card-bg, #1e2125);
     position: relative;
     z-index: 0;
     transition: transform 0.18s ease;
     cursor: default;
   }
+  /* 渐变边框 */
   .tag::before {
     content: '';
     position: absolute;
-    inset: -1px;
+    inset: -1.5px;
     border-radius: 999px;
+    background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3), var(--g1));
     background-size: 200% auto;
-    animation: shimmer 3s linear infinite;
+    animation: ab-shimmer 3s linear infinite;
+    opacity: var(--card-border-opacity, 0.55);
     z-index: -1;
   }
+  /* 内部遮罩 */
   .tag::after {
     content: '';
     position: absolute;
@@ -115,34 +154,45 @@ order: 5
   }
   .tag:hover { transform: translateY(-2px); }
 
-  /* timeline */
-  .timeline { position: relative; padding-left: 20px; }
+  /* ── timeline ── */
+  .timeline { position: relative; padding-left: 22px; }
   .timeline::before {
     content: '';
     position: absolute;
     left: 4px; top: 6px; bottom: 6px; width: 2px;
+    background: linear-gradient(180deg, var(--g1), var(--g2), var(--g1));
     background-size: 100% 200%;
-    animation: borderFlow 3s ease infinite;
+    animation: ab-borderFlow 3s ease infinite;
     border-radius: 2px;
+    opacity: 0.8;
   }
   .tl-item {
     position: relative;
     margin-bottom: 1.4rem;
-    padding-left: 16px;
+    padding-left: 14px;
     opacity: 0;
     transform: translateX(-12px);
   }
   .tl-item:last-child { margin-bottom: 0; }
-  .tl-item.t1 { animation: fadeRight 0.5s ease forwards 0.7s; }
-  .tl-item.t2 { animation: fadeRight 0.5s ease forwards 0.85s; }
-  .tl-item.t3 { animation: fadeRight 0.5s ease forwards 1.0s; }
-  .tl-item.t4 { animation: fadeRight 0.5s ease forwards 1.15s; }
+  .tl-item.t1 { animation: ab-fadeRight 0.5s ease forwards 0.7s; }
+  .tl-item.t2 { animation: ab-fadeRight 0.5s ease forwards 0.85s; }
+  .tl-item.t3 { animation: ab-fadeRight 0.5s ease forwards 1.0s; }
+  .tl-item.t4 { animation: ab-fadeRight 0.5s ease forwards 1.15s; }
   .tl-item::before {
     content: '';
     position: absolute;
-    left: -15px; top: 5px;
-    width: 9px; height: 9px;
+    left: -17px; top: 4px;
+    width: 10px; height: 10px;
     border-radius: 50%;
+    background: linear-gradient(135deg, var(--g1), var(--g2));
+    box-shadow: 0 0 0 2.5px var(--card-bg, #1e2125), 0 0 0 4px var(--g2);
+  }
+  .tl-year {
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 3px;
+    letter-spacing: 0.06em;
+    color: var(--g1);
   }
   .tl-title {
     font-size: 14px;
@@ -150,66 +200,24 @@ order: 5
     color: var(--text-color, #eee);
     margin-bottom: 3px;
   }
-  .tl-year {
-    font-size: 11px;
-    font-weight: 500;
-    margin-bottom: 3px;
-    letter-spacing: 0.06em;
-  }
   .tl-desc {
     font-size: 13px;
-    color: var(--text-muted-color, #aaa);
+    color: var(--text-muted-color, #999);
     line-height: 1.6;
   }
 
-  /* ── 亮色模式：Trans 旗配色（蓝-粉-白）── */
-  @media (prefers-color-scheme: light) { .about-wrap { --g1: #55CDFC; --g2: #F7A8B8; --g3: #ffffff; } }
-  [data-mode="light"] .about-wrap    { --g1: #55CDFC; --g2: #F7A8B8; --g3: #ffffff; }
-
-  /* ── 暗色模式：紫色到粉色 ── */
-  @media (prefers-color-scheme: dark)  { .about-wrap { --g1: #a855f7; --g2: #f472b6; --g3: #c084fc; } }
-  [data-mode="dark"] .about-wrap     { --g1: #a855f7; --g2: #f472b6; --g3: #c084fc; }
-
-  /* 默认（没有显式 data-mode 时跟系统走，给一个保底暗色） */
-  .about-wrap { --g1: #a855f7; --g2: #f472b6; --g3: #c084fc; }
-
-  .hero-name {
-    background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3), var(--g2), var(--g1));
-  }
-  .card::before {
-    background: linear-gradient(135deg, var(--g1), var(--g2), var(--g3), var(--g2), var(--g1));
-  }
-  .section-label {
-    background: linear-gradient(90deg, var(--g1), var(--g2));
-  }
-  .tag::before {
-    background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3), var(--g1));
-  }
-  .timeline::before {
-    background: linear-gradient(180deg, var(--g1), var(--g2), var(--g1));
-  }
-  .tl-item::before {
-    background: linear-gradient(135deg, var(--g1), var(--g2));
-    box-shadow: 0 0 0 2.5px var(--card-bg, #1e2125), 0 0 0 4px var(--g2);
-  }
-  .tl-year { color: var(--g1); }
-
-  /* ── 亮色下年份用深一点的蓝，否则太浅 ── */
-  @media (prefers-color-scheme: light) { .tl-year { color: #2a9ec5; } }
-  [data-mode="light"] .tl-year { color: #2a9ec5; }
-
-  /* animations */
-  @keyframes fadeUp {
+  /* ── animation ── */
+  @keyframes ab-fadeUp {
     to { opacity: 1; transform: translateY(0); }
   }
-  @keyframes fadeRight {
+  @keyframes ab-fadeRight {
     to { opacity: 1; transform: translateX(0); }
   }
-  @keyframes shimmer {
+  @keyframes ab-shimmer {
     0%   { background-position: 0% center; }
     100% { background-position: 200% center; }
   }
-  @keyframes borderFlow {
+  @keyframes ab-borderFlow {
     0%   { background-position: 0% 0%; }
     50%  { background-position: 100% 100%; }
     100% { background-position: 0% 0%; }
@@ -224,7 +232,7 @@ order: 5
   </div>
 
   <div class="card d1">
-    <div class="section-label">一句话</div>
+    <div class="section-label">座右铭</div>
     <div class="motto-text">
       "Our greatest glory is not in never falling,<br>but in rising every time we fall."
     </div>
@@ -245,26 +253,27 @@ order: 5
     <div class="section-label">时间线</div>
     <div class="timeline">
       <div class="tl-item t1">
-        <div class="tl-year">2025</div>
-        <div class="tl-title">了解建站</div>
-        <div class="tl-desc">小小的我第一次知道域名和服务器</div>
+        <div class="tl-year">2025.08</div>
+        <div class="tl-title">一切的开端</div>
+        <div class="tl-desc">第一次了解域名和服务器</div>
       </div>
       <div class="tl-item t2">
-        <div class="tl-year">2026</div>
-        <div class="tl-title">一切的开端</div>
-        <div class="tl-desc">开始搭建</div>
+        <div class="tl-year">2026.01</div>
+        <div class="tl-title">学习</div>
+        <div class="tl-desc">学习了建站的知识，准备从GitHub建</div>
       </div>
       <div class="tl-item t3">
-        <div class="tl-year">2026</div>
-        <div class="tl-title">正式版白の小站建成</div>
-        <div class="tl-desc">发现了Chirpy-star这个项目，重建</div>
+        <div class="tl-year">2026.03</div>
+        <div class="tl-title">准备好</div>
+        <div class="tl-desc">购买了域名，选择主题</div>
       </div>
       <div class="tl-item t4">
-        <div class="tl-year">不知道</div>
-        <div class="tl-title">后续美化</div>
-        <div class="tl-desc">这个来日方长吧</div>
+        <div class="tl-year">2026.04</div>
+        <div class="tl-title">成功了</div>
+        <div class="tl-desc">正是建成白の小站</div>
       </div>
     </div>
   </div>
 
 </div>
+
