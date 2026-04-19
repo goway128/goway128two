@@ -21,7 +21,7 @@ order: 5
     --g3: #a855f7;
     --card-border-opacity: 0.55;
   }
-  /* 亮色：Trans 旗 蓝-粉-白 */
+  /* 亮色*/
   @media (prefers-color-scheme: light) {
     .about-wrap { --g1: #55CDFC; --g2: #F7A8B8; --g3: #ffffff; --card-border-opacity: 0.7; }
   }
@@ -270,7 +270,7 @@ order: 5
       <div class="tl-item t4">
         <div class="tl-year">2026.04</div>
         <div class="tl-title">成功了</div>
-        <div class="tl-desc">正是建成白の小站</div>
+        <div class="tl-desc">建成白の小站</div>
       </div>
     </div>
   </div>
