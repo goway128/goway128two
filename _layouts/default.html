@@ -138,7 +138,7 @@ layout: compress
     </style>
 
     <div id="lang-panel">
-      <button class="lang-option active" data-lang="zh">🇨🇳 中文</button>
+      <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
       <button class="lang-option" data-lang="en">🇬🇧 English</button>
       <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
       <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
@@ -148,7 +148,7 @@ layout: compress
     <div id="lang-wrap">
       <button id="lang-switcher-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-        <span id="lang-btn-label">中文</span>
+        <span id="lang-btn-label">简体中文</span>
       </button>
     </div>
     <script>
@@ -162,15 +162,15 @@ layout: compress
         es:{'文章列表':'Artículos','分类':'Categorías','标签':'Etiquetas','归档':'Archivo','关于':'Acerca de','首页':'Inicio','起始页':'Inicio','作者':'Autor','发表于':'Publicado','更新于':'Actualizado','字':'palabras','次浏览':'vistas','分钟':'min','阅读':'leer','相关文章':'Relacionados','分享':'Compartir','下一篇':'Siguiente','上一篇':'Anterior','已复制！':'¡Copiado!','复制链接':'Copiar enlace','链接已复制！':'¡Enlace copiado!','搜索':'Buscar','取消':'Cancelar','没有找到相关结果':'Sin resultados','最近更新':'Actualizado recientemente','热门标签':'Tags populares','目录':'Índice','发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar','找到':'Encontrado','条结果':'resultados','友链':'Amigos','篇文章':'artículos','本文由作者按照':'Licencia','进行授权':'por el autor','文章':'Artículos'}
       };
       var cur=localStorage.getItem('chirpy-lang')||'zh';
-      var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1,ARTICLE:1};
-      var SKIP_IDS={};
-      var SKIP_CLASSES=['post-content','content','highlight','rouge'];
+      var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
+      var SKIP_CLASSES=['post-content','content','highlight','rouge','language-'];
       function shouldSkip(node){
         var p=node.parentElement;
         while(p){
           if(SKIP_TAGS[p.tagName])return true;
-          if(p.id&&SKIP_IDS[p.id])return true;
-          for(var i=0;i<SKIP_CLASSES.length;i++){if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true;}
+          for(var i=0;i<SKIP_CLASSES.length;i++){
+            if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true;
+          }
           p=p.parentElement;
         }
         return false;
@@ -233,3 +233,4 @@ layout: compress
 
   </body>
 </html>
+
