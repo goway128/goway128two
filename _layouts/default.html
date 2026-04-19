@@ -138,7 +138,7 @@ layout: compress
     </style>
 
     <div id="lang-panel">
-      <button class="lang-option active" data-lang="zh">🇨🇳 中文</button>
+      <button class="lang-option active" data-lang="zh">🇨🇳 简中</button>
       <button class="lang-option" data-lang="en">🇬🇧 English</button>
       <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
       <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
@@ -148,7 +148,7 @@ layout: compress
     <div id="lang-wrap">
       <button id="lang-switcher-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-        <span id="lang-btn-label">中文</span>
+        <span id="lang-btn-label">简中</span>
       </button>
     </div>
     <script>
@@ -162,13 +162,36 @@ layout: compress
         es:{'文章列表':'Artículos','分类':'Categorías','标签':'Etiquetas','归档':'Archivo','关于':'Acerca de','首页':'Inicio','起始页':'Inicio','作者':'Autor','发表于':'Publicado','更新于':'Actualizado','字':'palabras','次浏览':'vistas','分钟':'min','阅读':'leer','相关文章':'Relacionados','分享':'Compartir','下一篇':'Siguiente','上一篇':'Anterior','已复制！':'¡Copiado!','复制链接':'Copiar enlace','链接已复制！':'¡Enlace copiado!','搜索':'Buscar','取消':'Cancelar','没有找到相关结果':'Sin resultados','最近更新':'Actualizado recientemente','热门标签':'Tags populares','目录':'Índice','发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar','找到':'Encontrado','条结果':'resultados','友链':'Amigos'}
       };
       var cur=localStorage.getItem('chirpy-lang')||'zh';
+      function translateNode(el,map){
+        if(!el.dataset.zhKey)el.dataset.zhKey=el.textContent.trim();
+        if(el.dataset.zhKey&&map[el.dataset.zhKey])el.textContent=map[el.dataset.zhKey];
+      }
       function applyLang(lang){
         var map=i18n[lang];
-        document.querySelectorAll('#sidebar a span,#sidebar nav span').forEach(function(el){
-          if(!el.dataset.zhKey)el.dataset.zhKey=el.textContent.trim();
-          if(map[el.dataset.zhKey])el.textContent=map[el.dataset.zhKey];
+        document.querySelectorAll(
+          '#sidebar a span,#sidebar nav span,'+
+          '#topbar-wrapper input[placeholder],'+
+          '#panel-wrapper h2,#panel-wrapper h3,#panel-wrapper .panel-heading,'+
+          '#panel-wrapper [class*="lastmod"] h3,#panel-wrapper [class*="trending"] h3,'+
+          '.post-tail-wrapper .btn span,'+
+          '.page-item .page-link,'+
+          'footer p,'+
+          '[id*="tail"] h3,[id*="tail"] h2'
+        ).forEach(function(el){translateNode(el,map);});
+        var inp=document.querySelector('#topbar-wrapper input[type="search"],#search-input,input[placeholder]');
+        if(inp&&map[inp.placeholder||inp.getAttribute('placeholder')]){
+          if(!inp.dataset.zhKey)inp.dataset.zhKey=inp.placeholder;
+          inp.placeholder=map[inp.dataset.zhKey]||inp.placeholder;
+          inp.setAttribute('placeholder',inp.placeholder);
+        }
+        document.querySelectorAll('#panel-wrapper h2,#panel-wrapper h3').forEach(function(el){translateNode(el,map);});
+        document.querySelectorAll('.post-navigation .btn-outline-primary span,.post-navigation span').forEach(function(el){translateNode(el,map);});
+        document.querySelectorAll('[data-bs-original-title],[title]').forEach(function(el){
+          var k=el.getAttribute('data-bs-original-title')||el.getAttribute('title');
+          if(!el.dataset.zhTitle)el.dataset.zhTitle=k;
+          if(map[el.dataset.zhTitle]){el.setAttribute('title',map[el.dataset.zhTitle]);el.setAttribute('data-bs-original-title',map[el.dataset.zhTitle]);}
         });
-        var labels={zh:'中文',en:'EN',ja:'日本語',fr:'FR',de:'DE',es:'ES'};
+        var labels={zh:'简中',en:'EN',ja:'日本語',fr:'FR',de:'DE',es:'ES'};
         document.getElementById('lang-btn-label').textContent=labels[lang]||lang;
         document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang);});
         cur=lang;localStorage.setItem('chirpy-lang',lang);
@@ -205,3 +228,4 @@ layout: compress
 
   </body>
 </html>
+
