@@ -165,6 +165,7 @@ layout: compress
           '目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新',
           '找到':'找到','条结果':'条结果','友链':'友链','篇文章':'篇文章',
           '本文由作者按照':'本文由作者按照','进行授权':'进行授权','文章':'文章',
+          '关于本站':'关于本站','Some rights reserved.':'Some rights reserved.',
           '云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向',
           '心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','日常':'日常'
         },
@@ -180,6 +181,7 @@ layout: compress
           '更新':'Update','找到':'Found','条结果':'results','友链':'Friends',
           '篇文章':'articles','本文由作者按照':'Licensed under','进行授权':'by the author',
           '文章':'Posts',
+          '关于本站':'About This Site','Some rights reserved.':'Some rights reserved.',
           '云服务与厂商':'Cloud Services','多元性别/取向':'LGBTQ+',
           '心理疾病':'Mental Health','素材':'Resources','药品':'Medications',
           '杂谈':'Misc','日常':'Daily'
@@ -195,6 +197,7 @@ layout: compress
           '目录':'目次','发现新版本的内容。':'新しいコンテンツ。','更新':'更新',
           '找到':'見つかりました','条结果':'件','友链':'リンク集','篇文章':'本',
           '本文由作者按照':'ライセンス','进行授权':'で公開','文章':'記事',
+          '关于本站':'このサイトについて','Some rights reserved.':'Some rights reserved.',
           '云服务与厂商':'クラウドサービス','多元性别/取向':'LGBTQ+',
           '心理疾病':'心の病気','素材':'素材','药品':'医薬品','杂谈':'雑談','日常':'日常'
         },
@@ -209,6 +212,7 @@ layout: compress
           '热门标签':'Tags populaires','目录':'Sommaire','发现新版本的内容。':'Nouveau contenu.',
           '更新':'Mettre à jour','找到':'Trouvé','条结果':'résultats','友链':'Liens amis',
           '篇文章':'articles','本文由作者按照':'Licence','进行授权':'par l\'auteur','文章':'Articles',
+          '关于本站':'À propos du site','Some rights reserved.':'Some rights reserved.',
           '云服务与厂商':'Services Cloud','多元性别/取向':'LGBTQ+',
           '心理疾病':'Santé mentale','素材':'Ressources','药品':'Médicaments',
           '杂谈':'Divers','日常':'Quotidien'
@@ -224,6 +228,7 @@ layout: compress
           '热门标签':'Beliebte Tags','目录':'Inhalt','发现新版本的内容。':'Neue Inhalte.',
           '更新':'Aktualisieren','找到':'Gefunden','条结果':'Ergebnisse','友链':'Freunde',
           '篇文章':'Artikel','本文由作者按照':'Lizenz','进行授权':'vom Autor','文章':'Beiträge',
+          '关于本站':'Über diese Seite','Some rights reserved.':'Some rights reserved.',
           '云服务与厂商':'Cloud-Dienste','多元性别/取向':'LGBTQ+',
           '心理疾病':'Psychische Gesundheit','素材':'Ressourcen','药品':'Medikamente',
           '杂谈':'Verschiedenes','日常':'Alltag'
@@ -239,6 +244,7 @@ layout: compress
           '热门标签':'Tags populares','目录':'Índice','发现新版本的内容。':'Nuevo contenido.',
           '更新':'Actualizar','找到':'Encontrado','条结果':'resultados','友链':'Amigos',
           '篇文章':'artículos','本文由作者按照':'Licencia','进行授权':'por el autor','文章':'Artículos',
+          '关于本站':'Sobre este sitio','Some rights reserved.':'Some rights reserved.',
           '云服务与厂商':'Servicios Cloud','多元性别/取向':'LGBTQ+',
           '心理疾病':'Salud mental','素材':'Recursos','药品':'Medicamentos',
           '杂谈':'Varios','日常':'Cotidiano'
@@ -247,9 +253,12 @@ layout: compress
 
       var cur = localStorage.getItem('chirpy-lang') || 'zh';
 
-      /* meta/导航/分类等区域 */
+      /* 跳过代码块和正文，不跳过 meta/导航/分类/注脚 */
       var SKIP_TAGS = {SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
+      /* 只跳过文章正文内容区，不跳过 footer */
       var SKIP_CLASSES = ['post-content','highlight','rouge','language-'];
+      /* 不翻译这些文字 */
+      var NO_TRANSLATE = {'保留所有权利':1};
 
       function shouldSkip(node) {
         var p = node.parentElement;
@@ -272,6 +281,8 @@ layout: compress
           var txt = raw.trim();
           if (!txt || txt.length < 2) continue;
           if (shouldSkip(node)) continue;
+          /* 明确不翻译的词跳过 */
+          if (NO_TRANSLATE[txt]) continue;
           if (!node._zhKey) node._zhKey = txt;
           if (map[node._zhKey]) node.nodeValue = raw.replace(node._zhKey, map[node._zhKey]);
         }
@@ -319,7 +330,6 @@ layout: compress
       });
 
       window.addEventListener('DOMContentLoaded', function() {
-        /* 按钮组上方 */
         var sidebar = document.getElementById('sidebar');
         if (sidebar) {
           var bottom = sidebar.querySelector('.sidebar-bottom, .d-flex.w-100, div[class*="bottom"]');
