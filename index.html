@@ -5,7 +5,7 @@ title: " "
 
 
 <style>
-html, body { overflow-x: hidden; max-width: 100%; }
+html, body { overflow-x: hidden !important; max-width: 100vw; }
 @keyframes heroBlobFloat {
   0%,100% { transform: translateY(0) scale(1); }
   50%      { transform: translateY(-28px) scale(1.05); }
@@ -25,10 +25,10 @@ html, body { overflow-x: hidden; max-width: 100%; }
 </style>
 
 <!-- 背景光晕 -->
-<div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
-  <div style="position:absolute;width:420px;height:420px;background:#f9a8c9;border-radius:50%;filter:blur(90px);opacity:0.18;top:-60px;right:-60px;animation:heroBlobFloat 9s ease-in-out infinite;"></div>
-  <div style="position:absolute;width:300px;height:300px;background:#fde68a;border-radius:50%;filter:blur(90px);opacity:0.15;bottom:60px;left:-40px;animation:heroBlobFloat 9s ease-in-out 3s infinite;"></div>
-  <div style="position:absolute;width:240px;height:240px;background:#c4b5fd;border-radius:50%;filter:blur(90px);opacity:0.13;top:50%;left:35%;animation:heroBlobFloat 9s ease-in-out 5s infinite;"></div>
+<div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;clip-path:inset(0);">
+  <div style="position:absolute;width:min(420px,80vw);height:min(420px,80vw);background:#f9a8c9;border-radius:50%;filter:blur(90px);opacity:0.18;top:-60px;right:-60px;animation:heroBlobFloat 9s ease-in-out infinite;"></div>
+  <div style="position:absolute;width:min(300px,70vw);height:min(300px,70vw);background:#fde68a;border-radius:50%;filter:blur(90px);opacity:0.15;bottom:60px;left:-40px;animation:heroBlobFloat 9s ease-in-out 3s infinite;"></div>
+  <div style="position:absolute;width:min(240px,60vw);height:min(240px,60vw);background:#c4b5fd;border-radius:50%;filter:blur(90px);opacity:0.13;top:50%;left:35%;animation:heroBlobFloat 9s ease-in-out 5s infinite;"></div>
 </div>
 
 <!-- 浮动装饰符 -->
