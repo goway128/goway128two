@@ -197,7 +197,7 @@ layout: compress
     </style>
 
     <div id="lang-panel">
-      <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
+      <button class="lang-option active" data-lang="zh">🇨🇳 简体中文中文</button>
       <button class="lang-option" data-lang="en">🇬🇧 English</button>
       <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
       <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
@@ -290,6 +290,30 @@ layout: compress
     })();
     </script>
 
-  </body>
+  <style>
+.page-fade-out {
+  animation: pageFadeOut 0.3s ease forwards !important;
+}
+@keyframes pageFadeOut {
+  from { opacity:1; transform:translateY(0); }
+  to   { opacity:0; transform:translateY(-12px); }
+}
+</style>
+<script>
+(function(){
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a');
+    if(!a)return;
+    var href=a.getAttribute('href');
+    if(!href||href.startsWith('#')||href.startsWith('javascript')||a.target==='_blank')return;
+    if(href.startsWith('http')&&!href.includes(location.hostname))return;
+    e.preventDefault();
+    var wrapper=document.getElementById('main-wrapper');
+    if(wrapper)wrapper.classList.add('page-fade-out');
+    setTimeout(function(){location.href=href;},280);
+  });
+})();
+</script>
+</body>
 </html>
 
