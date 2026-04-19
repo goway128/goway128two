@@ -135,9 +135,32 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       I'm currently learning the <strong style="font-weight:700;opacity:1;"> English </strong>language<br>
     </p>
 
-    <h2 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;">
-      <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">無限進步</em>
-    </h1>
+    <style>
+    @keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+    </style>
+    <h2 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;min-height:1.3em;">
+      <em id="typewriter" style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></em><span id="type-cursor" style="display:inline-block;width:3px;height:0.85em;background:#f472b6;margin-left:2px;vertical-align:middle;border-radius:2px;animation:cursorBlink 0.7s step-end infinite;"></span>
+    </h2>
+    <script>
+    (function(){
+      var texts=['無限進步','我爱你们','無限進步，我爱你们'];
+      var el=document.getElementById('typewriter');
+      var ti=0,ci=0,deleting=false;
+      function tick(){
+        var full=texts[ti];
+        if(!deleting){
+          ci++;el.textContent=full.slice(0,ci);
+          if(ci===full.length){deleting=true;setTimeout(tick,1800);return;}
+          setTimeout(tick,120);
+        } else {
+          ci--;el.textContent=full.slice(0,ci);
+          if(ci===0){deleting=false;ti=(ti+1)%texts.length;setTimeout(tick,400);return;}
+          setTimeout(tick,60);
+        }
+      }
+      setTimeout(tick,800);
+    })();
+    </script>
     
     <!-- 标签 -->
     <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:0;">
@@ -200,4 +223,5 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   });
 })();
 </script>
+
 
