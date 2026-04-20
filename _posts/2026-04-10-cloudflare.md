@@ -1,7 +1,7 @@
 ---
 title: "Cloudflare"
 date: 2026-04-10
-categories: 云服务与厂商
+categories: [云服务与厂商, 国外]
 math: true        # 数学公式
 mermaid: true     # Mermaid 图表
 toc: true         # 目录
