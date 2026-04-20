@@ -425,12 +425,10 @@ html[data-mode="dark"] .card-wrapper {
     var sidebar=document.getElementById('sidebar');
     if(!sidebar)return;
 
-    /* 需要做动画的侧边栏内元素 */
     var targets=sidebar.querySelectorAll(
-      '.site-title,.site-subtitle,nav li,nav a,.sidebar-bottom>*,#lang-wrap'
+      '.site-title,.site-subtitle,nav li,.sidebar-bottom>*,#lang-wrap'
     );
 
-    /* 初始化：隐藏所有元素 */
     function resetItems(){
       targets.forEach(function(el){
         el.style.opacity='0';
@@ -439,40 +437,47 @@ html[data-mode="dark"] .card-wrapper {
       });
     }
 
-    /* 播放：依次从左滑入 */
     function animateItems(){
       targets.forEach(function(el,i){
         setTimeout(function(){
-          el.style.transition='opacity 0.35s ease, transform 0.35s ease';
+          el.style.transition='opacity 0.38s ease, transform 0.38s ease';
           el.style.opacity='1';
           el.style.transform='translateX(0)';
-        }, i * 55);
+        }, i*60);
       });
     }
 
-    /* 监听 Chirpy 侧边栏展开：body 上会加 sidebar-show 或 toggled 等 class */
-    var lastOpen=false;
-    function checkState(){
-      /* Chirpy 移动端展开侧边栏时 body 加 .sidebar-show */
-      var isOpen=document.body.classList.contains('sidebar-show')
-               ||document.body.classList.contains('toggled')
-               ||sidebar.classList.contains('sidebar-open');
-      if(isOpen&&!lastOpen){
-        resetItems();
-        /* 等侧边栏滑入动画（约 150ms）后再播文字 */
-        setTimeout(animateItems, 160);
-      }
-      if(!isOpen&&lastOpen){
-        resetItems();
-      }
-      lastOpen=isOpen;
+    /* 桌面端：页面加载时直接播放一次 */
+    if(window.innerWidth>991){
+      setTimeout(animateItems,200);
+    } else {
+      /* 移动端：初始隐藏，等侧边栏打开时播放 */
+      resetItems();
     }
 
-    /* MutationObserver 监听 class 变化 */
-    var mo=new MutationObserver(checkState);
-    mo.observe(document.body,{attributes:true,attributeFilter:['class']});
-    mo.observe(sidebar,{attributes:true,attributeFilter:['class']});
+    /* 找汉堡按钮，Chirpy 各版本兼容 */
+    var isOpen=false;
+    function onHamburgerClick(){
+      if(!isOpen){
+        /* 刚打开：重置后延迟播放（等侧边栏滑入约150ms） */
+        resetItems();
+        setTimeout(animateItems,160);
+        isOpen=true;
+      } else {
+        isOpen=false;
+      }
+    }
 
-    /* 桌面端初始也播放一次 */
-    if(window.innerWidth>991){
-      setTimeout(animateItems,300)
+    /* 找所有可能是汉堡的按钮并绑定 */
+    var candidates=[
+      document.getElementById('sidebar-trigger'),
+      document.getElementById('sidebar-toggle'),
+      document.querySelector('[data-bs-target="#sidebar"]'),
+      document.querySelector('[data-bs-toggle="collapse"]'),
+      document.querySelector('label[for="sidebar-trigger"]'),
+      document.querySelector('button[class*="sidebar"]'),
+      document.querySelector('.topbar-title button'),
+      document.querySelector('#topbar button')
+    ];
+    var bound=false;
+    candid
