@@ -208,7 +208,7 @@ layout: compress
     <div id="lang-wrap">
       <button id="lang-switcher-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-        <span id="lang-btn-label">中文</span>
+        <span id="lang-btn-label">简体中文</span>
       </button>
     </div>
     <script>
@@ -299,27 +299,39 @@ layout: compress
   from { opacity:1; transform:translateY(0); }
   to   { opacity:0; transform:translateY(-12px); }
 }
-body, #main-wrapper, #main-wrapper .container {
+body, #main-wrapper, #main-wrapper .container, main {
   background-color: #fce8f0 !important;
 }
-[data-mode="dark"] body,
-[data-mode="dark"] #main-wrapper,
-[data-mode="dark"] #main-wrapper .container {
+html[data-mode="dark"] body,
+html[data-mode="dark"] #main-wrapper,
+html[data-mode="dark"] #main-wrapper .container,
+html[data-mode="dark"] main {
   background-color: #1e0f18 !important;
 }
 #tail-wrapper, footer, #footer {
   background-color: transparent !important;
 }
-.categories-trigger, .category-trigger,
-.card-wrapper, .card,
-ul.categories-list li a,
-#categories a.list-group-item,
-.list-group-item {
+.card-wrapper.card,
+.card-wrapper {
   background-color: rgba(173,216,255,0.18) !important;
   border-color: rgba(100,180,255,0.25) !important;
 }
-.list-group-item:hover {
+.card-wrapper.card:hover,
+.card-wrapper:hover {
   background-color: rgba(173,216,255,0.35) !important;
+  transform: translateY(-2px);
+  transition: all 0.2s;
+}
+html[data-mode="dark"] body,
+html[data-mode="dark"] #main-wrapper,
+html[data-mode="dark"] #main-wrapper .container,
+html[data-mode="dark"] main {
+  background-color: #1e0f18 !important;
+}
+html[data-mode="dark"] .card-wrapper.card,
+html[data-mode="dark"] .card-wrapper {
+  background-color: rgba(249,168,201,0.1) !important;
+  border-color: rgba(249,168,201,0.2) !important;
 }
 #read-progress-track {
   position: fixed;
