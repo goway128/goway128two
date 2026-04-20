@@ -2,7 +2,7 @@
 layout: page
 title: 关于
 permalink: /about/
-icon: fa-brands fa-squarespace
+icon: fas fa-heart
 order: 5
 ---
 
@@ -14,14 +14,12 @@ order: 5
   }
 
   /* ── 配色变量 ── */
-  
   .about-wrap {
     --g1: #7c3aed;
     --g2: #e11d75;
     --g3: #a855f7;
     --card-border-opacity: 0.55;
   }
-  /* 亮色*/
   @media (prefers-color-scheme: light) {
     .about-wrap { --g1: #55CDFC; --g2: #F7A8B8; --g3: #ffffff; --card-border-opacity: 0.7; }
   }
@@ -40,7 +38,6 @@ order: 5
     font-size: 36px;
     font-weight: 500;
     margin-bottom: 10px;
-    /* 渐变文字兼容写法 */
     background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3), var(--g2), var(--g1));
     background-size: 200% auto;
     -webkit-background-clip: text;
@@ -68,7 +65,6 @@ order: 5
     z-index: 0;
     overflow: visible;
   }
-  /* 渐变边框：降低亮度用 opacity */
   .card::before {
     content: '';
     position: absolute;
@@ -80,7 +76,6 @@ order: 5
     opacity: var(--card-border-opacity, 0.55);
     z-index: -1;
   }
-  /* 卡片内部遮住边框底层，防止背景透出 */
   .card::after {
     content: '';
     position: absolute;
@@ -100,13 +95,24 @@ order: 5
     letter-spacing: 0.1em;
     text-transform: uppercase;
     margin-bottom: 12px;
-    /* inline-block 才能让 background-clip: text 正常工作 */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-label span {
     display: inline-block;
     background: linear-gradient(90deg, var(--g1), var(--g2));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     color: transparent;
+  }
+  .section-label i {
+    background: linear-gradient(90deg, var(--g1), var(--g2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 12px;
   }
 
   /* ── motto ── */
@@ -115,12 +121,14 @@ order: 5
     color: var(--text-muted-color, #999);
     line-height: 1.9;
     font-style: italic;
+    padding-left: 4px;
+    border-left: 2px solid var(--g2);
   }
 
   /* ── tags ── */
   .tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .tag {
-    padding: 5px 16px;
+    padding: 5px 14px 5px 10px;
     border-radius: 999px;
     font-size: 13px;
     font-weight: 500;
@@ -130,8 +138,17 @@ order: 5
     z-index: 0;
     transition: transform 0.18s ease;
     cursor: default;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
-  /* 渐变边框 */
+  .tag i {
+    font-size: 12px;
+    background: linear-gradient(135deg, var(--g1), var(--g2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   .tag::before {
     content: '';
     position: absolute;
@@ -143,7 +160,6 @@ order: 5
     opacity: var(--card-border-opacity, 0.55);
     z-index: -1;
   }
-  /* 内部遮罩 */
   .tag::after {
     content: '';
     position: absolute;
@@ -193,12 +209,27 @@ order: 5
     margin-bottom: 3px;
     letter-spacing: 0.06em;
     color: var(--g1);
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
+  .tl-year i { font-size: 10px; opacity: 0.8; }
   .tl-title {
     font-size: 14px;
     font-weight: 500;
     color: var(--text-color, #eee);
     margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .tl-title i {
+    font-size: 13px;
+    background: linear-gradient(135deg, var(--g1), var(--g2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex-shrink: 0;
   }
   .tl-desc {
     font-size: 13px;
@@ -206,7 +237,44 @@ order: 5
     line-height: 1.6;
   }
 
-  /* ── animation ── */
+  /* ── typewriter ── */
+  .hero-sub {
+    font-size: 16px;
+    color: var(--text-muted-color, #999);
+    letter-spacing: 0.04em;
+    height: 1.6em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .hero-sub .prefix { color: var(--text-muted-color, #999); }
+  .hero-sub .typed-word {
+    background: linear-gradient(90deg, var(--g1), var(--g2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    font-weight: 500;
+    min-width: 4px;
+  }
+  .hero-sub .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.1em;
+    background: var(--g2);
+    border-radius: 1px;
+    animation: ab-blink 0.9s step-end infinite;
+    vertical-align: middle;
+    margin-left: 1px;
+  }
+  @keyframes ab-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ── animations ── */
   @keyframes ab-fadeUp {
     to { opacity: 1; transform: translateY(0); }
   }
@@ -228,66 +296,71 @@ order: 5
 
   <div class="hero">
     <div class="hero-name">白</div>
-    <div class="hero-bio">一个普通的人类</div>
+    <div class="hero-sub">
+      <span class="prefix">热爱</span>
+      <span class="typed-word" id="ab-typed"></span><span class="cursor"></span>
+    </div>
   </div>
 
   <div class="card d1">
-    <div class="section-label">座右铭</div>
+    <div class="section-label">
+      <i class="fas fa-quote-left"></i>
+      <span>座右铭</span>
+    </div>
     <div class="motto-text">
       "Our greatest glory is not in never falling,<br>but in rising every time we fall."
     </div>
   </div>
 
   <div class="card d2">
-    <div class="section-label">兴趣 &amp; 关注</div>
+    <div class="section-label">
+      <i class="fa-solid fa-eye"></i>
+      <span>兴趣 &amp; 关注</span>
+    </div>
     <div class="tags">
-      <span class="tag">🎵 音乐</span>
-      <span class="tag">✨ 二次元</span>
-      <span class="tag">🧠 心理健康</span>
-      <span class="tag">💊 药学</span>
-      <span class="tag">💻 编程</span>
+      <span class="tag"><i class="fas fa-music"></i> 音乐</span>
+      <span class="tag"><i class="fas fa-tv"></i> 二次元</span>
+      <span class="tag"><i class="fas fa-brain"></i> 心理健康</span>
+      <span class="tag"><i class="fas fa-capsules"></i> 药学</span>
+      <span class="tag"><i class="fas fa-code"></i> 编程</span>
     </div>
   </div>
 
   <div class="card d3">
-    <div class="section-label">时间线</div>
+    <div class="section-label">
+      <i class="fas fa-timeline" style="-webkit-text-fill-color:transparent"></i>
+      <i class="fas fa-clock"></i>
+      <span>时间线</span>
+    </div>
     <div class="timeline">
       <div class="tl-item t1">
-        <div class="tl-year">2025.08</div>
-        <div class="tl-title">一切的开端</div>
+        <div class="tl-year"><i class="fas fa-calendar-alt"></i> 2025.08</div>
+        <div class="tl-title"><i class="fas fa-globe"></i> 一切的开端</div>
         <div class="tl-desc">第一次了解域名和服务器</div>
       </div>
       <div class="tl-item t2">
-        <div class="tl-year">2026.01</div>
-        <div class="tl-title">学习</div>
-        <div class="tl-desc">学习了建站的知识，准备从GitHub建</div>
+        <div class="tl-year"><i class="fas fa-calendar-alt"></i> 2026.01</div>
+        <div class="tl-title"><i class="fas fa-pen"></i> 学习</div>
+        <div class="tl-desc">学习了建站的知识，准备从GitHub构建</div>
       </div>
       <div class="tl-item t3">
-        <div class="tl-year">2026.03</div>
-        <div class="tl-title">准备好</div>
+        <div class="tl-year"><i class="fas fa-calendar-alt"></i> 2026.03</div>
+        <div class="tl-title"><i class="fa-solid fa-palette"></i> 准备中</div>
         <div class="tl-desc">购买了域名，选择主题</div>
       </div>
       <div class="tl-item t4">
-        <div class="tl-year">2026.04</div>
-        <div class="tl-title">成功了</div>
-        <div class="tl-desc">建成白の小站</div>
+        <div class="tl-year"><i class="fas fa-calendar-alt"></i> 2026.04</div>
+        <div class="tl-title"><i class="fa-solid fa-eye"></i> 成功</div>
+        <div class="tl-desc">建立了小站</div>
       </div>
     </div>
   </div>
 
-   <div class="card d1">
-   <div class="section-label">研究</div>
-    <div class="motto-text">
-      我在研究什么？
-    </div>
-    
-  </div>
-  
 </div>
 
 <script>
 (function(){
-  var words = ['编程', '音乐', '二次元', '心理健康', '药学', ];
+  var words = ['研究', '探索',];
   var el = document.getElementById('ab-typed');
   if (!el) return;
   var wi = 0, ci = 0, deleting = false, pause = false;
