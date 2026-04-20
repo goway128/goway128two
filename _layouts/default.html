@@ -223,7 +223,7 @@ layout: compress
       };
       var cur=localStorage.getItem('chirpy-lang')||'zh';
       var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
-      var SKIP_CLASSES=['post-content','content','highlight','rouge','language-'];
+      var SKIP_CLASSES=['post-content','highlight','rouge','language-'];
       function shouldSkip(node){
         var p=node.parentElement;
         while(p){
@@ -299,6 +299,12 @@ layout: compress
   from { opacity:1; transform:translateY(0); }
   to   { opacity:0; transform:translateY(-12px); }
 }
+body {
+  background-color: #fce8f0 !important;
+}
+[data-mode="dark"] body {
+  background-color: #2a1520 !important;
+}
 #read-progress-track {
   position: fixed;
   right: 0;
@@ -364,5 +370,4 @@ layout: compress
 </script>
 </body>
 </html>
-
 
