@@ -200,10 +200,76 @@ body, html {
       }
       .lang-option:hover { background: rgba(249,168,201,0.12); color: #f9a8c9; }
       .lang-option.active { color: #f472b6; background: rgba(244,114,182,0.1); }
+
+      /* ── 字体切换器 ── */
+      #font-wrap {
+        padding: 0 1rem 0.4rem;
+        width: 100%;
+      }
+      #font-switcher-btn {
+        width: 100%;
+        padding: 7px 14px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(128,128,128,0.25);
+        background: transparent;
+        color: var(--sidebar-muted-color, #aaa);
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      #font-switcher-btn:hover { border-color: #f9a8c9; color: #f9a8c9; }
+      #font-panel {
+        position: fixed;
+        z-index: 9999;
+        background: var(--card-bg, #21252b);
+        border: 1.5px solid rgba(128,128,128,0.2);
+        border-radius: 16px;
+        padding: 8px;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 -4px 32px rgba(0,0,0,0.3);
+        min-width: 150px;
+      }
+      #font-panel.open { display: flex; }
+      .font-option {
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+        color: var(--sidebar-muted-color, #aaa);
+        border: none;
+        background: transparent;
+        text-align: left;
+      }
+      .font-option:hover { background: rgba(249,168,201,0.12); color: #f9a8c9; }
+      .font-option.active { color: #f472b6; background: rgba(244,114,182,0.1); }
     </style>
 
+    <!-- 字体面板 -->
+    <div id="font-panel">
+      <button class="font-option active" data-font="serif" style="font-family:'Source Han Serif SC',serif">思源宋体</button>
+      <button class="font-option" data-font="douyin" style="font-family:'DouyinSans',sans-serif">抖音美好体</button>
+      <button class="font-option" data-font="maple" style="font-family:'Maple Mono NF CN',monospace">Maple Mono</button>
+      <button class="font-option" data-font="system" style="font-family:system-ui,sans-serif">系统默认</button>
+    </div>
+    <!-- 字体切换按钮 -->
+    <div id="font-wrap">
+      <button id="font-switcher-btn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+        <span id="font-btn-label">思源宋体</span>
+      </button>
+    </div>
+
     <div id="lang-panel">
-      <button class="lang-option active" data-lang="zh">🇨🇳 中文</button>
+      <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
       <button class="lang-option" data-lang="en">🇬🇧 English</button>
       <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
       <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
@@ -213,7 +279,7 @@ body, html {
     <div id="lang-wrap">
       <button id="lang-switcher-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-        <span id="lang-btn-label">中文</span>
+        <span id="lang-btn-label">简体中文</span>
       </button>
     </div>
     <script>
@@ -289,9 +355,57 @@ body, html {
             var divs=sidebar.querySelectorAll('div');
             bottom=divs[divs.length-1];
           }
+          sidebar.insertBefore(document.getElementById('font-wrap'),bottom);
           sidebar.insertBefore(wrap,bottom);
         }
         if(cur!=='zh')applyLang(cur);
+      });
+
+      /* ══════════════════════════════
+         字体切换器
+      ══════════════════════════════ */
+      var fonts=[
+        {key:'serif',  label:'思源宋体',  family:'"Source Han Serif SC","Source Han Serif",serif', css:'https://fontsapi.zeoseven.com/285/main/result.css'},
+        {key:'douyin', label:'抖音美好体', family:'"DouyinSans",sans-serif',                        css:'https://fontsapi.zeoseven.com/84/main/result.css'},
+        {key:'maple',  label:'Maple Mono', family:'"Maple Mono NF CN",monospace',                   css:'https://fontsapi.zeoseven.com/442/main/result.css'},
+        {key:'system', label:'系统默认',   family:'system-ui,-apple-system,sans-serif',             css:null}
+      ];
+      var loadedCSS={};
+      function loadFontCSS(url){
+        if(!url||loadedCSS[url])return;
+        loadedCSS[url]=true;
+        var l=document.createElement('link');
+        l.rel='stylesheet';l.href=url;
+        document.head.appendChild(l);
+      }
+      var curFont=localStorage.getItem('chirpy-font')||'serif';
+      loadFontCSS('https://fontsapi.zeoseven.com/285/main/result.css');
+      function applyFont(key){
+        var f=fonts.find(function(x){return x.key===key;});
+        if(!f)return;
+        if(f.css)loadFontCSS(f.css);
+        var styleTag=document.getElementById('_font_override_style');
+        if(!styleTag){styleTag=document.createElement('style');styleTag.id='_font_override_style';document.head.appendChild(styleTag);}
+        styleTag.textContent='body,html{font-family:'+f.family+' !important;}';
+        document.querySelectorAll('.font-option').forEach(function(b){b.classList.toggle('active',b.dataset.font===key);});
+        var lbl=document.getElementById('font-btn-label');
+        if(lbl)lbl.textContent=f.label;
+        curFont=key;localStorage.setItem('chirpy-font',key);
+      }
+      applyFont(curFont);
+      var fontPanel=document.getElementById('font-panel');
+      var fontBtn=document.getElementById('font-switcher-btn');
+      fontBtn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var r=fontBtn.getBoundingClientRect();
+        fontPanel.style.left=r.left+'px';
+        fontPanel.style.bottom=(window.innerHeight-r.top+8)+'px';
+        fontPanel.classList.toggle('open');
+        document.getElementById('lang-panel').classList.remove('open');
+      });
+      fontPanel.addEventListener('click',function(e){e.stopPropagation();});
+      document.querySelectorAll('.font-option').forEach(function(opt){
+        opt.addEventListener('click',function(){applyFont(opt.dataset.font);fontPanel.classList.remove('open');});
       });
     })();
     </script>
@@ -309,123 +423,4 @@ body, #main-wrapper, #main-wrapper .container, main {
 }
 html[data-mode="dark"] body,
 html[data-mode="dark"] #main-wrapper,
-html[data-mode="dark"] #main-wrapper .container,
-html[data-mode="dark"] main {
-  background-color: #1e0f18 !important;
-}
-#tail-wrapper, footer, #footer {
-  background-color: transparent !important;
-}
-.card-wrapper.card,
-.card-wrapper {
-  background-color: rgba(173,216,255,0.18) !important;
-  border-color: rgba(100,180,255,0.25) !important;
-}
-.card-wrapper.card:hover,
-.card-wrapper:hover {
-  background-color: rgba(173,216,255,0.35) !important;
-  transform: translateY(-2px);
-  transition: all 0.2s;
-}
-html[data-mode="dark"] body,
-html[data-mode="dark"] #main-wrapper,
-html[data-mode="dark"] #main-wrapper .container,
-html[data-mode="dark"] main {
-  background-color: #1e0f18 !important;
-}
-html[data-mode="dark"] .card-wrapper.card,
-html[data-mode="dark"] .card-wrapper {
-  background-color: rgba(249,168,201,0.1) !important;
-  border-color: rgba(249,168,201,0.2) !important;
-}
-#read-progress-track {
-  position: fixed;
-  right: 0;
-  top: 0;
-  width: 6px;
-  height: 100vh;
-  background: rgba(128,128,128,0.12);
-  z-index: 9998;
-  display: none;
-}
-#read-progress-bar {
-  width: 100%;
-  height: 0%;
-  background: linear-gradient(180deg,
-    #55CDFC 0%,
-    #F7A8B8 40%,
-    #FFFFFF 60%,
-    #F7A8B8 80%,
-    #55CDFC 100%
-  );
-  border-radius: 0 0 4px 4px;
-  transition: height 0.08s linear;
-  position: relative;
-}
-#read-progress-icon {
-  position: absolute;
-  bottom: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  line-height: 1;
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
-  pointer-events: none;
-  transition: bottom 0.08s linear;
-}
-</style>
-<script>
-(function(){
-  var track=document.getElementById('read-progress-track');
-  var bar=document.getElementById('read-progress-bar');
-  if(track&&bar&&document.body.classList.contains('post-layout')){
-    track.style.display='block';
-    window.addEventListener('scroll',function(){
-      var scrolled=document.documentElement.scrollTop||document.body.scrollTop;
-      var total=document.documentElement.scrollHeight-window.innerHeight;
-      bar.style.height=(total>0?Math.min(100,scrolled/total*100):0)+'%';
-    },{passive:true});
-  }
-})();
-(function(){
-  document.addEventListener('click',function(e){
-    var a=e.target.closest('a');
-    if(!a)return;
-    var href=a.getAttribute('href');
-    if(!href||href.startsWith('#')||href.startsWith('javascript')||a.target==='_blank')return;
-    if(href.startsWith('http')&&!href.includes(location.hostname))return;
-    e.preventDefault();
-    var wrapper=document.getElementById('main-wrapper');
-    if(wrapper)wrapper.classList.add('page-fade-out');
-    setTimeout(function(){location.href=href;},280);
-  });
-})();
-(function(){
-  var post=document.querySelector('#post-wrapper,article,.post-content');
-  if(!post)return;
-  var els=post.querySelectorAll('h1,h2,h3,h4,p,ul,ol,blockquote,pre,table,img,.card,hr');
-  els.forEach(function(el,i){
-    el.style.opacity='0';
-    el.style.transform='translateY(22px)';
-    el.style.transition='opacity 0.5s ease, transform 0.5s ease';
-    el.style.transitionDelay=Math.min(i*40,400)+'ms';
-  });
-  var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){
-        entry.target.style.opacity='1';
-        entry.target.style.transform='translateY(0)';
-        entry.target.addEventListener('transitionend',function(){
-          entry.target.style.transitionDelay='';
-        },{once:true});
-        io.unobserve(entry.target);
-      }
-    });
-  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
-  els.forEach(function(el){io.observe(el);});
-})();
-</script>
-</body>
-</html>
-
-
+html[data-mode="dark"] #main-wrapper .cont
