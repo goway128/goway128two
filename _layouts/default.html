@@ -12,12 +12,73 @@ layout: compress
   {% capture prefer_mode %}data-mode="{{ site.theme_mode }}"{% endcapture %}
 {% endif %}
 
+<!-- `site.alt_lang` can specify a language different from the UI -->
 <html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}" {{ prefer_mode }}>
   {% include head.html lang=lang %}
   
 <script src="{{ '/assets/js/auto-scroll-animation.js' | relative_url }}"></script>
+
+<style>
+@keyframes pageSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#main-wrapper {
+  animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+#sidebar {
+  z-index: 99 !important;
+  background: linear-gradient(180deg,
+    #b3e8fb 0%,
+    #c9effe 40%,
+    #ddf4ff 60%,
+    #c9effe 80%,
+    #b3e8fb 100%
+  ) !important;
+}
+[data-mode="dark"] #sidebar {
+  background: #f9c8d8 !important;
+}
+#sidebar .site-title a,
+#sidebar .site-subtitle,
+#sidebar nav a,
+#sidebar .sidebar-bottom a,
+#sidebar .sidebar-bottom span,
+#sidebar nav span {
+  color: #1a3a4a !important;
+}
+[data-mode="dark"] #sidebar .site-title a,
+[data-mode="dark"] #sidebar .site-subtitle,
+[data-mode="dark"] #sidebar nav a,
+[data-mode="dark"] #sidebar .sidebar-bottom a,
+[data-mode="dark"] #sidebar .sidebar-bottom span,
+[data-mode="dark"] #sidebar nav span {
+  color: #4a1a2e !important;
+}
+#sidebar li.active a,
+#sidebar .nav-link.active {
+  background: rgba(255,255,255,0.55) !important;
+  border-radius: 8px !important;
+}
+#sidebar li.active span,
+#sidebar li.active a span {
+  color: #0a6a8a !important;
+  font-weight: 700 !important;
+}
+[data-mode="dark"] #sidebar li.active a,
+[data-mode="dark"] #sidebar .nav-link.active {
+  background: rgba(255,255,255,0.45) !important;
+  border-radius: 8px !important;
+}
+[data-mode="dark"] #sidebar li.active span,
+[data-mode="dark"] #sidebar li.active a span {
+  color: #7a1a3e !important;
+  font-weight: 700 !important;
+}
+</style>
   
-  <body>
+  <body{% if page.layout == "post" %} class="post-layout"{% endif %}>
+    <div id="read-progress-track"><div id="read-progress-bar"><span id="read-progress-icon">🍥</span></div></div>
     {% include sidebar.html lang=lang %}
 
     <div id="main-wrapper" class="d-flex justify-content-center">
@@ -33,11 +94,13 @@ layout: compress
             {% endif %}
           </main>
 
+          <!-- panel -->
           <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
             <div class="access">
               {% include_cached update-list.html lang=lang %}
               {% include_cached trending-tags.html lang=lang %}
             </div>
+
             {% for _include in layout.panel_includes %}
               {% assign _include_path = _include | append: '.html' %}
               {% include {{ _include_path }} lang=lang %}
@@ -46,11 +109,13 @@ layout: compress
         </div>
 
         <div class="row">
+          <!-- tail -->
           <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
             {% for _include in layout.tail_includes %}
               {% assign _include_path = _include | append: '.html' %}
               {% include {{ _include_path }} lang=lang %}
             {% endfor %}
+
             {% include_cached footer.html lang=lang %}
           </div>
         </div>
@@ -71,6 +136,8 @@ layout: compress
       {% include_cached notification.html lang=lang %}
     {% endif %}
 
+    <!-- Embedded scripts -->
+
     {% for _include in layout.script_includes %}
       {% assign _include_path = _include | append: '.html' %}
       {% include {{ _include_path }} %}
@@ -79,48 +146,61 @@ layout: compress
     {% include_cached search-loader.html lang=lang %}
 
     <style>
-      /* 语言切换器 */
-      #lang-wrap{padding:0 1rem 0.8rem;width:100%}
-      #lang-switcher-btn{width:100%;padding:7px 14px;border-radius:999px;border:1.5px solid rgba(128,128,128,0.25);background:transparent;color:var(--sidebar-muted-color,#aaa);font-size:0.78rem;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.2s;display:flex;align-items:center;gap:6px}
-      #lang-switcher-btn:hover{border-color:#f9a8c9;color:#f9a8c9}
-      #lang-panel.open{display:flex}
-      .lang-option{padding:8px 16px;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:background 0.15s,color 0.15s;color:var(--sidebar-muted-color,#aaa);border:none;background:transparent;text-align:left}
-      .lang-option:hover{background:rgba(249,168,201,0.12);color:#f9a8c9}
-      .lang-option.active{color:#f472b6;background:rgba(244,114,182,0.1)}
-      /* 溢出修复 */
-      html,body{overflow-x:hidden!important;max-width:100vw}
-      /* 粒子画布 */
-      #particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99998}
-      /* 进场动画 */
-      body{animation:page-enter 0.4s ease both}
-      @keyframes page-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-      /* overlay 遮罩 */
-      #sidebar-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;transition:opacity 0.3s ease}
-      #sidebar-overlay.show{display:block;opacity:1}
-      /* 移动端侧边栏 overlay 抽屉 */
-      @media(max-width:991px){
-        #sidebar{position:fixed!important;top:0!important;left:0!important;height:100dvh!important;width:280px!important;z-index:10000!important;transform:translateX(-100%)!important;transition:transform 0.32s cubic-bezier(0.4,0,0.2,1)!important;overflow-y:auto!important;overflow-x:hidden!important;box-shadow:none!important}
-        #sidebar.sidebar-open{transform:translateX(0)!important;box-shadow:4px 0 40px rgba(0,0,0,0.4)!important}
-        #main-wrapper{margin-left:0!important;width:100%!important;max-width:100vw!important}
+      #lang-wrap {
+        padding: 0 1rem 0.8rem;
+        width: 100%;
       }
-      /* 桌面端确保侧边栏正常显示，不被移动端样式影响 */
-      @media(min-width:992px){
-        #sidebar{position:sticky!important;transform:none!important;height:100vh!important;overflow-y:auto!important}
+      #lang-switcher-btn {
+        width: 100%;
+        padding: 7px 14px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(128,128,128,0.25);
+        background: transparent;
+        color: var(--sidebar-muted-color, #aaa);
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
       }
-      /* 语言面板定位修正：相对按钮位置弹出，不依赖滚动 */
-      #lang-wrap{position:relative}
-      #lang-panel{position:fixed;z-index:10001;background:var(--card-bg,#21252b);border:1.5px solid rgba(128,128,128,0.2);border-radius:16px;padding:8px;display:none;flex-direction:column;gap:4px;box-shadow:0 -4px 32px rgba(0,0,0,0.3);min-width:130px}
+      #lang-switcher-btn:hover { border-color: #f9a8c9; color: #f9a8c9; }
+      #lang-panel {
+        position: fixed;
+        z-index: 9999;
+        background: var(--card-bg, #21252b);
+        border: 1.5px solid rgba(128,128,128,0.2);
+        border-radius: 16px;
+        padding: 8px;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 -4px 32px rgba(0,0,0,0.3);
+        min-width: 130px;
+      }
+      #lang-panel.open { display: flex; }
+      .lang-option {
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+        color: var(--sidebar-muted-color, #aaa);
+        border: none;
+        background: transparent;
+        text-align: left;
+      }
+      .lang-option:hover { background: rgba(249,168,201,0.12); color: #f9a8c9; }
+      .lang-option.active { color: #f472b6; background: rgba(244,114,182,0.1); }
     </style>
-
-    <canvas id="particle-canvas"></canvas>
-    <div id="sidebar-overlay"></div>
 
     <div id="lang-panel">
       <button class="lang-option active" data-lang="zh">🇨🇳 简体中文</button>
-      <button class="lang-option" data-lang="tw">🇹🇼 繁體中文</button>
       <button class="lang-option" data-lang="en">🇬🇧 English</button>
       <button class="lang-option" data-lang="ja">🇯🇵 日本語</button>
-      <button class="lang-option" data-lang="ru">🇷🇺 Русский</button>
       <button class="lang-option" data-lang="fr">🇫🇷 Français</button>
       <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
       <button class="lang-option" data-lang="es">🇪🇸 Español</button>
@@ -128,108 +208,193 @@ layout: compress
     <div id="lang-wrap">
       <button id="lang-switcher-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-        <span id="lang-btn-label">简中</span>
+        <span id="lang-btn-label">简体中文</span>
       </button>
     </div>
-
     <script>
-    /* 粒子 */
-    (function(){
-      var canvas=document.getElementById('particle-canvas'),ctx=canvas.getContext('2d'),pts=[];
-      var C=['#55CDFC','#F7A8B8','#fff','#f9a8c9','#a855f7','#f472b6'];
-      function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
-      resize();window.addEventListener('resize',resize);
-      function spawn(x,y){pts.push({x:x,y:y,vx:(Math.random()-.5)*2.5,vy:(Math.random()-.5)*2.5-1,r:Math.random()*3+1.5,alpha:1,color:C[Math.floor(Math.random()*C.length)],decay:Math.random()*.02+.015})}
-      window.addEventListener('mousemove',function(e){for(var i=0;i<5;i++)spawn(e.clientX,e.clientY)});
-      window.addEventListener('touchmove',function(e){var t=e.touches[0];for(var i=0;i<5;i++)spawn(t.clientX,t.clientY)},{passive:true});
-      (function loop(){ctx.clearRect(0,0,canvas.width,canvas.height);for(var i=pts.length-1;i>=0;i--){var p=pts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.alpha-=p.decay;if(p.alpha<=0){pts.splice(i,1);continue}ctx.save();ctx.globalAlpha=p.alpha;ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore()}requestAnimationFrame(loop)})();
-    })();
-
     (function(){
       var i18n={
-        zh:{'文章列表':'文章列表','分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页','起始页':'起始页','友链':'友链','作者':'作者','发表于':'发表于','更新于':'更新于','字':'字','次浏览':'次浏览','分钟':'分钟','阅读':'阅读','相关文章':'相关文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','文章':'文章','已复制！':'已复制！','复制链接':'复制链接','链接已复制！':'链接已复制！','本文由作者按照':'本文由作者按照','进行授权':'进行授权','搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果','找到':'找到','条结果':'条结果','最近更新':'最近更新','热门标签':'热门标签','目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新','篇文章':'篇文章','云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向','心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','日常':'日常','关于本站':'关于本站','图床':'图床','开发':'开发','AI服务':'AI服务','16图床':'16图床','路过图床':'路过图床','测速':'测速','ip纯净度':'ip纯净度','dns查询':'dns查询','lcon图标':'lcon图标','10点官网':'10点官网','Some rights reserved.':'Some rights reserved.'},
-        tw:{'文章列表':'文章列表','分类':'分類','标签':'標籤','归档':'歸檔','关于':'關於','首页':'首頁','起始页':'起始頁','友链':'友鏈','作者':'作者','发表于':'發表於','更新于':'更新於','字':'字','次浏览':'次瀏覽','分钟':'分鐘','阅读':'閱讀','相关文章':'相關文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','文章':'文章','已复制！':'已複製！','复制链接':'複製連結','链接已复制！':'連結已複製！','本文由作者按照':'本文由作者按照','进行授权':'進行授權','搜索':'搜尋','取消':'取消','没有找到相关结果':'找不到相關結果','找到':'找到','条结果':'筆結果','最近更新':'最近更新','热门标签':'熱門標籤','目录':'目錄','发现新版本的内容。':'發現新版本的內容。','更新':'更新','篇文章':'篇文章','云服务与厂商':'雲服務與廠商','多元性别/取向':'多元性別/取向','心理疾病':'心理疾病','素材':'素材','药品':'藥品','杂谈':'雜談','日常':'日常','关于本站':'關於本站','图床':'圖床','开发':'開發','AI服务':'AI服務','16图床':'16圖床','路过图床':'路過圖床','测速':'測速','ip纯净度':'IP純淨度','dns查询':'DNS查詢','lcon图标':'圖示','10点官网':'10點官網','Some rights reserved.':'Some rights reserved.'},
-        en:{'文章列表':'Posts','分类':'Categories','标签':'Tags','归档':'Archives','关于':'About','首页':'Home','起始页':'Start','友链':'Friends','作者':'Author','发表于':'Posted','更新于':'Updated','字':'words','次浏览':'views','分钟':'min','阅读':'read','相关文章':'Related','分享':'Share','下一篇':'Next','上一篇':'Prev','文章':'Posts','已复制！':'Copied!','复制链接':'Copy Link','链接已复制！':'Link copied!','本文由作者按照':'Licensed under','进行授权':'by the author','搜索':'Search','取消':'Cancel','没有找到相关结果':'No results found','找到':'Found','条结果':'results','最近更新':'Recently Updated','热门标签':'Trending Tags','目录':'Contents','发现新版本的内容。':'New content available.','更新':'Update','篇文章':'articles','云服务与厂商':'Cloud Services','多元性别/取向':'LGBTQ+','心理疾病':'Mental Health','素材':'Resources','药品':'Medications','杂谈':'Misc','日常':'Daily','关于本站':'About This Site','图床':'Image Hosting','开发':'Dev Tools','AI服务':'AI Services','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Speed Test','ip纯净度':'IP Check','dns查询':'DNS Lookup','lcon图标':'Icons','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
-        ja:{'文章列表':'記事一覧','分类':'カテゴリ','标签':'タグ','归档':'アーカイブ','关于':'概要','首页':'ホーム','起始页':'スタート','友链':'リンク集','作者':'著者','发表于':'投稿日','更新于':'更新日','字':'文字','次浏览':'閲覧','分钟':'分','阅读':'読む','相关文章':'関連記事','分享':'共有','下一篇':'次へ','上一篇':'前へ','文章':'記事','已复制！':'コピー完了!','复制链接':'リンクをコピー','链接已复制！':'コピーしました!','本文由作者按照':'ライセンス','进行授权':'で公開','搜索':'検索','取消':'キャンセル','没有找到相关结果':'結果なし','找到':'見つかりました','条结果':'件','最近更新':'最近の更新','热门标签':'人気タグ','目录':'目次','发现新版本的内容。':'新しいコンテンツ。','更新':'更新','篇文章':'本','云服务与厂商':'クラウドサービス','多元性别/取向':'LGBTQ+','心理疾病':'心の病気','素材':'素材','药品':'医薬品','杂谈':'雑談','日常':'日常','关于本站':'このサイトについて','图床':'画像ホスト','开发':'開発ツール','AI服务':'AIサービス','16图床':'16 Hosting','路过图床':'Imgchr','测速':'速度テスト','ip纯净度':'IP確認','dns查询':'DNS検索','lcon图标':'アイコン','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
-        ru:{'文章列表':'Статьи','分类':'Категории','标签':'Теги','归档':'Архив','关于':'О сайте','首页':'Главная','起始页':'Начало','友链':'Друзья','作者':'Автор','发表于':'Опубликовано','更新于':'Обновлено','字':'слов','次浏览':'просм.','分钟':'мин','阅读':'читать','相关文章':'Похожие статьи','分享':'Поделиться','下一篇':'Следующая','上一篇':'Предыдущая','文章':'Статьи','已复制！':'Скопировано!','复制链接':'Копировать ссылку','链接已复制！':'Ссылка скопирована!','本文由作者按照':'Лицензия','进行授权':'от автора','搜索':'Поиск','取消':'Отмена','没有找到相关结果':'Ничего не найдено','找到':'Найдено','条结果':'результатов','最近更新':'Недавно обновлено','热门标签':'Популярные теги','目录':'Содержание','发现新版本的内容。':'Доступен новый контент.','更新':'Обновить','篇文章':'статей','云服务与厂商':'Облачные сервисы','多元性别/取向':'ЛГБТК+','心理疾病':'Психическое здоровье','素材':'Ресурсы','药品':'Лекарства','杂谈':'Разное','日常':'Повседневное','关于本站':'Об этом сайте','图床':'Хостинг фото','开发':'Инструменты','AI服务':'ИИ-сервисы','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Тест скорости','ip纯净度':'Проверка IP','dns查询':'DNS-запрос','lcon图标':'Иконки','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
-        fr:{'文章列表':'Articles','分类':'Catégories','标签':'Tags','归档':'Archives','关于':'À propos','首页':'Accueil','起始页':'Début','友链':'Liens amis','作者':'Auteur','发表于':'Publié','更新于':'Mis à jour','字':'mots','次浏览':'vues','分钟':'min','阅读':'lire','相关文章':'Articles liés','分享':'Partager','下一篇':'Suivant','上一篇':'Précédent','文章':'Articles','已复制！':'Copié!','复制链接':'Copier le lien','链接已复制！':'Lien copié!','本文由作者按照':'Licence','进行授权':"par l'auteur",'搜索':'Rechercher','取消':'Annuler','没有找到相关结果':'Aucun résultat','找到':'Trouvé','条结果':'résultats','最近更新':'Récemment mis à jour','热门标签':'Tags populaires','目录':'Sommaire','发现新版本的内容。':'Nouveau contenu.','更新':'Mettre à jour','篇文章':'articles','云服务与厂商':'Services Cloud','多元性别/取向':'LGBTQ+','心理疾病':'Santé mentale','素材':'Ressources','药品':'Médicaments','杂谈':'Divers','日常':'Quotidien','关于本站':'À propos du site','图床':'Hébergement','开发':'Outils Dev','AI服务':'Services IA','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Test de vitesse','ip纯净度':'Vérif IP','dns查询':'DNS Lookup','lcon图标':'Icônes','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
-        de:{'文章列表':'Beiträge','分类':'Kategorien','标签':'Tags','归档':'Archiv','关于':'Über','首页':'Startseite','起始页':'Start','友链':'Freunde','作者':'Autor','发表于':'Veröffentlicht','更新于':'Aktualisiert','字':'Wörter','次浏览':'Aufrufe','分钟':'Min','阅读':'Lesen','相关文章':'Ähnliche Beiträge','分享':'Teilen','下一篇':'Weiter','上一篇':'Zurück','文章':'Beiträge','已复制！':'Kopiert!','复制链接':'Link kopieren','链接已复制！':'Link kopiert!','本文由作者按照':'Lizenz','进行授权':'vom Autor','搜索':'Suchen','取消':'Abbrechen','没有找到相关结果':'Keine Ergebnisse','找到':'Gefunden','条结果':'Ergebnisse','最近更新':'Zuletzt aktualisiert','热门标签':'Beliebte Tags','目录':'Inhalt','发现新版本的内容。':'Neue Inhalte.','更新':'Aktualisieren','篇文章':'Artikel','云服务与厂商':'Cloud-Dienste','多元性别/取向':'LGBTQ+','心理疾病':'Psychische Gesundheit','素材':'Ressourcen','药品':'Medikamente','杂谈':'Verschiedenes','日常':'Alltag','关于本站':'Über diese Seite','图床':'Bild-Hosting','开发':'Dev-Tools','AI服务':'KI-Dienste','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Speedtest','ip纯净度':'IP-Check','dns查询':'DNS-Abfrage','lcon图标':'Icons','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'},
-        es:{'文章列表':'Artículos','分类':'Categorías','标签':'Etiquetas','归档':'Archivo','关于':'Acerca de','首页':'Inicio','起始页':'Inicio','友链':'Amigos','作者':'Autor','发表于':'Publicado','更新于':'Actualizado','字':'palabras','次浏览':'vistas','分钟':'min','阅读':'leer','相关文章':'Relacionados','分享':'Compartir','下一篇':'Siguiente','上一篇':'Anterior','文章':'Artículos','已复制！':'¡Copiado!','复制链接':'Copiar enlace','链接已复制！':'¡Enlace copiado!','本文由作者按照':'Licencia','进行授权':'por el autor','搜索':'Buscar','取消':'Cancelar','没有找到相关结果':'Sin resultados','找到':'Encontrado','条结果':'resultados','最近更新':'Actualizado recientemente','热门标签':'Tags populares','目录':'Índice','发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar','篇文章':'artículos','云服务与厂商':'Servicios Cloud','多元性别/取向':'LGBTQ+','心理疾病':'Salud mental','素材':'Recursos','药品':'Medicamentos','杂谈':'Varios','日常':'Cotidiano','关于本站':'Sobre este sitio','图床':'Hosting imágenes','开发':'Herramientas','AI服务':'Servicios IA','16图床':'16 Hosting','路过图床':'Imgchr','测速':'Test de velocidad','ip纯净度':'Check IP','dns查询':'DNS Lookup','lcon图标':'Iconos','10点官网':'10dian AI','Some rights reserved.':'Some rights reserved.'}
+        zh:{'文章列表':'文章列表','云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向','心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页','起始页':'起始页','作者':'作者','发表于':'发表于','更新于':'更新于','字':'字','次浏览':'次浏览','分钟':'分钟','阅读':'阅读','相关文章':'相关文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','已复制！':'已复制！','复制链接':'复制链接','链接已复制！':'链接已复制！','搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果','最近更新':'最近更新','热门标签':'热门标签','目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新','找到':'找到','条结果':'条结果','友链':'友链','篇文章':'篇文章','本文由作者按照':'本文由作者按照','进行授权':'进行授权','文章':'文章','最近更新':'最近更新','相关文章':'相关文章'},
+        en:{'文章列表':'Posts','云服务与厂商':'Cloud Services','多元性别/取向':'Gender & Sexuality','心理疾病':'Mental Health','素材':'Resources','药品':'Medications','杂谈':'Misc','分类':'Categories','标签':'Tags','归档':'Archives','关于':'About','首页':'Home','起始页':'Start','作者':'Author','发表于':'Posted','更新于':'Updated','字':'words','次浏览':'views','分钟':'min','阅读':'read','相关文章':'Related','分享':'Share','下一篇':'Next','上一篇':'Prev','已复制！':'Copied!','复制链接':'Copy Link','链接已复制！':'Link copied!','搜索':'Search','取消':'Cancel','没有找到相关结果':'No results found','最近更新':'Recently Updated','热门标签':'Trending Tags','目录':'Contents','发现新版本的内容。':'New content available.','更新':'Update','找到':'Found','条结果':'results','友链':'Friends','篇文章':'articles','本文由作者按照':'Licensed under','进行授权':'by the author','文章':'Posts'},
+        ja:{'文章列表':'記事一覧','云服务与厂商':'クラウドサービス','多元性别/取向':'ジェンダー','心理疾病':'メンタルヘルス','素材':'素材','药品':'薬品','杂谈':'雑談','分类':'カテゴリ','标签':'タグ','归档':'アーカイブ','关于':'概要','首页':'ホーム','起始页':'スタート','作者':'著者','发表于':'投稿日','更新于':'更新日','字':'文字','次浏览':'閲覧','分钟':'分','阅读':'読む','相关文章':'関連記事','分享':'共有','下一篇':'次へ','上一篇':'前へ','已复制！':'コピー完了!','复制链接':'リンクをコピー','链接已复制！':'コピーしました!','搜索':'検索','取消':'キャンセル','没有找到相关结果':'結果なし','最近更新':'最近の更新','热门标签':'人気タグ','目录':'目次','发现新版本的内容。':'新しいコンテンツ。','更新':'更新','找到':'見つかりました','条结果':'件','友链':'リンク集','篇文章':'本','本文由作者按照':'ライセンス','进行授权':'で公開','文章':'記事'},
+        fr:{'文章列表':'Articles','云服务与厂商':'Services Cloud','多元性别/取向':'Genre & Sexualité','心理疾病':'Santé Mentale','素材':'Ressources','药品':'Médicaments','杂谈':'Divers','分类':'Catégories','标签':'Tags','归档':'Archives','关于':'À propos','首页':'Accueil','起始页':'Début','作者':'Auteur','发表于':'Publié','更新于':'Mis à jour','字':'mots','次浏览':'vues','分钟':'min','阅读':'lire','相关文章':'Articles liés','分享':'Partager','下一篇':'Suivant','上一篇':'Précédent','已复制！':'Copié!','复制链接':'Copier le lien','链接已复制！':'Lien copié!','搜索':'Rechercher','取消':'Annuler','没有找到相关结果':'Aucun résultat','最近更新':'Récemment mis à jour','热门标签':'Tags populaires','目录':'Sommaire','发现新版本的内容。':'Nouveau contenu.','更新':'Mettre à jour','找到':'Trouvé','条结果':'résultats','友链':'Liens amis','篇文章':'articles','本文由作者按照':'Licence','进行授权':'par l\'auteur','文章':'Articles'},
+        de:{'文章列表':'Beiträge','云服务与厂商':'Cloud-Dienste','多元性别/取向':'Gender & Sexualität','心理疾病':'Psychische Gesundheit','素材':'Ressourcen','药品':'Medikamente','杂谈':'Diverses','分类':'Kategorien','标签':'Tags','归档':'Archiv','关于':'Über','首页':'Startseite','起始页':'Start','作者':'Autor','发表于':'Veröffentlicht','更新于':'Aktualisiert','字':'Wörter','次浏览':'Aufrufe','分钟':'Min','阅读':'Lesen','相关文章':'Ähnliche Beiträge','分享':'Teilen','下一篇':'Weiter','上一篇':'Zurück','已复制！':'Kopiert!','复制链接':'Link kopieren','链接已复制！':'Link kopiert!','搜索':'Suchen','取消':'Abbrechen','没有找到相关结果':'Keine Ergebnisse','最近更新':'Zuletzt aktualisiert','热门标签':'Beliebte Tags','目录':'Inhalt','发现新版本的内容。':'Neue Inhalte.','更新':'Aktualisieren','找到':'Gefunden','条结果':'Ergebnisse','友链':'Freunde','篇文章':'Artikel','本文由作者按照':'Lizenz','进行授权':'vom Autor','文章':'Beiträge'},
+        es:{'文章列表':'Artículos','云服务与厂商':'Servicios Cloud','多元性别/取向':'Género y Sexualidad','心理疾病':'Salud Mental','素材':'Recursos','药品':'Medicamentos','杂谈':'Miscelánea','分类':'Categorías','标签':'Etiquetas','归档':'Archivo','关于':'Acerca de','首页':'Inicio','起始页':'Inicio','作者':'Autor','发表于':'Publicado','更新于':'Actualizado','字':'palabras','次浏览':'vistas','分钟':'min','阅读':'leer','相关文章':'Relacionados','分享':'Compartir','下一篇':'Siguiente','上一篇':'Anterior','已复制！':'¡Copiado!','复制链接':'Copiar enlace','链接已复制！':'¡Enlace copiado!','搜索':'Buscar','取消':'Cancelar','没有找到相关结果':'Sin resultados','最近更新':'Actualizado recientemente','热门标签':'Tags populares','目录':'Índice','发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar','找到':'Encontrado','条结果':'resultados','友链':'Amigos','篇文章':'artículos','本文由作者按照':'Licencia','进行授权':'por el autor','文章':'Artículos'}
       };
       var cur=localStorage.getItem('chirpy-lang')||'zh';
       var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
       var SKIP_CLASSES=['post-content','highlight','rouge','language-'];
-      var NO_TRANSLATE={'保留所有权利':1};
-      function shouldSkip(node){var p=node.parentElement;while(p){if(SKIP_TAGS[p.tagName])return true;for(var i=0;i<SKIP_CLASSES.length;i++){if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true}p=p.parentElement}return false}
+      function shouldSkip(node){
+        var p=node.parentElement;
+        while(p){
+          if(SKIP_TAGS[p.tagName])return true;
+          for(var i=0;i<SKIP_CLASSES.length;i++){
+            if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true;
+          }
+          p=p.parentElement;
+        }
+        return false;
+      }
       function applyLang(lang){
         var map=i18n[lang];
-        var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false),node;
-        while((node=walker.nextNode())){var raw=node.nodeValue,txt=raw.trim();if(!txt||txt.length<2)continue;if(shouldSkip(node))continue;if(NO_TRANSLATE[txt])continue;if(!node._zhKey)node._zhKey=txt;if(map[node._zhKey])node.nodeValue=raw.replace(node._zhKey,map[node._zhKey])}
+        var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
+        var node;
+        while((node=walker.nextNode())){
+          var raw=node.nodeValue;
+          var txt=raw.trim();
+          if(!txt||txt.length<2)continue;
+          if(shouldSkip(node))continue;
+          if(!node._zhKey)node._zhKey=txt;
+          if(map[node._zhKey])node.nodeValue=raw.replace(node._zhKey,map[node._zhKey]);
+        }
         var inp=document.querySelector('input[type="search"],#search-input');
-        if(inp){if(!inp._zhPh)inp._zhPh=inp.placeholder;if(map[inp._zhPh])inp.placeholder=map[inp._zhPh]}
-        document.querySelectorAll('[data-bs-original-title]').forEach(function(el){if(!el._zhTitle)el._zhTitle=el.getAttribute('data-bs-original-title');if(map[el._zhTitle])el.setAttribute('data-bs-original-title',map[el._zhTitle])});
-        var labels={zh:'简中',tw:'繁中',en:'EN',ja:'日本語',ru:'RU',fr:'FR',de:'DE',es:'ES'};
+        if(inp){
+          if(!inp._zhPh)inp._zhPh=inp.placeholder;
+          if(map[inp._zhPh])inp.placeholder=map[inp._zhPh];
+        }
+        document.querySelectorAll('[data-bs-original-title]').forEach(function(el){
+          if(!el._zhTitle)el._zhTitle=el.getAttribute('data-bs-original-title');
+          if(map[el._zhTitle])el.setAttribute('data-bs-original-title',map[el._zhTitle]);
+        });
+        var labels={zh:'简中',en:'EN',ja:'日本語',fr:'FR',de:'DE',es:'ES'};
         document.getElementById('lang-btn-label').textContent=labels[lang]||lang;
-        document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang)});
+        document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang);});
         cur=lang;localStorage.setItem('chirpy-lang',lang);
       }
+      var panel=document.getElementById('lang-panel');
+      var wrap=document.getElementById('lang-wrap');
+      var btn=document.getElementById('lang-switcher-btn');
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var r=btn.getBoundingClientRect();
+        panel.style.left=r.left+'px';
+        panel.style.bottom=(window.innerHeight-r.top+8)+'px';
+        panel.classList.toggle('open');
+      });
+      document.addEventListener('click',function(){panel.classList.remove('open');});
+      panel.addEventListener('click',function(e){e.stopPropagation();});
+      document.querySelectorAll('.lang-option').forEach(function(opt){
+        opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open');});
+      });
       window.addEventListener('DOMContentLoaded',function(){
-        /* ── overlay 侧边栏 ── */
         var sidebar=document.getElementById('sidebar');
-        var overlay=document.getElementById('sidebar-overlay');
-        if(sidebar&&overlay){
-          function isMobile(){return window.innerWidth<=991;}
-          function openSB(){sidebar.classList.add('sidebar-open');overlay.classList.add('show');document.body.style.overflow='hidden';}
-          function closeSB(){sidebar.classList.remove('sidebar-open');overlay.classList.remove('show');document.body.style.overflow='';}
-          overlay.addEventListener('click',closeSB);
-          document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSB();});
-          window.addEventListener('resize',function(){if(!isMobile())closeSB();});
-          var hb=document.getElementById('sidebar-trigger')||document.getElementById('sidebar-toggle')||document.querySelector('[data-bs-target="#sidebar"]')||document.querySelector('button[class*="sidebar"]');
-          if(hb){var hbClone=hb.cloneNode(true);hb.parentNode.replaceChild(hbClone,hb);hbClone.addEventListener('click',function(e){if(!isMobile())return;e.preventDefault();e.stopPropagation();sidebar.classList.contains('sidebar-open')?closeSB():openSB();});}
-          var mask=document.getElementById('mask');
-          if(mask)mask.addEventListener('click',function(){if(isMobile())closeSB();});
+        if(sidebar){
+          var bottom=sidebar.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');
+          if(!bottom){
+            var divs=sidebar.querySelectorAll('div');
+            bottom=divs[divs.length-1];
+          }
+          sidebar.insertBefore(wrap,bottom);
         }
-        /* ── 语言切换器 ── */
-        var panel=document.getElementById('lang-panel'),wrap=document.getElementById('lang-wrap'),btn=document.getElementById('lang-switcher-btn');
-        btn.addEventListener('click',function(e){
-          e.stopPropagation();
-          var r=btn.getBoundingClientRect();
-          panel.style.left=r.left+'px';
-          panel.style.bottom=(window.innerHeight-r.top+8)+'px';
-          panel.style.top='auto';
-          panel.classList.toggle('open');
-        });
-        document.addEventListener('click',function(){panel.classList.remove('open')});
-        panel.addEventListener('click',function(e){e.stopPropagation()});
-        document.querySelectorAll('.lang-option').forEach(function(opt){opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open')})});
-        var sb=document.getElementById('sidebar');
-        if(sb){var bottom=sb.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');if(!bottom){var divs=sb.querySelectorAll('div');bottom=divs[divs.length-1]}sb.insertBefore(wrap,bottom)}
         if(cur!=='zh')applyLang(cur);
       });
     })();
+    </script>
 
-    /* ── 文章滚动入场动画（纯 JS，不改任何 CSS 文件）── */
-    (function(){
-      /* 只在文章页运行 */
-      var post = document.querySelector('#post-wrapper,article,.post-content');
-      if(!post) return;
-
-      /* 选取文章内需要动画的元素 */
-      var selectors = [
-        'h1,h2,h3,h4',
-        'p',
-        'ul,ol',
-        'blockquote',
-        'pre',
-        'table',
-        'img',
-        '.card',
-        'hr'
-      ].join(',');
-
-      var els = post.querySelectorAll(selectors);
-
-      /* 初始状态：透明 + 向下偏移，用 JS 直接写 style */
-      els.forEach(function(el, i){
-        el.style.opacity = '0';
-        el.style.transform =
+  <style>
+.page-fade-out {
+  animation: pageFadeOut 0.3s ease forwards !important;
+}
+@keyframes pageFadeOut {
+  from { opacity:1; transform:translateY(0); }
+  to   { opacity:0; transform:translateY(-12px); }
+}
+body, #main-wrapper, #main-wrapper .container, main {
+  background-color: #fce8f0 !important;
+}
+html[data-mode="dark"] body,
+html[data-mode="dark"] #main-wrapper,
+html[data-mode="dark"] #main-wrapper .container,
+html[data-mode="dark"] main {
+  background-color: #1e0f18 !important;
+}
+#tail-wrapper, footer, #footer {
+  background-color: transparent !important;
+}
+.card-wrapper.card,
+.card-wrapper {
+  background-color: rgba(173,216,255,0.18) !important;
+  border-color: rgba(100,180,255,0.25) !important;
+}
+.card-wrapper.card:hover,
+.card-wrapper:hover {
+  background-color: rgba(173,216,255,0.35) !important;
+  transform: translateY(-2px);
+  transition: all 0.2s;
+}
+html[data-mode="dark"] body,
+html[data-mode="dark"] #main-wrapper,
+html[data-mode="dark"] #main-wrapper .container,
+html[data-mode="dark"] main {
+  background-color: #1e0f18 !important;
+}
+html[data-mode="dark"] .card-wrapper.card,
+html[data-mode="dark"] .card-wrapper {
+  background-color: rgba(249,168,201,0.1) !important;
+  border-color: rgba(249,168,201,0.2) !important;
+}
+#read-progress-track {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 100vh;
+  background: rgba(128,128,128,0.12);
+  z-index: 9998;
+  display: none;
+}
+#read-progress-bar {
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(180deg,
+    #55CDFC 0%,
+    #F7A8B8 40%,
+    #FFFFFF 60%,
+    #F7A8B8 80%,
+    #55CDFC 100%
+  );
+  border-radius: 0 0 4px 4px;
+  transition: height 0.08s linear;
+  position: relative;
+}
+#read-progress-icon {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+  pointer-events: none;
+  transition: bottom 0.08s linear;
+}
+</style>
+<script>
+(function(){
+  var track=document.getElementById('read-progress-track');
+  var bar=document.getElementById('read-progress-bar');
+  if(track&&bar&&document.body.classList.contains('post-layout')){
+    track.style.display='block';
+    window.addEventListener('scroll',function(){
+      var scrolled=document.documentElement.scrollTop||document.body.scrollTop;
+      var total=document.documentElement.scrollHeight-window.innerHeight;
+      bar.style.height=(total>0?Math.min(100,scrolled/total*100):0)+'%';
+    },{passive:true});
+  }
+})();
+(function(){
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a');
+    if(!a)return;
+    var href=a.getAttribute('href');
+    if(!href||href.startsWith('#')||href.startsWith('javascript')||a.target==='_blank')return;
+    if(href.startsWith('http')&&!href.includes(location.hostname))return;
+    e.preventDefault();
+    var wrapper=document.getElementById('main-wrapper');
+    if(wrapper)wrapper.classList.add('page-fade-out');
+    setTimeout(function(){location.href=href;},280);
+  });
+})();
+</script>
+</body>
+</html>
