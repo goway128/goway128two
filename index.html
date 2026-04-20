@@ -39,70 +39,203 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 <!-- 主体：竖版布局 -->
 <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:calc(100vh - 80px);padding:20px 16px 48px;gap:0;">
 
-  <!-- ① 轮播卡片（上） -->
-  <div style="width:100%;max-width:300px;margin-bottom:32px;opacity:0;animation:heroScaleIn 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;">
+  <!-- ① 卡片叠放区（毛玻璃+叠放照片） -->
+  <style>
+  .stack-wrap {
+    position: relative;
+    width: 260px;
+    height: 360px;
+    margin: 0 auto 48px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .stack-card {
+    position: absolute;
+    width: 240px;
+    height: 320px;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1),
+                box-shadow 0.4s ease,
+                opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    user-select: none;
+  }
+  .stack-card-3 {
+    background: linear-gradient(145deg,rgba(255,255,255,0.25),rgba(255,255,255,0.1));
+    top: 30px; left: 20px;
+    transform: rotate(-6deg) translateY(8px);
+    z-index: 1; opacity: 0.7;
+  }
+  .stack-card-2 {
+    background: linear-gradient(145deg,rgba(255,255,255,0.35),rgba(255,255,255,0.15));
+    top: 16px; left: 10px;
+    transform: rotate(-3deg) translateY(4px);
+    z-index: 2; opacity: 0.85;
+  }
+  .stack-card-1 {
+    background: linear-gradient(145deg,rgba(255,255,255,0.55),rgba(255,255,255,0.25));
+    top: 0; left: 0;
+    transform: rotate(0deg);
+    z-index: 3; opacity: 1;
+  }
+  .stack-wrap:hover .stack-card-3 { transform: rotate(-12deg) translate(-16px, 14px); opacity: 0.6; }
+  .stack-wrap:hover .stack-card-2 { transform: rotate(-6deg) translate(-8px, 7px); opacity: 0.8; }
+  .stack-wrap:hover .stack-card-1 { transform: rotate(1deg) translateY(-8px); box-shadow: 0 32px 80px rgba(0,0,0,0.2); }
+  .stack-wrap.shuffling .stack-card-1 { animation: shuffleFront 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes shuffleFront {
+    0%   { transform: rotate(0deg) translateY(0); }
+    40%  { transform: rotate(8deg) translate(30px,-20px) scale(0.95); }
+    100% { transform: rotate(0deg) translateY(0); }
+  }
+  .stack-emoji {
+    font-size: 4.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
+    transition: transform 0.3s ease;
+  }
+  .stack-wrap:hover .stack-card-1 .stack-emoji { transform: scale(1.08); }
+  .stack-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(50,50,50,0.7);
+    backdrop-filter: blur(4px);
+  }
+  .stack-tag {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(12px);
+    border-radius: 999px;
+    padding: 4px 12px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #3a3a3c;
+    border: 1px solid rgba(255,255,255,0.8);
+  }
+  .stack-dots {
+    display: flex; gap: 7px; align-items: center;
+    position: absolute; bottom: 0; left: 50%;
+    transform: translateX(-50%);
+  }
+  .stack-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    cursor: pointer; transition: all 0.3s;
+    background: rgba(128,128,128,0.3);
+  }
+  .stack-dot.active { background: #f472b6; transform: scale(1.35); }
+  /* 卡片背景色 */
+  .stack-card-1[data-idx="0"] { background: linear-gradient(145deg,rgba(253,232,216,0.85),rgba(252,228,243,0.75),rgba(233,228,255,0.7)); }
+  .stack-card-1[data-idx="1"] { background: linear-gradient(145deg,rgba(209,250,229,0.85),rgba(165,243,252,0.75),rgba(129,140,248,0.7)); }
+  .stack-card-1[data-idx="2"] { background: linear-gradient(145deg,rgba(254,249,195,0.85),rgba(253,230,138,0.75),rgba(251,146,60,0.7)); }
+  .stack-card-2[data-idx="0"] { background: linear-gradient(145deg,rgba(209,250,229,0.5),rgba(165,243,252,0.4)); }
+  .stack-card-2[data-idx="1"] { background: linear-gradient(145deg,rgba(254,249,195,0.5),rgba(253,230,138,0.4)); }
+  .stack-card-2[data-idx="2"] { background: linear-gradient(145deg,rgba(253,232,216,0.5),rgba(252,228,243,0.4)); }
+  .stack-card-3[data-idx="0"] { background: linear-gradient(145deg,rgba(254,249,195,0.35),rgba(253,230,138,0.25)); }
+  .stack-card-3[data-idx="1"] { background: linear-gradient(145deg,rgba(253,232,216,0.35),rgba(252,228,243,0.25)); }
+  .stack-card-3[data-idx="2"] { background: linear-gradient(145deg,rgba(209,250,229,0.35),rgba(165,243,252,0.25)); }
+  </style>
 
-    <div style="overflow:hidden;border-radius:24px;box-shadow:0 24px 60px rgba(0,0,0,0.18),0 6px 16px rgba(0,0,0,0.1);">
-      <div id="heroTrack" style="display:flex;transition:transform 0.55s cubic-bezier(0.77,0,0.18,1);">
-
-        <!-- 卡片 1 -->
-        <div style="min-width:100%;height:340px;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;flex-shrink:0;background:linear-gradient(160deg,#fde8d8 0%,#fce4f3 60%,#e9e4ff 100%);">
-          <span style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border-radius:999px;padding:4px 12px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;z-index:10;color:#3a3a3c;">白の小站</span>
-          <!--
-            
-            <img style="width:170px;height:250px;object-fit:cover;object-position:top;border-radius:12px;position:relative;z-index:1;" src="/assets/img/avatar.png" alt="avatar">
-          -->
-          <div style="width:170px;height:250px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:rgba(255,255,255,0.3);backdrop-filter:blur(4px);position:relative;z-index:1;">🍥</div>
-          <div style="position:absolute;bottom:0;left:0;right:0;padding:30px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,0.15),transparent);display:flex;align-items:center;justify-content:space-between;z-index:5;">
-            <span style="font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.92);letter-spacing:0.06em;">Debian</span>
-            <span style="font-size:0.65rem;color:rgba(255,255,255,0.55);">鱼板</span>
-          </div>
-        </div>
-
-        <!-- 卡片 2 -->
-        <div style="min-width:100%;height:340px;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;flex-shrink:0;background:linear-gradient(160deg,#d1fae5 0%,#a5f3fc 60%,#818cf8 100%);">
-          <span style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border-radius:999px;padding:4px 12px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;z-index:10;color:#3a3a3c;">Trans</span>
-          <div style="width:170px;height:250px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:rgba(255,255,255,0.3);backdrop-filter:blur(4px);position:relative;z-index:1;">🏳️‍⚧️</div>
-          <div style="position:absolute;bottom:0;left:0;right:0;padding:30px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,0.15),transparent);display:flex;align-items:center;justify-content:space-between;z-index:5;">
-            <span style="font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.92);letter-spacing:0.06em;">mtf</span>
-            <span style="font-size:0.65rem;color:rgba(255,255,255,0.55);">木桶饭</span>
-          </div>
-        </div>
-
-        <!-- 卡片 3 -->
-        <div style="min-width:100%;height:340px;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;flex-shrink:0;background:linear-gradient(160deg,#fef9c3 0%,#fde68a 50%,#fb923c 100%);">
-          <span style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.75);backdrop-filter:blur(8px);border-radius:999px;padding:4px 12px;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;z-index:10;color:#3a3a3c;">LGBTQ+</span>
-          <div style="width:170px;height:250px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:rgba(255,255,255,0.3);backdrop-filter:blur(4px);position:relative;z-index:1;">🏳️‍🌈</div>
-          <div style="position:absolute;bottom:0;left:0;right:0;padding:30px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,0.15),transparent);display:flex;align-items:center;justify-content:space-between;z-index:5;">
-            <span style="font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.92);letter-spacing:0.06em;">友好</span>
-            <span style="font-size:0.65rem;color:rgba(255,255,255,0.55);">type</span>
-          </div>
-        </div>
-
-      </div>
+  <div class="stack-wrap" id="stackWrap" style="opacity:0;animation:heroScaleIn 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;">
+    <!-- 后卡 2 -->
+    <div class="stack-card stack-card-3" id="sCard3" data-idx="2">
+      <div class="stack-emoji" id="sEmoji3">🏳️‍🌈</div>
+      <div class="stack-label" id="sLabel3">友好</div>
     </div>
-
-    <!-- 轮播导航 -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px;">
-      <button id="heroPrev" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(128,128,128,0.25);background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);cursor:pointer;display:flex;align-items:center;justify-content:center;color:inherit;"
-        onmouseover="this.style.background='#f9a8c9';this.style.borderColor='#f9a8c9';"
-        onmouseout="this.style.background='rgba(255,255,255,0.15)';this.style.borderColor='rgba(128,128,128,0.25)';">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <div style="display:flex;gap:7px;align-items:center;" id="heroDots">
-        <div class="hdot" data-i="0" style="width:7px;height:7px;border-radius:50%;cursor:pointer;transition:all 0.3s;background:#aaa;transform:scale(1.35);"></div>
-        <div class="hdot" data-i="1" style="width:7px;height:7px;border-radius:50%;cursor:pointer;transition:all 0.3s;background:rgba(128,128,128,0.3);"></div>
-        <div class="hdot" data-i="2" style="width:7px;height:7px;border-radius:50%;cursor:pointer;transition:all 0.3s;background:rgba(128,128,128,0.3);"></div>
-      </div>
-      <button id="heroNext" style="width:36px;height:36px;border-radius:50%;border:2px solid rgba(128,128,128,0.25);background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);cursor:pointer;display:flex;align-items:center;justify-content:center;color:inherit;"
-        onmouseover="this.style.background='#f9a8c9';this.style.borderColor='#f9a8c9';"
-        onmouseout="this.style.background='rgba(255,255,255,0.15)';this.style.borderColor='rgba(128,128,128,0.25)';">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
+    <!-- 后卡 1 -->
+    <div class="stack-card stack-card-2" id="sCard2" data-idx="1">
+      <div class="stack-emoji" id="sEmoji2">🏳️‍⚧️</div>
+      <div class="stack-label" id="sLabel2">友好</div>
+    </div>
+    <!-- 前卡 -->
+    <div class="stack-card stack-card-1" id="sCard1" data-idx="0">
+      <span class="stack-tag" id="sTag1">白の小站</span>
+      <div class="stack-emoji" id="sEmoji1">🍥</div>
+      <div class="stack-label" id="sLabel1">Debian</div>
+    </div>
+    <!-- 圆点 -->
+    <div class="stack-dots" style="bottom:-28px;">
+      <div class="stack-dot active" data-i="0"></div>
+      <div class="stack-dot" data-i="1"></div>
+      <div class="stack-dot" data-i="2"></div>
     </div>
   </div>
 
-  
+  <script>
+  (function(){
+    var cards=[
+      {emoji:'🍥', label:'Debian 鱼板', tag:'白の小站'},
+      {emoji:'🏳️‍⚧️', label:'mtf 木桶饭', tag:'Trans'},
+      {emoji:'🏳️‍🌈', label:'友好 type', tag:'LGBTQ+'}
+    ];
+    var cur=0, total=cards.length, autoTimer, isAnimating=false;
+    var wrap=document.getElementById('stackWrap');
+    var dots=document.querySelectorAll('.stack-dot');
+
+    function updateDots(){
+      dots.forEach(function(d,i){d.classList.toggle('active',i===cur);});
+    }
+
+    function setCard(el, ci){
+      var c=cards[(ci+total)%total];
+      el.querySelector('.stack-emoji').textContent=c.emoji;
+      el.querySelector(el.id==='sCard1'?'.stack-label':'div:last-child').textContent=c.label;
+      if(el.id==='sCard1'){var t=el.querySelector('.stack-tag');if(t)t.textContent=c.tag;}
+      var di=(ci+total)%total;
+      el.dataset.idx=di;
+    }
+
+    function next(){
+      if(isAnimating)return;
+      isAnimating=true;
+      var c1=document.getElementById('sCard1');
+      c1.classList.add('shuffling');
+      setTimeout(function(){
+        cur=(cur+1)%total;
+        setCard(document.getElementById('sCard1'),cur);
+        setCard(document.getElementById('sCard2'),(cur+1)%total);
+        setCard(document.getElementById('sCard3'),(cur+2)%total);
+        updateDots();
+        c1.classList.remove('shuffling');
+        isAnimating=false;
+      },250);
+    }
+
+    wrap.addEventListener('click',function(){next();});
+    dots.forEach(function(d){
+      d.addEventListener('click',function(e){
+        e.stopPropagation();
+        cur=(+d.dataset.i-1+total)%total;
+        next();
+      });
+    });
+
+    function startAuto(){autoTimer=setInterval(next,3500);}
+    function stopAuto(){clearInterval(autoTimer);}
+    startAuto();
+    wrap.addEventListener('mouseenter',stopAuto);
+    wrap.addEventListener('mouseleave',startAuto);
+
+    var startX=0;
+    wrap.addEventListener('pointerdown',function(e){startX=e.clientX;stopAuto();});
+    wrap.addEventListener('pointerup',function(e){
+      if(e.clientX-startX<-40)next();
+      startAuto();
+    });
+  })();
+  </script>  
   <div style="width:100%;max-width:360px;text-align:center;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;margin-bottom:40px;">
 
     <!-- 眉标 -->
@@ -246,38 +379,8 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 })();
 </script>
 
-<script>
-(function(){
-  var track = document.getElementById('heroTrack');
-  var dots  = document.querySelectorAll('.hdot');
-  var total = 3, cur = 0, autoTimer, startX = 0;
 
-  function goTo(n) {
-    cur = (n + total) % total;
-    track.style.transform = 'translateX(-' + (cur * 100) + '%)';
-    dots.forEach(function(d, i) {
-      d.style.background    = i === cur ? '#aaa' : 'rgba(128,128,128,0.3)';
-      d.style.transform     = i === cur ? 'scale(1.35)' : 'scale(1)';
-    });
-  }
 
-  document.getElementById('heroNext').addEventListener('click', function(){ goTo(cur+1); });
-  document.getElementById('heroPrev').addEventListener('click', function(){ goTo(cur-1); });
-  dots.forEach(function(d){ d.addEventListener('click', function(){ goTo(+d.dataset.i); }); });
-
-  function startAuto(){ autoTimer = setInterval(function(){ goTo(cur+1); }, 3500); }
-  function stopAuto(){ clearInterval(autoTimer); }
-  startAuto();
-  track.parentElement.addEventListener('mouseenter', stopAuto);
-  track.parentElement.addEventListener('mouseleave', startAuto);
-  track.addEventListener('pointerdown', function(e){ startX = e.clientX; stopAuto(); });
-  track.addEventListener('pointerup', function(e){
-    var dx = e.clientX - startX;
-    if(Math.abs(dx) > 40) goTo(dx < 0 ? cur+1 : cur-1);
-    startAuto();
-  });
-})();
-</script>
 
 
 
