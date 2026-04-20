@@ -395,6 +395,31 @@ html[data-mode="dark"] .card-wrapper {
     setTimeout(function(){location.href=href;},280);
   });
 })();
+(function(){
+  var post=document.querySelector('#post-wrapper,article,.post-content');
+  if(!post)return;
+  var els=post.querySelectorAll('h1,h2,h3,h4,p,ul,ol,blockquote,pre,table,img,.card,hr');
+  els.forEach(function(el,i){
+    el.style.opacity='0';
+    el.style.transform='translateY(22px)';
+    el.style.transition='opacity 0.5s ease, transform 0.5s ease';
+    el.style.transitionDelay=Math.min(i*40,400)+'ms';
+  });
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.style.opacity='1';
+        entry.target.style.transform='translateY(0)';
+        entry.target.addEventListener('transitionend',function(){
+          entry.target.style.transitionDelay='';
+        },{once:true});
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  els.forEach(function(el){io.observe(el);});
+})();
 </script>
 </body>
 </html>
+
