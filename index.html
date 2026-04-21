@@ -24,22 +24,18 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 }
 </style>
 
-<!-- 背景光晕 -->
 <div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;clip-path:inset(0);">
   <div style="position:absolute;width:min(420px,80vw);height:min(420px,80vw);background:#f9a8c9;border-radius:50%;filter:blur(90px);opacity:0.18;top:-60px;right:-60px;animation:heroBlobFloat 9s ease-in-out infinite;"></div>
   <div style="position:absolute;width:min(300px,70vw);height:min(300px,70vw);background:#fde68a;border-radius:50%;filter:blur(90px);opacity:0.15;bottom:60px;left:-40px;animation:heroBlobFloat 9s ease-in-out 3s infinite;"></div>
   <div style="position:absolute;width:min(240px,60vw);height:min(240px,60vw);background:#c4b5fd;border-radius:50%;filter:blur(90px);opacity:0.13;top:50%;left:35%;animation:heroBlobFloat 9s ease-in-out 5s infinite;"></div>
 </div>
 
-<!-- 浮动装饰符 -->
 <div style="position:fixed;top:20%;left:4%;pointer-events:none;z-index:0;font-size:1.1rem;opacity:0.25;animation:heroDecoFloat 6s ease-in-out infinite;">.</div>
 <div style="position:fixed;bottom:25%;right:6%;pointer-events:none;z-index:0;font-size:0.9rem;opacity:0.2;animation:heroDecoFloat 6s ease-in-out 2s infinite;">•</div>
 <div style="position:fixed;top:35%;right:18%;pointer-events:none;z-index:0;font-size:0.8rem;opacity:0.15;animation:heroDecoFloat 6s ease-in-out 4s infinite;">§</div>
 
-<!-- 主体：竖版布局 -->
 <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:calc(100vh - 80px);padding:20px 16px 48px;gap:0;">
 
-  <!-- ① 卡片叠放区（毛玻璃+叠放照片） -->
   <style>
   .stack-wrap {
     position: relative;
@@ -101,6 +97,9 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     line-height: 1;
     filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
     transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   .stack-wrap:hover .stack-card-1 .stack-emoji { transform: scale(1.08); }
   .stack-label {
@@ -149,23 +148,19 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   </style>
 
   <div class="stack-wrap" id="stackWrap" style="opacity:0;animation:heroScaleIn 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;">
-    <!-- 后卡 2 -->
     <div class="stack-card stack-card-3" id="sCard3" data-idx="2">
-      <div class="stack-emoji" id="sEmoji3">🏳️‍🌈</div>
-      <div class="stack-label" id="sLabel3">友好</div>
+      <div class="stack-emoji" id="sEmoji3"><i class="fa-solid fa-circle-nodes"></i></div>
+      <div class="stack-label" id="sLabel3">开发</div>
     </div>
-    <!-- 后卡 1 -->
     <div class="stack-card stack-card-2" id="sCard2" data-idx="1">
-      <div class="stack-emoji" id="sEmoji2">🏳️‍⚧️</div>
-      <div class="stack-label" id="sLabel2">友好</div>
+      <div class="stack-emoji" id="sEmoji2"><i class="fa-solid fa-blog"></i></div>
+      <div class="stack-label" id="sLabel2">帖子</div>
     </div>
-    <!-- 前卡 -->
     <div class="stack-card stack-card-1" id="sCard1" data-idx="0">
       <span class="stack-tag" id="sTag1">白の小站</span>
-      <div class="stack-emoji" id="sEmoji1">🍥</div>
+      <div class="stack-emoji" id="sEmoji1"><i class="fa-solid fa-code"></i></div>
       <div class="stack-label" id="sLabel1">Debian</div>
     </div>
-    <!-- 圆点 -->
     <div class="stack-dots" style="bottom:-28px;">
       <div class="stack-dot active" data-i="0"></div>
       <div class="stack-dot" data-i="1"></div>
@@ -176,9 +171,9 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   <script>
   (function(){
     var cards=[
-      {emoji:'🍥', label:'Debian', tag:'开发'},
-      {emoji:'🏳️‍⚧️', label:'mtf', tag:'Trans'},
-      {emoji:'🏳️‍🌈', label:'友好', tag:'LGBTQ+'}
+      {icon:'<i class="fa-solid fa-code"></i>', label:'Debian', tag:'开发'},
+      {icon:'<i class="fa-solid fa-blog"></i>', label:'编写', tag:'文章'},
+      {icon:'<i class="fa-solid fa-circle-nodes"></i>', label:'站点', tag:'type'}
     ];
     var cur=0, total=cards.length, autoTimer, isAnimating=false;
     var wrap=document.getElementById('stackWrap');
@@ -190,7 +185,8 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 
     function setCard(el, ci){
       var c=cards[(ci+total)%total];
-      el.querySelector('.stack-emoji').textContent=c.emoji;
+      // 关键修改：使用 innerHTML 来渲染图标标签
+      el.querySelector('.stack-emoji').innerHTML=c.icon;
       el.querySelector(el.id==='sCard1'?'.stack-label':'div:last-child').textContent=c.label;
       if(el.id==='sCard1'){var t=el.querySelector('.stack-tag');if(t)t.textContent=c.tag;}
       var di=(ci+total)%total;
@@ -238,7 +234,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   </script>  
   <div style="width:100%;max-width:360px;text-align:center;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;margin-bottom:40px;">
 
-    <!-- 眉标 -->
     <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
       <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
       Welcome to my space
@@ -246,7 +241,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       窝爱泥们
     </p>
 
-    <!-- 标题 -->
     <h1 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;">
       你好，我是<br>
       <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">白</em>
@@ -257,7 +251,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">White</em>
      </h1>
     
-    <!-- 简介 -->
     <p style="font-size:0.93rem;line-height:1.85;opacity:0.68;margin-bottom:24px;font-weight:400;">
       一个来自 <strong style="font-weight:700;opacity:1;">中国</strong> 的在校中学生<br>
       A middle school student from <strong style="font-weight:700;opacity:1;">China</strong><br>
@@ -295,7 +288,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     })();
     </script>
     
-    <!-- 标签 -->
     <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:0;">
       <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#fef9c3;color:#854d0e;">📖 note</span>
       <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#ede9fe;color:#6d28d9;">🍥 develop</span>
@@ -304,7 +296,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 
   </div>
 
-  <!-- 按钮 -->
   <div style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:12px;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.55s forwards;">
 
     <a href="/categories/" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,#f472b6,#c084fc);color:#fff!important;border-radius:999px;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;text-decoration:none!important;box-shadow:0 8px 24px rgba(244,114,182,0.35);transition:all 0.2s;"
@@ -324,7 +315,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 
 </div>
 
-<!-- ③ 最新文章预览区 -->
 <div id="recent-posts" style="width:100%;max-width:400px;margin:48px auto 0;padding:0 16px 60px;">
 
   <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">
@@ -378,9 +368,4 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   if(section)observer.observe(section);
 })();
 </script>
-
-
-
-
-
 
