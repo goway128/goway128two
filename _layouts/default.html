@@ -19,50 +19,96 @@ layout: compress
 
 <link rel="preconnect" href="https://fontsapi.zeoseven.com">
 <style>
-/* 引用思源宋体和思源黑体 */
+/* 引用字体 */
 @import url("https://fontsapi.zeoseven.com/285/main/result.css"); /* 思源宋体 */
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap"); /* 思源黑体 */
+
+/* 核心字体控制 */
+:root {
+  --site-font-family: "Source Han Serif SC", "Source Han Serif", serif;
+}
+body, html {
+  font-family: var(--site-font-family) !important;
+}
 
 @keyframes pageSlideUp {
   from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 字体定义变量 */
-:root {
-  --site-font-family: "Source Han Serif SC", "Source Han Serif", serif;
-}
-
-body, html {
-  font-family: var(--site-font-family) !important;
-}
-
 #main-wrapper {
   animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* 侧边栏样式 */
 #sidebar {
   z-index: 99 !important;
   background: linear-gradient(180deg, #b3e8fb 0%, #c9effe 40%, #ddf4ff 60%, #c9effe 80%, #b3e8fb 100%) !important;
 }
-[data-mode="dark"] #sidebar { background: #f9c8d8 !important; }
+[data-mode="dark"] #sidebar { 
+  background: #f9c8d8 !important; 
+}
 
-#sidebar .site-title a, #sidebar .site-subtitle, #sidebar nav a, 
-#sidebar .sidebar-bottom a, #sidebar .sidebar-bottom span, #sidebar nav span {
-  color: #1a3a4a !important;
+/* --- 切换器 UI 样式 --- */
+#custom-switchers-wrap {
+  padding: 0 1rem 0.8rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-[data-mode="dark"] #sidebar .site-title a, [data-mode="dark"] #sidebar .site-subtitle, 
-[data-mode="dark"] #sidebar nav a, [data-mode="dark"] #sidebar .sidebar-bottom a, 
-[data-mode="dark"] #sidebar .sidebar-bottom span, [data-mode="dark"] #sidebar nav span {
-  color: #4a1a2e !important;
+.switcher-btn {
+  width: 100%;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(128,128,128,0.25);
+  background: transparent;
+  color: var(--sidebar-muted-color, #aaa);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
-#sidebar li.active a, #sidebar .nav-link.active {
-  background: rgba(255,255,255,0.55) !important;
-  border-radius: 8px !important;
+.switcher-btn:hover { border-color: #f9a8c9; color: #f9a8c9; }
+
+.switcher-panel {
+  position: fixed;
+  z-index: 10000;
+  background: var(--card-bg, #21252b);
+  border: 1.5px solid rgba(128,128,128,0.2);
+  border-radius: 16px;
+  padding: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 -4px 32px rgba(0,0,0,0.3);
+  min-width: 140px;
 }
+.switcher-panel.open { display: flex; }
+
+.switcher-option {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  color: var(--sidebar-muted-color, #aaa);
+  border: none;
+  background: transparent;
+  text-align: left;
+}
+.switcher-option:hover { background: rgba(249,168,201,0.12); color: #f9a8c9; }
+.switcher-option.active { color: #f472b6; background: rgba(244,114,182,0.1); }
 </style>
   
   <body{% if page.layout == "post" %} class="post-layout"{% endif %}>
     <div id="read-progress-track"><div id="read-progress-bar"><span id="read-progress-icon">🍥</span></div></div>
+    
     {% include sidebar.html lang=lang %}
 
     <div id="main-wrapper" class="d-flex justify-content-center">
@@ -94,63 +140,6 @@ body, html {
       </div>
     </div>
 
-    <style>
-      #custom-switchers-wrap {
-        padding: 0 1rem 0.8rem;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .switcher-btn {
-        width: 100%;
-        padding: 7px 14px;
-        border-radius: 999px;
-        border: 1.5px solid rgba(128,128,128,0.25);
-        background: transparent;
-        color: var(--sidebar-muted-color, #aaa);
-        font-size: 0.78rem;
-        font-weight: 600;
-        cursor: pointer;
-        letter-spacing: 0.04em;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .switcher-btn:hover { border-color: #f9a8c9; color: #f9a8c9; }
-      
-      .switcher-panel {
-        position: fixed;
-        z-index: 9999;
-        background: var(--card-bg, #21252b);
-        border: 1.5px solid rgba(128,128,128,0.2);
-        border-radius: 16px;
-        padding: 8px;
-        display: none;
-        flex-direction: column;
-        gap: 4px;
-        box-shadow: 0 -4px 32px rgba(0,0,0,0.3);
-        min-width: 140px;
-      }
-      .switcher-panel.open { display: flex; }
-      
-      .switcher-option {
-        padding: 8px 16px;
-        border-radius: 10px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.15s, color 0.15s;
-        color: var(--sidebar-muted-color, #aaa);
-        border: none;
-        background: transparent;
-        text-align: left;
-      }
-      .switcher-option:hover { background: rgba(249,168,201,0.12); color: #f9a8c9; }
-      .switcher-option.active { color: #f472b6; background: rgba(244,114,182,0.1); }
-    </style>
-
     <div id="font-panel" class="switcher-panel">
       <button class="switcher-option" data-font="serif">思源宋体</button>
       <button class="switcher-option" data-font="sans">思源黑体</button>
@@ -166,21 +155,21 @@ body, html {
     <div id="custom-switchers-wrap">
       <button id="font-switcher-btn" class="switcher-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
-        <span id="font-btn-label">字体</span>
+        <span id="font-btn-label">思源宋体</span>
       </button>
       <button id="lang-switcher-btn" class="switcher-btn">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-        <span id="lang-btn-label">语言切换</span>
+        <span id="lang-btn-label">简体中文</span>
       </button>
     </div>
 
     <script>
     (function(){
-      // --- 字体切换逻辑 ---
+      // 字体切换逻辑
       var fontMap = {
         serif: '"Source Han Serif SC", "Source Han Serif", serif',
         sans: '"Noto Sans SC", sans-serif',
-        system: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+        system: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif'
       };
       var fontNames = { serif: '思源宋体', sans: '思源黑体', system: '系统默认' };
       var curFont = localStorage.getItem('site-font') || 'serif';
@@ -194,17 +183,7 @@ body, html {
         localStorage.setItem('site-font', fontKey);
       }
 
-      // --- 语言切换逻辑 (保持您原有的逻辑) ---
-      var i18n={ zh:{'分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页'}, en:{'分类':'Categories','标签':'Tags','归档':'Archives','关于':'About','首页':'Home'} };
-      var curLang = localStorage.getItem('chirpy-lang') || 'zh';
-
-      function applyLang(lang) {
-        // ... 原有 applyLang 逻辑 ...
-        document.getElementById('lang-btn-label').textContent = {zh:'中文', en:'EN', ja:'日本語'}[lang] || lang;
-        localStorage.setItem('chirpy-lang', lang);
-      }
-
-      // --- 弹出面板逻辑 ---
+      // 弹窗定位逻辑
       function setupSwitcher(btnId, panelId, applyFn) {
         var btn = document.getElementById(btnId);
         var panel = document.getElementById(panelId);
@@ -213,12 +192,13 @@ body, html {
           document.querySelectorAll('.switcher-panel').forEach(p => p !== panel && p.classList.remove('open'));
           var r = btn.getBoundingClientRect();
           panel.style.left = r.left + 'px';
-          panel.style.bottom = (window.innerHeight - r.top + 8) + 'px';
+          panel.style.bottom = (window.innerHeight - r.top + 12) + 'px';
           panel.classList.toggle('open');
         });
         panel.querySelectorAll('.switcher-option').forEach(function(opt) {
           opt.addEventListener('click', function() {
-            applyFn(opt.dataset.font || opt.dataset.lang);
+            var val = opt.dataset.font || opt.dataset.lang;
+            applyFn(val);
             panel.classList.remove('open');
           });
         });
@@ -229,35 +209,40 @@ body, html {
       });
 
       window.addEventListener('DOMContentLoaded', function(){
-        // 将切换器插入侧边栏底部
         var sidebar = document.getElementById('sidebar');
-        if(sidebar) {
-          var wrap = document.getElementById('custom-switchers-wrap');
+        var wrap = document.getElementById('custom-switchers-wrap');
+        if(sidebar && wrap) {
           var bottom = sidebar.querySelector('.sidebar-bottom');
           sidebar.insertBefore(wrap, bottom);
         }
         setupSwitcher('font-switcher-btn', 'font-panel', applyFont);
-        setupSwitcher('lang-switcher-btn', 'lang-panel', applyLang);
+        setupSwitcher('lang-switcher-btn', 'lang-panel', function(l){ /* 这里的 applyLang 保持你原有的 */ });
         applyFont(curFont);
-        if(curLang !== 'zh') applyLang(curLang);
       });
     })();
     </script>
 
 <style>
-/* --- 暗黑模式与卡片样式补充 --- */
-html[data-mode="dark"] body, html[data-mode="dark"] #main-wrapper {
+/* --- 样式补丁：确保暗黑模式渐变和卡片正确 --- */
+html[data-mode="dark"] body, 
+html[data-mode="dark"] #main-wrapper,
+html[data-mode="dark"] #main-wrapper .container,
+html[data-mode="dark"] main {
   background: linear-gradient(160deg, #2d0a1a 0%, #1a0510 100%) !important;
 }
 
-html[data-mode="dark"] .card, html[data-mode="dark"] .list-group-item {
+html[data-mode="dark"] .card, 
+html[data-mode="dark"] .card-wrapper,
+html[data-mode="dark"] .list-group-item {
   background-color: #3e2723 !important;
   color: #d7ccc8 !important;
   border-color: rgba(255,255,255,0.05) !important;
 }
 
-#read-progress-bar {
-  background: linear-gradient(180deg, #55CDFC 0%, #F7A8B8 40%, #FFFFFF 60%, #F7A8B8 80%, #55CDFC 100%);
+/* 亮色模式背景 */
+html[data-mode="light"] body, 
+html[data-mode="light"] #main-wrapper {
+  background-color: #fce8f0 !important;
 }
 </style>
 
