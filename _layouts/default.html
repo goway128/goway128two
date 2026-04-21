@@ -12,7 +12,6 @@ layout: compress
   {% capture prefer_mode %}data-mode="{{ site.theme_mode }}"{% endcapture %}
 {% endif %}
 
-<!-- `site.alt_lang` can specify a language different from the UI -->
 <html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}" {{ prefer_mode }}>
   {% include head.html lang=lang %}
   
@@ -99,7 +98,6 @@ body, html {
             {% endif %}
           </main>
 
-          <!-- panel -->
           <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
             <div class="access">
               {% include_cached update-list.html lang=lang %}
@@ -114,7 +112,6 @@ body, html {
         </div>
 
         <div class="row">
-          <!-- tail -->
           <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
             {% for _include in layout.tail_includes %}
               {% assign _include_path = _include | append: '.html' %}
@@ -140,8 +137,6 @@ body, html {
     {% if site.pwa.enabled %}
       {% include_cached notification.html lang=lang %}
     {% endif %}
-
-    <!-- Embedded scripts -->
 
     {% for _include in layout.script_includes %}
       {% assign _include_path = _include | append: '.html' %}
@@ -221,7 +216,7 @@ body, html {
       var i18n={
         zh:{'文章列表':'文章列表','云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向','心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页','起始页':'起始页','作者':'作者','发表于':'发表于','更新于':'更新于','字':'字','次浏览':'次浏览','分钟':'分钟','阅读':'阅读','相关文章':'相关文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','已复制！':'已复制！','复制链接':'复制链接','链接已复制！':'链接已复制！','搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果','最近更新':'最近更新','热门标签':'热门标签','目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新','找到':'找到','条结果':'条结果','友链':'友链','篇文章':'篇文章','本文由作者按照':'本文由作者按照','进行授权':'进行授权','文章':'文章','最近更新':'最近更新','相关文章':'相关文章'},
         en:{'文章列表':'Posts','云服务与厂商':'Cloud Services','多元性别/取向':'Gender & Sexuality','心理疾病':'Mental Health','素材':'Resources','药品':'Medications','杂谈':'Misc','分类':'Categories','标签':'Tags','归档':'Archives','关于':'About','首页':'Home','起始页':'Start','作者':'Author','发表于':'Posted','更新于':'Updated','字':'words','次浏览':'views','分钟':'min','阅读':'read','相关文章':'Related','分享':'Share','下一篇':'Next','上一篇':'Prev','已复制！':'Copied!','复制链接':'Copy Link','链接已复制！':'Link copied!','搜索':'Search','取消':'Cancel','没有找到相关结果':'No results found','最近更新':'Recently Updated','热门标签':'Trending Tags','目录':'Contents','发现新版本的内容。':'New content available.','更新':'Update','找到':'Found','条结果':'results','友链':'Friends','篇文章':'articles','本文由作者按照':'Licensed under','进行授权':'by the author','文章':'Posts'},
-        ja:{'文章列表':'記事一覧','云服务与厂商':'クラウドサービス','多元性别/取向':'ジェンダー','心理疾病':'メンタルヘルス','素材':'素材','药品':'薬品','杂谈':'雑談','分类':'カテゴリ','标签':'タグ','归档':'アーカイブ','关于':'概要','首页':'ホーム','起始页':'スタート','作者':'著者','发表于':'投稿日','更新于':'更新日','字':'文字','次浏览':'閲覧','分钟':'分','阅读':'読む','相关文章':'関連記事','分享':'共有','下一篇':'次へ','上一篇':'前へ','已复制！':'コピー完了!','复制链接':'リンクをコピー','链接已复制！':'コピーしました!','搜索':'検索','取消':'キャンセル','没有找到相关结果':'結果なし','最近更新':'最近の更新','热门标签':'人気タグ','目录':'目次','发现新版本的内容。':'新しいコンテンツ。','更新':'更新','找到':'見つかりました','条结果':'件','友链':'リンク集','篇文章':'本','本文由作者按照':'ライセンス','进行授权':'で公開','文章':'記事'},
+        ja:{'文章列表':'記事一覧','云服务与厂商':'クラウドサービス','多元性别/取向':'ジェンダー','心理疾病':'メンタルヘルス','素材':'素材','药品':'薬品','杂谈':'雑談','分类':'カテゴリ','标签':'タグ','归档':'アーカイブ','关于':'概要','首页':'ホーム','起始页':'スタート','作者':'著者','发表于':'投稿日','更新于':'更新日','字':'文字','次浏览':'閲覧','分钟':'分','阅读':'読む','相关文章':'関連記事','分享':'共有','下一篇':'次へ','上一篇':'前へ','已复制！':'コピー完了!','复制链接':'リンクをコピー','链接已复制！':'コピーしました!','搜索':'検索','取消':'キャンセル','没有找到相关结果':'結果なし','最近更新':'最近の更新','热门标签':'人気タグ','目录':'目次','发现新版本的内容。':'新しいコンテンツ。','更新':'更新','找到':'見つかりました','条结果':'件','友链':'リンク集','篇文章':'本','本文由作者按照':'ライセンス','进行授权':'で公开','文章':'記事'},
         fr:{'文章列表':'Articles','云服务与厂商':'Services Cloud','多元性别/取向':'Genre & Sexualité','心理疾病':'Santé Mentale','素材':'Ressources','药品':'Médicaments','杂谈':'Divers','分类':'Catégories','标签':'Tags','归档':'Archives','关于':'À propos','首页':'Accueil','起始页':'Début','作者':'Auteur','发表于':'Publié','更新于':'Mis à jour','字':'mots','次浏览':'vues','分钟':'min','阅读':'lire','相关文章':'Articles liés','分享':'Partager','下一篇':'Suivant','上一篇':'Précédent','已复制！':'Copié!','复制链接':'Copier le lien','链接已复制！':'Lien copié!','搜索':'Rechercher','取消':'Annuler','没有找到相关结果':'Aucun résultat','最近更新':'Récemment mis à jour','热门标签':'Tags populaires','目录':'Sommaire','发现新版本的内容。':'Nouveau contenu.','更新':'Mettre à jour','找到':'Trouvé','条结果':'résultats','友链':'Liens amis','篇文章':'articles','本文由作者按照':'Licence','进行授权':'par l\'auteur','文章':'Articles'},
         de:{'文章列表':'Beiträge','云服务与厂商':'Cloud-Dienste','多元性别/取向':'Gender & Sexualität','心理疾病':'Psychische Gesundheit','素材':'Ressourcen','药品':'Medikamente','杂谈':'Diverses','分类':'Kategorien','标签':'Tags','归档':'Archiv','关于':'Über','首页':'Startseite','起始页':'Start','作者':'Autor','发表于':'Veröffentlicht','更新于':'Aktualisiert','字':'Wörter','次浏览':'Aufrufe','分钟':'Min','阅读':'Lesen','相关文章':'Ähnliche Beiträge','分享':'Teilen','下一篇':'Weiter','上一篇':'Zurück','已复制！':'Kopiert!','复制链接':'Link kopieren','链接已复制！':'Link kopiert!','搜索':'Suchen','取消':'Abbrechen','没有找到相关结果':'Keine Ergebnisse','最近更新':'Zuletzt aktualisiert','热门标签':'Beliebte Tags','目录':'Inhalt','发现新版本的内容。':'Neue Inhalte.','更新':'Aktualisieren','找到':'Gefunden','条结果':'Ergebnisse','友链':'Freunde','篇文章':'Artikel','本文由作者按照':'Lizenz','进行授权':'vom Autor','文章':'Beiträge'},
         es:{'文章列表':'Artículos','云服务与厂商':'Servicios Cloud','多元性别/取向':'Género y Sexualidad','心理疾病':'Salud Mental','素材':'Recursos','药品':'Medicamentos','杂谈':'Miscelánea','分类':'Categorías','标签':'Etiquetas','归档':'Archivo','关于':'Acerca de','首页':'Inicio','起始页':'Inicio','作者':'Autor','发表于':'Publicado','更新于':'Actualizado','字':'palabras','次浏览':'vistas','分钟':'min','阅读':'leer','相关文章':'Relacionados','分享':'Compartir','下一篇':'Siguiente','上一篇':'Anterior','已复制！':'¡Copiado!','复制链接':'Copiar enlace','链接已复制！':'¡Enlace copiado!','搜索':'Buscar','取消':'Cancelar','没有找到相关结果':'Sin resultados','最近更新':'Actualizado recientemente','热门标签':'Tags populares','目录':'Índice','发现新版本的内容。':'Nuevo contenido.','更新':'Actualizar','找到':'Encontrado','条结果':'resultados','友链':'Amigos','篇文章':'artículos','本文由作者按照':'Licencia','进行授权':'por el autor','文章':'Artículos'}
@@ -296,7 +291,8 @@ body, html {
     })();
     </script>
 
-  <style>
+<style>
+/* --- 公共样式 --- */
 .page-fade-out {
   animation: pageFadeOut 0.3s ease forwards !important;
 }
@@ -304,40 +300,60 @@ body, html {
   from { opacity:1; transform:translateY(0); }
   to   { opacity:0; transform:translateY(-12px); }
 }
+
+/* 默认亮色背景 */
 body, #main-wrapper, #main-wrapper .container, main {
   background-color: #fce8f0 !important;
 }
+
+/* --- 暗黑模式样式强化 --- */
+
+/* 1. 背景：紫红渐变 */
 html[data-mode="dark"] body,
 html[data-mode="dark"] #main-wrapper,
 html[data-mode="dark"] #main-wrapper .container,
 html[data-mode="dark"] main {
-  background-color: #1e0f18 !important;
+  background: linear-gradient(160deg, #2d0a1a 0%, #1a0510 100%) !important;
 }
+
+/* 2. 尾部和页脚透明化 */
 #tail-wrapper, footer, #footer {
   background-color: transparent !important;
 }
+
+/* 3. 卡片样式：亮色与暗色区分 */
 .card-wrapper.card,
-.card-wrapper {
+.card-wrapper,
+.list-group-item {
   background-color: rgba(173,216,255,0.18) !important;
   border-color: rgba(100,180,255,0.25) !important;
-}
-.card-wrapper.card:hover,
-.card-wrapper:hover {
-  background-color: rgba(173,216,255,0.35) !important;
-  transform: translateY(-2px);
   transition: all 0.2s;
 }
-html[data-mode="dark"] body,
-html[data-mode="dark"] #main-wrapper,
-html[data-mode="dark"] #main-wrapper .container,
-html[data-mode="dark"] main {
-  background-color: #1e0f18 !important;
+
+.card-wrapper.card:hover,
+.card-wrapper:hover,
+.list-group-item:hover {
+  background-color: rgba(173,216,255,0.35) !important;
+  transform: translateY(-2px);
 }
-html[data-mode="dark"] .card-wrapper.card,
-html[data-mode="dark"] .card-wrapper {
-  background-color: rgba(249,168,201,0.1) !important;
-  border-color: rgba(249,168,201,0.2) !important;
+
+/* 暗色模式下的深棕色卡片 */
+html[data-mode="dark"] .card,
+html[data-mode="dark"] .card-wrapper,
+html[data-mode="dark"] .list-group-item,
+html[data-mode="dark"] .categories .list-group-item {
+  background-color: #3e2723 !important; /* 深棕色 */
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  color: #d7ccc8 !important; /* 浅棕色文字，增强对比度 */
 }
+
+html[data-mode="dark"] .card:hover,
+html[data-mode="dark"] .card-wrapper:hover,
+html[data-mode="dark"] .list-group-item:hover {
+  background-color: #4e342e !important; /* 悬停时稍微加亮 */
+}
+
+/* 阅读进度条样式 */
 #read-progress-track {
   position: fixed;
   right: 0;
@@ -374,6 +390,7 @@ html[data-mode="dark"] .card-wrapper {
   transition: bottom 0.08s linear;
 }
 </style>
+
 <script>
 (function(){
   var track=document.getElementById('read-progress-track');
@@ -427,5 +444,4 @@ html[data-mode="dark"] .card-wrapper {
 </script>
 </body>
 </html>
-
 
