@@ -168,169 +168,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     </div>
   </div>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  /* 基础页面样式，仅供展示使用 */
-  body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: system-system, sans-serif;
-  }
-
-  /* --- 卡片组件核心 CSS 开始 --- */
-
-  /* 1. 外部容器：控制整体位置和大小 */
-  .card-stack-container {
-    position: relative;
-    /* 设置一个基础高度，防止平铺时撑开页面 */
-    width: 300px;
-    height: 600px; 
-    cursor: pointer;
-    /* 增加透视感，让旋转更真实 */
-    perspective: 1000px;
-    -webkit-tap-highlight-color: transparent; /* 清除移动端点击高亮 */
-  }
-
-  /* 2. 单个卡片的基础样式 */
-  .stack-card {
-    position: absolute;
-    width: 280px;
-    height: 180px;
-    left: 10px; /* 居中微调 */
-    border-radius: 20px;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    
-    /* 关键：所有的位置、旋转、阴影变化都在 0.6秒内平滑过渡 */
-    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    
-    /* 确保文字不会被选中 */
-    user-select: none;
-    overflow: hidden;
-  }
-
-  /* 卡片内的文字样式 (可选) */
-  .stack-card .card-content {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    color: white;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  }
-  .stack-card .card-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin: 0;
-  }
-
-  /* =========================================
-     状态一：默认叠放状态 (由上往下，压着一半)
-     ========================================= */
-  
-  /* 原理：层级(z-index) 依次降低，Y轴偏移(translateY) 依次增加 */
-  
-  /* 第一张（最上面） */
-  .stack-card-1 {
-    background-image: url('https://i.111666.best/image/IpBLfH1Xm51hQolNPi13vK.jpg'); 
-    top: 0;
-    z-index: 3;
-  }
-
-  /* 第二张（被第一张压着一半） */
-  .stack-card-2 {
-    background-image: url('https://i.111666.best/image/8HanhhzvtKZnqt8ID3Vap1.jpg'); 
-    top: 90px; /* 180px的一半 */
-    z-index: 2;
-    transform: scale(0.98); /* 稍微缩小一点点增加层级感 */
-  }
-
-  /* 第三张（最下面） */
-  .stack-card-3 {
-    background-image: url('https://i.111666.best/image/tybCKLwAIS5PE91vsk08IE.png'); 
-    top: 180px; /* 依次下移 */
-    z-index: 1;
-    transform: scale(0.96);
-  }
-
-  /* 叠放状态下的悬停效果：卡片微微散开 */
-  .card-stack-container:not(.expanded):hover .stack-card-2 { transform: translateY(10px) scale(0.98); }
-  .card-stack-container:not(.expanded):hover .stack-card-3 { transform: translateY(20px) scale(0.96); }
-
-
-  /* =========================================
-     状态二：点击平铺状态 (.expanded)
-     ========================================= */
-
-  /* 当容器被添加 .expanded 类名时触发 */
-
-  /* 1. 改变层级，让它们在同一平面 */
-  .card-stack-container.expanded .stack-card {
-    z-index: 10 !important;
-    transform: scale(1) rotateX(0deg) !important; /* 恢复大小和旋转 */
-    opacity: 1;
-  }
-
-  /* 2. 定义平铺的位置 (按顺序往下排，增加间距) */
-  .card-stack-container.expanded .stack-card-1 { top: 0; }
-  .card-stack-container.expanded .stack-card-2 { top: 200px; } /* 180px + 20px 间距 */
-  .card-stack-container.expanded .stack-card-3 { top: 400px; } /* 200px + 200px */
-
-  /* 平铺状态下的悬停效果：卡片放大 */
-  .card-stack-container.expanded .stack-card:hover {
-    transform: scale(1.05) !important;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    z-index: 11 !important;
-  }
-
-  /* --- 卡片组件核心 CSS 结束 --- */
-</style>
-</head>
-<body>
-
-  <div class="card-stack-container" id="myCardStack">
-    
-    <div class="stack-card stack-card-1">
-      <div class="card-content">
-        <p class="card-title">Design World</p>
-      </div>
-    </div>
-
-    <div class="stack-card stack-card-2">
-      <div class="card-content">
-        <p class="card-title">Coding Space</p>
-      </div>
-    </div>
-
-    <div class="stack-card stack-card-3">
-      <div class="card-content">
-        <p class="card-title">Notes collection</p>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    // --- JavaScript 交互脚本 ---
-    (function() {
-      var container = document.getElementById('myCardStack');
-      
-      // 监听整个容器的点击事件
-      container.addEventListener('click', function() {
-        // 切换 .expanded 类名
-        // 如果有，就移除（收回）；如果没有，就添加（平铺）
-        this.classList.toggle('expanded');
-      });
-    })();
-  </script>
-
-</body>
-
-
   <script>
   (function(){
     var cards=[
@@ -394,7 +231,167 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       startAuto();
     });
   })();
-  </script>  
+  </script>
+    
+<style>
+  /* 基础页面样式，仅供展示使用 */
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #fce8f0; /* 匹配你网站的粉色背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: system-system, sans-serif;
+  }
+
+  /* --- 卡片组件核心 CSS 开始 --- */
+
+  /* 1. 外部容器：控制整体位置和大小 */
+  .card-stack-container {
+    position: relative;
+    /* 设置一个基础高度，防止平铺时撑开页面 */
+    width: 300px;
+    height: 600px; 
+    cursor: pointer;
+    /* 增加透视感，让旋转更真实 */
+    perspective: 1000px;
+    -webkit-tap-highlight-color: transparent; /* 清除移动端点击高亮 */
+  }
+
+  /* 2. 单个卡片的基础样式 */
+  .stack-card {
+    position: absolute;
+    width: 280px;
+    height: 180px;
+    left: 10px; /* 居中微调 */
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    
+    /* 关键：所有的位置、旋转、阴影变化都在 0.6秒内平滑过渡 */
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    
+    /* 确保文字不会被选中 */
+    user-select: none;
+    overflow: hidden;
+  }
+
+  /* 卡片内的文字样式 (可选) */
+  .stack-card .card-content {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+  .stack-card .card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  /* =========================================
+     状态一：默认叠放状态 (由上往下，压着一半)
+     ========================================= */
+  
+  /* 原理：层级(z-index) 依次降低，Y轴偏移(translateY) 依次增加 */
+  
+  /* 第一张（最上面） */
+  .stack-card-1 {
+    background-image: url('https://i.111666.best/image/tybCKLwAIS5PE91vsk08IE.png'); /* 你的图床路径1 */
+    top: 0;
+    z-index: 3;
+  }
+
+  /* 第二张（被第一张压着一半） */
+  .stack-card-2 {
+    background-image: url('https://i.111666.best/image/8HanhhzvtKZnqt8ID3Vap1.jpg'); /* 你的图床路径2 */
+    top: 90px; /* 180px的一半 */
+    z-index: 2;
+    transform: scale(0.98); /* 稍微缩小一点点增加层级感 */
+  }
+
+  /* 第三张（最下面） */
+  .stack-card-3 {
+    background-image: url('https://i.111666.best/image/IpBLfH1Xm51hQolNPi13vK.jpg'); /* 你的图床路径3 */
+    top: 180px; /* 依次下移 */
+    z-index: 1;
+    transform: scale(0.96);
+  }
+
+  /* 叠放状态下的悬停效果：卡片微微散开 */
+  .card-stack-container:not(.expanded):hover .stack-card-2 { transform: translateY(10px) scale(0.98); }
+  .card-stack-container:not(.expanded):hover .stack-card-3 { transform: translateY(20px) scale(0.96); }
+
+
+  /* =========================================
+     状态二：点击平铺状态 (.expanded)
+     ========================================= */
+
+  /* 当容器被添加 .expanded 类名时触发 */
+
+  /* 1. 改变层级，让它们在同一平面 */
+  .card-stack-container.expanded .stack-card {
+    z-index: 10 !important;
+    transform: scale(1) rotateX(0deg) !important; /* 恢复大小和旋转 */
+    opacity: 1;
+  }
+
+  /* 2. 定义平铺的位置 (按顺序往下排，增加间距) */
+  .card-stack-container.expanded .stack-card-1 { top: 0; }
+  .card-stack-container.expanded .stack-card-2 { top: 200px; } /* 180px + 20px 间距 */
+  .card-stack-container.expanded .stack-card-3 { top: 400px; } /* 200px + 200px */
+
+  /* 平铺状态下的悬停效果：卡片放大 */
+  .card-stack-container.expanded .stack-card:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    z-index: 11 !important;
+  }
+
+  /* --- 卡片组件核心 CSS 结束 --- */
+</style>
+
+  <div class="card-stack-container" id="myCardStack">
+    
+    <div class="stack-card stack-card-1">
+      <div class="card-content">
+        <p class="card-title">Design World</p>
+      </div>
+    </div>
+
+    <div class="stack-card stack-card-2">
+      <div class="card-content">
+        <p class="card-title">Coding Space</p>
+      </div>
+    </div>
+
+    <div class="stack-card stack-card-3">
+      <div class="card-content">
+        <p class="card-title">Notes collection</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // --- JavaScript 交互脚本 ---
+    (function() {
+      var container = document.getElementById('myCardStack');
+      
+      // 监听整个容器的点击事件
+      container.addEventListener('click', function() {
+        // 切换 .expanded 类名
+        // 如果有，就移除（收回）；如果没有，就添加（平铺）
+        this.classList.toggle('expanded');
+      });
+    })();
+  </script>
+
+
   <div style="width:100%;max-width:360px;text-align:center;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;margin-bottom:40px;">
 
     <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
@@ -490,45 +487,4 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     {% for post in site.posts limit:3 %}
     <a href="{{ post.url }}" class="rp-card"
       style="display:block;padding:18px 20px;border-radius:16px;border:1.5px solid rgba(128,128,128,0.15);background:rgba(128,128,128,0.05);backdrop-filter:blur(8px);text-decoration:none!important;transition:all 0.25s;opacity:0;"
-      onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.08)';"
-      onmouseout="this.style.borderColor='rgba(128,128,128,0.15)';this.style.background='rgba(128,128,128,0.05)';this.style.transform='';this.style.boxShadow='';">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:0.68rem;opacity:0.45;letter-spacing:0.04em;">{{ post.date | date: "%Y/%m/%d" }}</span>
-        {% if post.categories.size > 0 %}
-        <span style="font-size:0.65rem;padding:2px 10px;border-radius:999px;background:rgba(244,114,182,0.12);color:#f472b6;font-weight:600;">{{ post.categories | first }}</span>
-        {% endif %}
-      </div>
-      <div style="font-size:1rem;font-weight:700;margin-bottom:6px;line-height:1.4;">{{ post.title }}</div>
-      {% if post.excerpt %}
-      <div style="font-size:0.82rem;opacity:0.55;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ post.excerpt | strip_html | truncate: 80 }}</div>
-      {% endif %}
-    </a>
-    {% endfor %}
-  </div>
-
-</div>
-
-<style>
-@keyframes rpFadeUp {
-  from { opacity:0; transform:translateY(20px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-</style>
-<script>
-(function(){
-  var observer=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){
-        var cards=document.querySelectorAll('.rp-card');
-        cards.forEach(function(c,i){
-          c.style.animation='rpFadeUp 0.5s cubic-bezier(0.22,1,0.36,1) '+(i*0.1+0.05)+'s forwards';
-        });
-        observer.disconnect();
-      }
-    });
-  },{threshold:0.1});
-  var section=document.getElementById('recent-posts');
-  if(section)observer.observe(section);
-})();
-</script>
-
+      onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transfor
