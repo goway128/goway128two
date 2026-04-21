@@ -234,268 +234,145 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   </script>  
   <div style="width:100%;max-width:360px;text-align:center;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;margin-bottom:40px;">
 
-    <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
-      <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
-      Welcome to my space
-      <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
-      窝爱泥们
-    </p>
-
-    <h1 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;">
-      你好，我是<br>
-      <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">白</em>
-    </h1>
-
-     <h1 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;">
-      Hello, I'm<br>
-      <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">White</em>
-     </h1>
-    
-    <p style="font-size:0.93rem;line-height:1.85;opacity:0.68;margin-bottom:24px;font-weight:400;">
-      一个来自 <strong style="font-weight:700;opacity:1;">中国</strong> 的在校中学生<br>
-      A middle school student from <strong style="font-weight:700;opacity:1;">China</strong><br>
-    </p>
-
-    <p style="font-size:0.93rem;line-height:1.85;opacity:0.68;margin-bottom:24px;font-weight:400;">
-      我目前正在学习 <strong style="font-weight:700;opacity:1;">英语</strong> 这个语言<br>
-      I'm currently learning the <strong style="font-weight:700;opacity:1;"> English </strong>language<br>
-    </p>
-
-    ---
-layout: default
-title: " "
----
-
-
+  
 <style>
+/* --- 基础布局与背景动画 --- */
 html, body { overflow-x: hidden !important; max-width: 100vw; }
 @keyframes heroBlobFloat {
   0%,100% { transform: translateY(0) scale(1); }
   50%      { transform: translateY(-28px) scale(1.05); }
 }
-@keyframes heroDecoFloat {
-  0%,100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-14px) rotate(10deg); }
-}
 @keyframes heroFadeUp {
   from { opacity: 0; transform: translateY(32px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes heroScaleIn {
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
+
+/* --- 垂直叠放卡片组件核心样式 --- */
+.card-stack-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  perspective: 1200px;
+}
+
+.card-stack-container {
+  position: relative;
+  width: min(300px, 80vw);
+  /* 初始高度：卡片180px + 2张卡片各露出一半(90px*2) */
+  height: 360px; 
+  cursor: pointer;
+  transition: height 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 点击平铺后的整体高度 */
+.card-stack-container.expanded {
+  height: 620px; 
+}
+
+.stack-card {
+  position: absolute;
+  width: 100%;
+  height: 180px;
+  left: 0;
+  border-radius: 28px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+  transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+  border: 1.5px solid rgba(255,255,255,0.8);
+}
+
+/* --- 默认叠放状态 (由上往下压住一半) --- */
+.stack-card-1 {
+  background-image: url('https://i.111666.best/image/IpBLfH1Xm51hQolNPi13vK.jpg');
+  top: 0;
+  z-index: 3;
+}
+.stack-card-2 {
+  background-image: url('https://i.111666.best/image/IpBLfH1Xm51hQolNPi13vK.jpg');
+  top: 90px; 
+  z-index: 2;
+  transform: scale(0.96);
+}
+.stack-card-3 {
+  background-image: url('https://i.111666.best/image/tybCKLwAIS5PE91vsk08IE.png');
+  top: 180px;
+  z-index: 1;
+  transform: scale(0.92);
+}
+
+/* --- 点击平铺状态 (.expanded) --- */
+.card-stack-container.expanded .stack-card {
+  transform: scale(1) rotate(0deg) !important;
+  z-index: 10 !important;
+}
+.card-stack-container.expanded .stack-card-1 { top: 0; }
+.card-stack-container.expanded .stack-card-2 { top: 210px; } /* 平铺时的间距 */
+.card-stack-container.expanded .stack-card-3 { top: 420px; }
+
+/* 悬停微调 */
+.stack-card:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 15px 45px rgba(0,0,0,0.18);
+}
+
+.card-label {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  letter-spacing: 0.05em;
+  background: rgba(0,0,0,0.2);
+  padding: 2px 12px;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
 }
 </style>
 
 <div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;clip-path:inset(0);">
   <div style="position:absolute;width:min(420px,80vw);height:min(420px,80vw);background:#f9a8c9;border-radius:50%;filter:blur(90px);opacity:0.18;top:-60px;right:-60px;animation:heroBlobFloat 9s ease-in-out infinite;"></div>
-  <div style="position:absolute;width:min(300px,70vw);height:min(300px,70vw);background:#fde68a;border-radius:50%;filter:blur(90px);opacity:0.15;bottom:60px;left:-40px;animation:heroBlobFloat 9s ease-in-out 3s infinite;"></div>
-  <div style="position:absolute;width:min(240px,60vw);height:min(240px,60vw);background:#c4b5fd;border-radius:50%;filter:blur(90px);opacity:0.13;top:50%;left:35%;animation:heroBlobFloat 9s ease-in-out 5s infinite;"></div>
+  <div style="position:absolute;width:min(380px,75vw);height:min(380px,75vw);background:#b3e8fb;border-radius:50%;filter:blur(80px);opacity:0.15;bottom:-50px;left:-50px;animation:heroBlobFloat 11s ease-in-out infinite reverse;"></div>
 </div>
 
-<div style="position:fixed;top:20%;left:4%;pointer-events:none;z-index:0;font-size:1.1rem;opacity:0.25;animation:heroDecoFloat 6s ease-in-out infinite;">.</div>
-<div style="position:fixed;bottom:25%;right:6%;pointer-events:none;z-index:0;font-size:0.9rem;opacity:0.2;animation:heroDecoFloat 6s ease-in-out 2s infinite;">•</div>
-<div style="position:fixed;top:35%;right:18%;pointer-events:none;z-index:0;font-size:0.8rem;opacity:0.15;animation:heroDecoFloat 6s ease-in-out 4s infinite;">§</div>
-
-<div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:calc(100vh - 80px);padding:20px 16px 48px;gap:0;">
-
-  <style>
-  .stack-wrap {
-    position: relative;
-    width: 260px;
-    height: 360px;
-    margin: 0 auto 48px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .stack-card {
-    position: absolute;
-    width: 240px;
-    height: 320px;
-    border-radius: 28px;
-    overflow: hidden;
-    border: 1.5px solid rgba(255,255,255,0.5);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1),
-                box-shadow 0.4s ease,
-                opacity 0.4s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    user-select: none;
-  }
-  .stack-card-3 {
-    background: linear-gradient(145deg,rgba(255,255,255,0.25),rgba(255,255,255,0.1));
-    top: 30px; left: 20px;
-    transform: rotate(-6deg) translateY(8px);
-    z-index: 1; opacity: 0.7;
-  }
-  .stack-card-2 {
-    background: linear-gradient(145deg,rgba(255,255,255,0.35),rgba(255,255,255,0.15));
-    top: 16px; left: 10px;
-    transform: rotate(-3deg) translateY(4px);
-    z-index: 2; opacity: 0.85;
-  }
-  .stack-card-1 {
-    background: linear-gradient(145deg,rgba(255,255,255,0.55),rgba(255,255,255,0.25));
-    top: 0; left: 0;
-    transform: rotate(0deg);
-    z-index: 3; opacity: 1;
-  }
-  .stack-wrap:hover .stack-card-3 { transform: rotate(-12deg) translate(-16px, 14px); opacity: 0.6; }
-  .stack-wrap:hover .stack-card-2 { transform: rotate(-6deg) translate(-8px, 7px); opacity: 0.8; }
-  .stack-wrap:hover .stack-card-1 { transform: rotate(1deg) translateY(-8px); box-shadow: 0 32px 80px rgba(0,0,0,0.2); }
-  .stack-wrap.shuffling .stack-card-1 { animation: shuffleFront 0.5s cubic-bezier(0.34,1.56,0.64,1); }
-  @keyframes shuffleFront {
-    0%   { transform: rotate(0deg) translateY(0); }
-    40%  { transform: rotate(8deg) translate(30px,-20px) scale(0.95); }
-    100% { transform: rotate(0deg) translateY(0); }
-  }
-  .stack-emoji {
-    font-size: 4.5rem;
-    line-height: 1;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
-    transition: transform 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .stack-wrap:hover .stack-card-1 .stack-emoji { transform: scale(1.08); }
-  .stack-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(50,50,50,0.7);
-    backdrop-filter: blur(4px);
-  }
-  .stack-tag {
-    position: absolute;
-    top: 16px; right: 16px;
-    background: rgba(255,255,255,0.7);
-    backdrop-filter: blur(12px);
-    border-radius: 999px;
-    padding: 4px 12px;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #3a3a3c;
-    border: 1px solid rgba(255,255,255,0.8);
-  }
-  .stack-dots {
-    display: flex; gap: 7px; align-items: center;
-    position: absolute; bottom: 0; left: 50%;
-    transform: translateX(-50%);
-  }
-  .stack-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    cursor: pointer; transition: all 0.3s;
-    background: rgba(128,128,128,0.3);
-  }
-  .stack-dot.active { background: #f472b6; transform: scale(1.35); }
-  /* 卡片背景色 */
-  .stack-card-1[data-idx="0"] { background: linear-gradient(145deg,rgba(253,232,216,0.85),rgba(252,228,243,0.75),rgba(233,228,255,0.7)); }
-  .stack-card-1[data-idx="1"] { background: linear-gradient(145deg,rgba(209,250,229,0.85),rgba(165,243,252,0.75),rgba(129,140,248,0.7)); }
-  .stack-card-1[data-idx="2"] { background: linear-gradient(145deg,rgba(254,249,195,0.85),rgba(253,230,138,0.75),rgba(251,146,60,0.7)); }
-  .stack-card-2[data-idx="0"] { background: linear-gradient(145deg,rgba(209,250,229,0.5),rgba(165,243,252,0.4)); }
-  .stack-card-2[data-idx="1"] { background: linear-gradient(145deg,rgba(254,249,195,0.5),rgba(253,230,138,0.4)); }
-  .stack-card-2[data-idx="2"] { background: linear-gradient(145deg,rgba(253,232,216,0.5),rgba(252,228,243,0.4)); }
-  .stack-card-3[data-idx="0"] { background: linear-gradient(145deg,rgba(254,249,195,0.35),rgba(253,230,138,0.25)); }
-  .stack-card-3[data-idx="1"] { background: linear-gradient(145deg,rgba(253,232,216,0.35),rgba(252,228,243,0.25)); }
-  .stack-card-3[data-idx="2"] { background: linear-gradient(145deg,rgba(209,250,229,0.35),rgba(165,243,252,0.25)); }
-  </style>
-
-  <div class="stack-wrap" id="stackWrap" style="opacity:0;animation:heroScaleIn 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;">
-    <div class="stack-card stack-card-3" id="sCard3" data-idx="2">
-      <div class="stack-emoji" id="sEmoji3"><i class="fa-solid fa-circle-nodes"></i></div>
-      <div class="stack-label" id="sLabel3"></div>
-    </div>
-    <div class="stack-card stack-card-2" id="sCard2" data-idx="1">
-      <div class="stack-emoji" id="sEmoji2"><i class="fa-solid fa-blog"></i></div>
-      <div class="stack-label" id="sLabel2"></div>
-    </div>
-    <div class="stack-card stack-card-1" id="sCard1" data-idx="0">
-      <span class="stack-tag" id="sTag1"></span>
-      <div class="stack-emoji" id="sEmoji1"><i class="fa-solid fa-code"></i></div>
-      <div class="stack-label" id="sLabel1"></div>
-    </div>
-    <div class="stack-dots" style="bottom:-28px;">
-      <div class="stack-dot active" data-i="0"></div>
-      <div class="stack-dot" data-i="1"></div>
-      <div class="stack-dot" data-i="2"></div>
+<div style="position:relative;z-index:1;padding:3rem 1rem;">
+  
+  <div style="display:flex;justify-content:center;margin-bottom:2.5rem;animation:heroFadeUp 0.8s ease both;">
+    <div style="padding:8px 20px;background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);border-radius:999px;border:1px solid rgba(255,255,255,0.6);box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+      <span style="font-size:0.85rem;font-weight:800;color:#f472b6;letter-spacing:0.1em;text-transform:uppercase;">超时空辉夜姬</span>
     </div>
   </div>
 
-  <script>
-  (function(){
-    var cards=[
-      {icon:'<i class="fa-solid fa-code"></i>', label:'', tag:''},
-      {icon:'<i class="fa-solid fa-blog"></i>', label:'', tag:''},
-      {icon:'<i class="fa-solid fa-circle-nodes"></i>', label:'', tag:''}
-    ];
-    var cur=0, total=cards.length, autoTimer, isAnimating=false;
-    var wrap=document.getElementById('stackWrap');
-    var dots=document.querySelectorAll('.stack-dot');
+  <div class="card-stack-wrap">
+    <div class="card-stack-container" id="myStack">
+      <div class="stack-card stack-card-1">
+        <div class="card-label"></div>
+      </div>
+      <div class="stack-card stack-card-2">
+        <div class="card-label"></div>
+      </div>
+      <div class="stack-card stack-card-3">
+        <div class="card-label"></div>
+      </div>
+    </div>
+  </div>
 
-    function updateDots(){
-      dots.forEach(function(d,i){d.classList.toggle('active',i===cur);});
-    }
+</div>
 
-    function setCard(el, ci){
-      var c=cards[(ci+total)%total];
-      // 关键修改：使用 innerHTML 来渲染图标标签
-      el.querySelector('.stack-emoji').innerHTML=c.icon;
-      el.querySelector(el.id==='sCard1'?'.stack-label':'div:last-child').textContent=c.label;
-      if(el.id==='sCard1'){var t=el.querySelector('.stack-tag');if(t)t.textContent=c.tag;}
-      var di=(ci+total)%total;
-      el.dataset.idx=di;
-    }
-
-    function next(){
-      if(isAnimating)return;
-      isAnimating=true;
-      var c1=document.getElementById('sCard1');
-      c1.classList.add('shuffling');
-      setTimeout(function(){
-        cur=(cur+1)%total;
-        setCard(document.getElementById('sCard1'),cur);
-        setCard(document.getElementById('sCard2'),(cur+1)%total);
-        setCard(document.getElementById('sCard3'),(cur+2)%total);
-        updateDots();
-        c1.classList.remove('shuffling');
-        isAnimating=false;
-      },250);
-    }
-
-    wrap.addEventListener('click',function(){next();});
-    dots.forEach(function(d){
-      d.addEventListener('click',function(e){
-        e.stopPropagation();
-        cur=(+d.dataset.i-1+total)%total;
-        next();
-      });
+<script>
+(function(){
+  // 控制卡片点击状态
+  var stack = document.getElementById('myStack');
+  if(stack){
+    stack.addEventListener('click', function() {
+      this.classList.toggle('expanded');
     });
-
-    function startAuto(){autoTimer=setInterval(next,3500);}
-    function stopAuto(){clearInterval(autoTimer);}
-    startAuto();
-    wrap.addEventListener('mouseenter',stopAuto);
-    wrap.addEventListener('mouseleave',startAuto);
-
-    var startX=0;
-    wrap.addEventListener('pointerdown',function(e){startX=e.clientX;stopAuto();});
-    wrap.addEventListener('pointerup',function(e){
-      if(e.clientX-startX<-40)next();
-      startAuto();
-    });
-  })();
-  </script>  
-  <div style="width:100%;max-width:360px;text-align:center;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;margin-bottom:40px;">
+  }
+})();
+</script>
 
     <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
       <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
@@ -631,112 +508,3 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   if(section)observer.observe(section);
 })();
 </script>
-
-    <style>
-    @keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-    </style>
-    <h2 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;min-height:1.3em;">
-      <em id="typewriter" style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></em><span id="type-cursor" style="display:inline-block;width:3px;height:0.85em;background:#f472b6;margin-left:2px;vertical-align:middle;border-radius:2px;animation:cursorBlink 0.7s step-end infinite;"></span>
-    </h2>
-    <script>
-    (function(){
-      var texts=['無限進步','我爱你们'];
-      var el=document.getElementById('typewriter');
-      var ti=0,ci=0,deleting=false;
-      function tick(){
-        var full=texts[ti];
-        if(!deleting){
-          ci++;el.textContent=full.slice(0,ci);
-          if(ci===full.length){deleting=true;setTimeout(tick,1800);return;}
-          setTimeout(tick,120);
-        } else {
-          ci--;el.textContent=full.slice(0,ci);
-          if(ci===0){deleting=false;ti=(ti+1)%texts.length;setTimeout(tick,400);return;}
-          setTimeout(tick,60);
-        }
-      }
-      setTimeout(tick,800);
-    })();
-    </script>
-    
-    <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:0;">
-      <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#fef9c3;color:#854d0e;">📖 note</span>
-      <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#ede9fe;color:#6d28d9;">🍥 develop</span>
-      <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#dbeafe;color:#1e40af;">🇨🇳 CN</span>
-    </div>
-
-  </div>
-
-  <div style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:12px;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.55s forwards;">
-
-    <a href="/categories/" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,#f472b6,#c084fc);color:#fff!important;border-radius:999px;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;text-decoration:none!important;box-shadow:0 8px 24px rgba(244,114,182,0.35);transition:all 0.2s;"
-      onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(244,114,182,0.5)';"
-      onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(244,114,182,0.35)';">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      分类
-    </a>
-
-    <a href="/about/" style="display:flex;align-items:center;justify-content:center;padding:14px 28px;background:transparent;border-radius:999px;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;text-decoration:none!important;border:2px solid rgba(128,128,128,0.3);transition:all 0.2s;"
-      onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transform='translateY(-2px)';"
-      onmouseout="this.style.borderColor='rgba(128,128,128,0.3)';this.style.background='transparent';this.style.transform='';">
-      关于本站
-    </a>
-
-  </div>
-
-</div>
-
-<div id="recent-posts" style="width:100%;max-width:400px;margin:48px auto 0;padding:0 16px 60px;">
-
-  <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">
-    <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
-    最新文章
-    <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
-  </p>
-
-  <div style="display:flex;flex-direction:column;gap:14px;">
-    {% for post in site.posts limit:3 %}
-    <a href="{{ post.url }}" class="rp-card"
-      style="display:block;padding:18px 20px;border-radius:16px;border:1.5px solid rgba(128,128,128,0.15);background:rgba(128,128,128,0.05);backdrop-filter:blur(8px);text-decoration:none!important;transition:all 0.25s;opacity:0;"
-      onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.08)';"
-      onmouseout="this.style.borderColor='rgba(128,128,128,0.15)';this.style.background='rgba(128,128,128,0.05)';this.style.transform='';this.style.boxShadow='';">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:0.68rem;opacity:0.45;letter-spacing:0.04em;">{{ post.date | date: "%Y/%m/%d" }}</span>
-        {% if post.categories.size > 0 %}
-        <span style="font-size:0.65rem;padding:2px 10px;border-radius:999px;background:rgba(244,114,182,0.12);color:#f472b6;font-weight:600;">{{ post.categories | first }}</span>
-        {% endif %}
-      </div>
-      <div style="font-size:1rem;font-weight:700;margin-bottom:6px;line-height:1.4;">{{ post.title }}</div>
-      {% if post.excerpt %}
-      <div style="font-size:0.82rem;opacity:0.55;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ post.excerpt | strip_html | truncate: 80 }}</div>
-      {% endif %}
-    </a>
-    {% endfor %}
-  </div>
-
-</div>
-
-<style>
-@keyframes rpFadeUp {
-  from { opacity:0; transform:translateY(20px); }
-  to   { opacity:1; transform:translateY(0); }
-}
-</style>
-<script>
-(function(){
-  var observer=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if(e.isIntersecting){
-        var cards=document.querySelectorAll('.rp-card');
-        cards.forEach(function(c,i){
-          c.style.animation='rpFadeUp 0.5s cubic-bezier(0.22,1,0.36,1) '+(i*0.1+0.05)+'s forwards';
-        });
-        observer.disconnect();
-      }
-    });
-  },{threshold:0.1});
-  var section=document.getElementById('recent-posts');
-  if(section)observer.observe(section);
-})();
-</script>
-
