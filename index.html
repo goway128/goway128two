@@ -24,18 +24,22 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 }
 </style>
 
+<!-- 背景光晕 -->
 <div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;clip-path:inset(0);">
   <div style="position:absolute;width:min(420px,80vw);height:min(420px,80vw);background:#f9a8c9;border-radius:50%;filter:blur(90px);opacity:0.18;top:-60px;right:-60px;animation:heroBlobFloat 9s ease-in-out infinite;"></div>
   <div style="position:absolute;width:min(300px,70vw);height:min(300px,70vw);background:#fde68a;border-radius:50%;filter:blur(90px);opacity:0.15;bottom:60px;left:-40px;animation:heroBlobFloat 9s ease-in-out 3s infinite;"></div>
   <div style="position:absolute;width:min(240px,60vw);height:min(240px,60vw);background:#c4b5fd;border-radius:50%;filter:blur(90px);opacity:0.13;top:50%;left:35%;animation:heroBlobFloat 9s ease-in-out 5s infinite;"></div>
 </div>
 
+<!-- 浮动装饰符 -->
 <div style="position:fixed;top:20%;left:4%;pointer-events:none;z-index:0;font-size:1.1rem;opacity:0.25;animation:heroDecoFloat 6s ease-in-out infinite;">.</div>
 <div style="position:fixed;bottom:25%;right:6%;pointer-events:none;z-index:0;font-size:0.9rem;opacity:0.2;animation:heroDecoFloat 6s ease-in-out 2s infinite;">•</div>
 <div style="position:fixed;top:35%;right:18%;pointer-events:none;z-index:0;font-size:0.8rem;opacity:0.15;animation:heroDecoFloat 6s ease-in-out 4s infinite;">§</div>
 
+<!-- 主体：竖版布局 -->
 <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:calc(100vh - 80px);padding:20px 16px 48px;gap:0;">
 
+  <!-- ① 卡片叠放区（毛玻璃+叠放照片） -->
   <style>
   .stack-wrap {
     position: relative;
@@ -97,9 +101,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     line-height: 1;
     filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
     transition: transform 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   .stack-wrap:hover .stack-card-1 .stack-emoji { transform: scale(1.08); }
   .stack-label {
@@ -148,19 +149,23 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   </style>
 
   <div class="stack-wrap" id="stackWrap" style="opacity:0;animation:heroScaleIn 0.8s cubic-bezier(0.22,1,0.36,1) 0.1s forwards;">
+    <!-- 后卡 2 -->
     <div class="stack-card stack-card-3" id="sCard3" data-idx="2">
-      <div class="stack-emoji" id="sEmoji3"><i class="fa-solid fa-circle-nodes"></i></div>
-      <div class="stack-label" id="sLabel3">开发</div>
+      <div class="stack-emoji" id="sEmoji3">🏳️‍🌈</div>
+      <div class="stack-label" id="sLabel3">友好</div>
     </div>
+    <!-- 后卡 1 -->
     <div class="stack-card stack-card-2" id="sCard2" data-idx="1">
-      <div class="stack-emoji" id="sEmoji2"><i class="fa-solid fa-blog"></i></div>
-      <div class="stack-label" id="sLabel2">帖子</div>
+      <div class="stack-emoji" id="sEmoji2">🏳️‍⚧️</div>
+      <div class="stack-label" id="sLabel2">友好</div>
     </div>
+    <!-- 前卡 -->
     <div class="stack-card stack-card-1" id="sCard1" data-idx="0">
       <span class="stack-tag" id="sTag1">白の小站</span>
-      <div class="stack-emoji" id="sEmoji1"><i class="fa-solid fa-code"></i></div>
-      <div class="stack-label" id="sLabel1"></div>
+      <div class="stack-emoji" id="sEmoji1">🍥</div>
+      <div class="stack-label" id="sLabel1">Debian</div>
     </div>
+    <!-- 圆点 -->
     <div class="stack-dots" style="bottom:-28px;">
       <div class="stack-dot active" data-i="0"></div>
       <div class="stack-dot" data-i="1"></div>
@@ -171,9 +176,9 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   <script>
   (function(){
     var cards=[
-      {icon:'<i class="fa-solid fa-code"></i>', label:'Debian', tag:'开发'},
-      {icon:'<i class="fa-solid fa-blog"></i>', label:'编写', tag:'文章'},
-      {icon:'<i class="fa-solid fa-circle-nodes"></i>', label:'站点', tag:'type'}
+      {emoji:'🍥', label:'Debian', tag:'开发'},
+      {emoji:'🏳️‍⚧️', label:'mtf', tag:'Trans'},
+      {emoji:'🏳️‍🌈', label:'友好', tag:'LGBTQ+'}
     ];
     var cur=0, total=cards.length, autoTimer, isAnimating=false;
     var wrap=document.getElementById('stackWrap');
@@ -185,8 +190,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 
     function setCard(el, ci){
       var c=cards[(ci+total)%total];
-      // 关键修改：使用 innerHTML 来渲染图标标签
-      el.querySelector('.stack-emoji').innerHTML=c.icon;
+      el.querySelector('.stack-emoji').textContent=c.emoji;
       el.querySelector(el.id==='sCard1'?'.stack-label':'div:last-child').textContent=c.label;
       if(el.id==='sCard1'){var t=el.querySelector('.stack-tag');if(t)t.textContent=c.tag;}
       var di=(ci+total)%total;
@@ -231,169 +235,192 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       startAuto();
     });
   })();
-  </script>
-    
-<style>
-  /* 基础页面样式，仅供展示使用 */
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: #fce8f0; /* 匹配你网站的粉色背景 */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: system-system, sans-serif;
-  }
-
-  /* --- 卡片组件核心 CSS 开始 --- */
-
-  /* 1. 外部容器：控制整体位置和大小 */
-  .card-stack-container {
-    position: relative;
-    /* 设置一个基础高度，防止平铺时撑开页面 */
-    width: 300px;
-    height: 600px; 
-    cursor: pointer;
-    /* 增加透视感，让旋转更真实 */
-    perspective: 1000px;
-    -webkit-tap-highlight-color: transparent; /* 清除移动端点击高亮 */
-  }
-
-  /* 2. 单个卡片的基础样式 */
-  .stack-card {
-    position: absolute;
-    width: 280px;
-    height: 180px;
-    left: 10px; /* 居中微调 */
-    border-radius: 20px;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    
-    /* 关键：所有的位置、旋转、阴影变化都在 0.6秒内平滑过渡 */
-    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    
-    /* 确保文字不会被选中 */
-    user-select: none;
-    overflow: hidden;
-  }
-
-  /* 卡片内的文字样式 (可选) */
-  .stack-card .card-content {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    color: white;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  }
-  .stack-card .card-title {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin: 0;
-  }
-
-  /* =========================================
-     状态一：默认叠放状态 (由上往下，压着一半)
-     ========================================= */
-  
-  /* 原理：层级(z-index) 依次降低，Y轴偏移(translateY) 依次增加 */
-  
-  /* 第一张（最上面） */
-  .stack-card-1 {
-    background-image: url('https://i.111666.best/image/tybCKLwAIS5PE91vsk08IE.png'); /* 你的图床路径1 */
-    top: 0;
-    z-index: 3;
-  }
-
-  /* 第二张（被第一张压着一半） */
-  .stack-card-2 {
-    background-image: url('https://i.111666.best/image/8HanhhzvtKZnqt8ID3Vap1.jpg'); /* 你的图床路径2 */
-    top: 90px; /* 180px的一半 */
-    z-index: 2;
-    transform: scale(0.98); /* 稍微缩小一点点增加层级感 */
-  }
-
-  /* 第三张（最下面） */
-  .stack-card-3 {
-    background-image: url('https://i.111666.best/image/IpBLfH1Xm51hQolNPi13vK.jpg'); /* 你的图床路径3 */
-    top: 180px; /* 依次下移 */
-    z-index: 1;
-    transform: scale(0.96);
-  }
-
-  /* 叠放状态下的悬停效果：卡片微微散开 */
-  .card-stack-container:not(.expanded):hover .stack-card-2 { transform: translateY(10px) scale(0.98); }
-  .card-stack-container:not(.expanded):hover .stack-card-3 { transform: translateY(20px) scale(0.96); }
-
-
-  /* =========================================
-     状态二：点击平铺状态 (.expanded)
-     ========================================= */
-
-  /* 当容器被添加 .expanded 类名时触发 */
-
-  /* 1. 改变层级，让它们在同一平面 */
-  .card-stack-container.expanded .stack-card {
-    z-index: 10 !important;
-    transform: scale(1) rotateX(0deg) !important; /* 恢复大小和旋转 */
-    opacity: 1;
-  }
-
-  /* 2. 定义平铺的位置 (按顺序往下排，增加间距) */
-  .card-stack-container.expanded .stack-card-1 { top: 0; }
-  .card-stack-container.expanded .stack-card-2 { top: 200px; } /* 180px + 20px 间距 */
-  .card-stack-container.expanded .stack-card-3 { top: 400px; } /* 200px + 200px */
-
-  /* 平铺状态下的悬停效果：卡片放大 */
-  .card-stack-container.expanded .stack-card:hover {
-    transform: scale(1.05) !important;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    z-index: 11 !important;
-  }
-
-  /* --- 卡片组件核心 CSS 结束 --- */
-</style>
-
-  <div class="card-stack-container" id="myCardStack">
-    
-    <div class="stack-card stack-card-1">
-      <div class="card-content">
-        <p class="card-title">Design World</p>
-      </div>
-    </div>
-
-    <div class="stack-card stack-card-2">
-      <div class="card-content">
-        <p class="card-title">Coding Space</p>
-      </div>
-    </div>
-
-    <div class="stack-card stack-card-3">
-      <div class="card-content">
-        <p class="card-title">Notes collection</p>
-      </div>
-    </div>
-
-  </div>
-
-  <script>
-    // --- JavaScript 交互脚本 ---
-    (function() {
-      var container = document.getElementById('myCardStack');
-      
-      // 监听整个容器的点击事件
-      container.addEventListener('click', function() {
-        // 切换 .expanded 类名
-        // 如果有，就移除（收回）；如果没有，就添加（平铺）
-        this.classList.toggle('expanded');
-      });
-    })();
-  </script>
-
-
+  </script>  
   <div style="width:100%;max-width:360px;text-align:center;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;margin-bottom:40px;">
 
+
+<style>
+/* --- 基础布局与背景保持不变 --- */
+html, body { overflow-x: hidden !important; max-width: 100vw; }
+@keyframes heroBlobFloat {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-28px) scale(1.05); }
+}
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 垂直叠放卡片组件核心样式 --- */
+.card-stack-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+  perspective: 1200px;
+}
+
+.card-stack-container {
+  position: relative;
+  width: min(300px, 80vw);
+  /* 初始叠放高度：卡片180px + 2次露出的一半高度(90px*2) */
+  height: 360px; 
+  cursor: pointer;
+  transition: height 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* 点击平铺后的整体高度，防止压住下面的文章 */
+.card-stack-container.expanded {
+  height: 620px; 
+}
+
+.stack-card {
+  position: absolute;
+  width: 100%;
+  height: 180px;
+  left: 0;
+  border-radius: 28px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+  transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.7);
+}
+
+/* --- 叠放状态 (压住一半) --- */
+.stack-card-1 {
+  background-image: url('https://i.111666.best/image/8HanhhzvtKZnqt8ID3Vap1.jpg'); /* 请替换链接 */
+  background-color: #f9a8c9; /* 备用色 */
+  top: 0;
+  z-index: 3;
+}
+.stack-card-2 {
+  background-image: url('https://i.111666.best/image/IpBLfH1Xm51hQolNPi13vK.jpg'); /* 请替换链接 */
+  background-color: #b3e8fb;
+  top: 90px; /* 压住上一张的一半 */
+  z-index: 2;
+  transform: scale(0.96);
+}
+.stack-card-3 {
+  background-image: url('https://i.111666.best/image/tybCKLwAIS5PE91vsk08IE.png'); /* 请替换链接 */
+  background-color: #fdfef2;
+  top: 180px;
+  z-index: 1;
+  transform: scale(0.92);
+}
+
+/* --- 平铺状态 (.expanded) --- */
+.card-stack-container.expanded .stack-card {
+  transform: scale(1) rotate(0deg) !important;
+  z-index: 10 !important;
+}
+.card-stack-container.expanded .stack-card-1 { top: 0; }
+.card-stack-container.expanded .stack-card-2 { top: 210px; } /* 增加一点间距 */
+.card-stack-container.expanded .stack-card-3 { top: 420px; }
+
+/* 悬停效果 */
+.stack-card:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.card-label {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  font-weight: 800;
+  font-size: 1.2rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  letter-spacing: 0.05em;
+}
+</style>
+
+<div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;clip-path:inset(0);">
+  <div style="position:absolute;width:min(420px,80vw);height:min(420px,80vw);background:#f9a8c9;border-radius:50%;filter:blur(90px);opacity:0.18;top:-60px;right:-60px;animation:heroBlobFloat 9s ease-in-out infinite;"></div>
+  <div style="position:absolute;width:min(380px,75vw);height:min(380px,75vw);background:#b3e8fb;border-radius:50%;filter:blur(80px);opacity:0.15;bottom:-50px;left:-50px;animation:heroBlobFloat 11s ease-in-out infinite reverse;"></div>
+</div>
+
+<div style="position:relative;z-index:1;padding:2.5rem 1rem 1rem;">
+  
+  <div style="display:flex;justify-content:center;margin-bottom:2rem;animation:heroFadeUp 0.8s ease both;">
+    <div style="padding:6px 18px;background:rgba(255,255,255,0.5);backdrop-filter:blur(10px);border-radius:999px;border:1px solid rgba(255,255,255,0.6);box-shadow:0 4px 15px rgba(0,0,0,0.03);">
+      <span style="font-size:0.8rem;font-weight:800;color:#f472b6;letter-spacing:0.1em;text-transform:uppercase;"></span>
+    </div>
+  </div>
+
+  <div class="card-stack-wrap">
+    <div class="card-stack-container" id="myStack">
+      <div class="stack-card stack-card-1">
+        <div class="card-label"></div>
+      </div>
+      <div class="stack-card stack-card-2">
+        <div class="card-label"></div>
+      </div>
+      <div class="stack-card stack-card-3">
+        <div class="card-label"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:600px;margin:0 auto;animation:heroFadeUp 1s ease 0.4s both;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding:0 0.5rem;">
+      <div style="width:4px;height:18px;background:linear-gradient(to bottom,#f472b6,#38bdf8);border-radius:2px;"></div>
+      <h2 style="font-size:1.1rem;font-weight:800;margin:0;color:#1e293b;"></h2>
+    </div>
+
+    <div style="display:grid;gap:1rem;">
+      {% for post in site.posts limit:5 %}
+      <a href="{{ post.url | relative_url }}" class="post-card-item" style="display:block;padding:1.25rem;background:rgba(255,255,255,0.6);backdrop-filter:blur(12px);border-radius:20px;border:1px solid rgba(255,255,255,0.7);text-decoration:none;color:inherit;transition:0.3s;animation:rpFadeUp 0.6s ease both;">
+        <div style="font-size:1rem;font-weight:700;margin-bottom:6px;">{{ post.title }}</div>
+        <div style="font-size:0.82rem;opacity:0.55;">{{ post.excerpt | strip_html | truncate: 80 }}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  // 控制卡片点击状态
+  var stack = document.getElementById('myStack');
+  if(stack){
+    stack.addEventListener('click', function() {
+      this.classList.toggle('expanded');
+    });
+  }
+
+  // 保留你原有的文章列表观察器
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.style.animationPlayState='running';
+        observer.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.1});
+  document.querySelectorAll('.post-card-item').forEach(function(el,i){
+    el.style.animationDelay=(0.5+i*0.1)+'s';
+    observer.observe(el);
+  });
+})();
+</script>
+
+<style>
+@keyframes rpFadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.post-card-item:hover {
+  transform: translateY(-4px);
+  background: rgba(255,255,255,0.9);
+}
+</style>
+
+    
+    <!-- 眉标 -->
     <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
       <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
       Welcome to my space
@@ -401,6 +428,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       窝爱泥们
     </p>
 
+    <!-- 标题 -->
     <h1 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;">
       你好，我是<br>
       <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">白</em>
@@ -411,6 +439,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">White</em>
      </h1>
     
+    <!-- 简介 -->
     <p style="font-size:0.93rem;line-height:1.85;opacity:0.68;margin-bottom:24px;font-weight:400;">
       一个来自 <strong style="font-weight:700;opacity:1;">中国</strong> 的在校中学生<br>
       A middle school student from <strong style="font-weight:700;opacity:1;">China</strong><br>
@@ -448,6 +477,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     })();
     </script>
     
+    <!-- 标签 -->
     <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:0;">
       <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#fef9c3;color:#854d0e;">📖 note</span>
       <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#ede9fe;color:#6d28d9;">🍥 develop</span>
@@ -456,6 +486,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 
   </div>
 
+  <!-- 按钮 -->
   <div style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:12px;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.55s forwards;">
 
     <a href="/categories/" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,#f472b6,#c084fc);color:#fff!important;border-radius:999px;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;text-decoration:none!important;box-shadow:0 8px 24px rgba(244,114,182,0.35);transition:all 0.2s;"
@@ -475,6 +506,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 
 </div>
 
+<!-- ③ 最新文章预览区 -->
 <div id="recent-posts" style="width:100%;max-width:400px;margin:48px auto 0;padding:0 16px 60px;">
 
   <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">
@@ -487,4 +519,51 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     {% for post in site.posts limit:3 %}
     <a href="{{ post.url }}" class="rp-card"
       style="display:block;padding:18px 20px;border-radius:16px;border:1.5px solid rgba(128,128,128,0.15);background:rgba(128,128,128,0.05);backdrop-filter:blur(8px);text-decoration:none!important;transition:all 0.25s;opacity:0;"
-      onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transfor
+      onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.08)';"
+      onmouseout="this.style.borderColor='rgba(128,128,128,0.15)';this.style.background='rgba(128,128,128,0.05)';this.style.transform='';this.style.boxShadow='';">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:0.68rem;opacity:0.45;letter-spacing:0.04em;">{{ post.date | date: "%Y/%m/%d" }}</span>
+        {% if post.categories.size > 0 %}
+        <span style="font-size:0.65rem;padding:2px 10px;border-radius:999px;background:rgba(244,114,182,0.12);color:#f472b6;font-weight:600;">{{ post.categories | first }}</span>
+        {% endif %}
+      </div>
+      <div style="font-size:1rem;font-weight:700;margin-bottom:6px;line-height:1.4;">{{ post.title }}</div>
+      {% if post.excerpt %}
+      <div style="font-size:0.82rem;opacity:0.55;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ post.excerpt | strip_html | truncate: 80 }}</div>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+
+</div>
+
+<style>
+@keyframes rpFadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+</style>
+<script>
+(function(){
+  var observer=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var cards=document.querySelectorAll('.rp-card');
+        cards.forEach(function(c,i){
+          c.style.animation='rpFadeUp 0.5s cubic-bezier(0.22,1,0.36,1) '+(i*0.1+0.05)+'s forwards';
+        });
+        observer.disconnect();
+      }
+    });
+  },{threshold:0.1});
+  var section=document.getElementById('recent-posts');
+  if(section)observer.observe(section);
+})();
+</script>
+
+
+
+
+
+
+
