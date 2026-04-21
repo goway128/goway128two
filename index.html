@@ -320,21 +320,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       this.classList.toggle('expanded');
     });
   }
-
-  // 保留你原有的文章列表观察器
-  var observer=new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){
-        entry.target.style.animationPlayState='running';
-        observer.unobserve(entry.target);
-      }
-    });
-  },{threshold:0.1});
-  document.querySelectorAll('.post-card-item').forEach(function(el,i){
-    el.style.animationDelay=(0.5+i*0.1)+'s';
-    observer.observe(el);
-  });
-})();
 </script>
 
 <style>
