@@ -353,6 +353,11 @@ order: 5
         <div class="tl-title"><i class="fa-solid fa-eye"></i> 成功</div>
         <div class="tl-desc">建立了小站</div>
       </div>
+      <div class="tl-item t5">
+        <div class="tl-year"><i class="fa-solid fa-cloud-arrow-up"></i> 2026.04.22</div>
+        <div class="tl-title"><i class="fa-solid fa-eye"></i> 备案（</div>
+        <div class="tl-desc">获得萌icp</div>
+      </div>
     </div>
   </div>
 
