@@ -108,18 +108,9 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     wrap.addEventListener('mouseenter',stopAuto);
     wrap.addEventListener('mouseleave',startAuto);
 
-    // 左右滑动
-    var startX=0, startY=0;
-    wrap.addEventListener('pointerdown',function(e){startX=e.clientX; startY=e.clientY; stopAuto();});
-    wrap.addEventListener('pointerup',function(e){
-      var dx=e.clientX-startX;
-      var dy=Math.abs(e.clientY-startY);
-      if(Math.abs(dx)>40 && dy<60){
-        if(dx<0) next();   // 左滑：下一张
-        else prev();       // 右滑：上一张
-      }
-      startAuto();
-    });
+    // 左右滑动已移除，仅保留点击
+    wrap.addEventListener('pointerdown',function(e){stopAuto();});
+    wrap.addEventListener('pointerup',function(e){ startAuto(); });
   })();
   </script>  
   <div style="width:100%;max-width:360px;text-align:center;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;margin-bottom:40px;">
@@ -260,16 +251,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   <script>
   (function(){
     var el = document.getElementById('myStack');
-    var startY = 0, startX = 0;
-    el.addEventListener('pointerdown', function(e){ startY = e.clientY; startX = e.clientX; });
-    el.addEventListener('pointerup', function(e){
-      var dy = e.clientY - startY;
-      var dx = Math.abs(e.clientX - startX);
-      if(Math.abs(dy) > 40 && dx < 60){
-        if(dy < 0) el.classList.add('expanded');    // 上滑展开
-        else el.classList.remove('expanded');        // 下滑收起
-      }
-    });
+    el.addEventListener('click', function(){ el.classList.toggle('expanded'); });
   })();
   </script>
 
