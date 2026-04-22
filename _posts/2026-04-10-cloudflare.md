@@ -76,7 +76,3 @@ Cloudflare 的起源可以追溯到 2004 年，当时联合创始人 Matthew Pri
 创始人 Matthew Prince 入选 TIME100 AI 2025 等榜单
 
 Cloudflare 是一家从安全起步、不断向边缘计算和 AI 扩展的创新公司。它让普通网站也能享受企业级防护和加速，对互联网的开放、安全和性能贡献显著
-
-顺带提一嘴
-
-*这个网站被我托管到了Cloudflare*
