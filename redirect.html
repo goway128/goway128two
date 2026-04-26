@@ -1,0 +1,116 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>即将离开本站</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      border: 1.5px solid #ddd;
+      padding: 48px 36px 36px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .icon {
+      font-size: 40px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #111;
+    }
+    .desc {
+      color: #666;
+      font-size: 15px;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .url-box {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      word-break: break-all;
+      font-family: monospace;
+      font-size: 14px;
+      color: #333;
+    }
+    .warning {
+      color: #e53e3e;
+      font-size: 14px;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 12px;
+      text-decoration: none;
+    }
+    .btn-secondary {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: white;
+      color: #111;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: #333; }
+    .btn-secondary:hover { background: #f5f5f5; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🔗</div>
+    <h1>即将离开本站？</h1>
+    <p class="desc">您即将访问外部网站：</p>
+    <div class="url-box" id="target-url">加载中...</div>
+    <p class="warning">请确认您信任该目标网站后再继续。</p>
+    <a id="proceed-btn" href="#" class="btn-primary">继续访问 →</a>
+    <a href="javascript:history.back()" class="btn-secondary">返回</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get('to');
+    if (target) {
+      document.getElementById('target-url').textContent = decodeURIComponent(target);
+      document.getElementById('proceed-btn').href = decodeURIComponent(target);
+    } else {
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>
