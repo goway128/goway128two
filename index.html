@@ -1,3 +1,7 @@
+---
+layout: default
+title: " "
+---
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -446,6 +450,11 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
+  @keyframes rpFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   /* ── Responsive ── */
   @media (max-width: 480px) {
     .page { padding: 0 16px 80px; }
@@ -538,16 +547,21 @@
       <span class="line"></span>
     </div>
 
-    <div id="posts-list">
-      <!-- Jekyll template: replace with your actual posts -->
-      <a href="#" class="post-card">
+    <div id="posts-list" style="display:flex;flex-direction:column;gap:14px;">
+      {% for post in site.posts limit:3 %}
+      <a href="{{ post.url }}" class="post-card rp-card">
         <div class="post-meta">
-          <span class="post-date">2024/01/01</span>
-          <span class="post-category">笔记</span>
+          <span class="post-date">{{ post.date | date: "%Y/%m/%d" }}</span>
+          {% if post.categories.size > 0 %}
+          <span class="post-category">{{ post.categories | first }}</span>
+          {% endif %}
         </div>
-        <div class="post-title">示例文章标题</div>
-        <div class="post-excerpt">这里是文章的摘要，描述文章的主要内容，最多显示两行...</div>
+        <div class="post-title">{{ post.title }}</div>
+        {% if post.excerpt %}
+        <div class="post-excerpt">{{ post.excerpt | strip_html | truncate: 80 }}</div>
+        {% endif %}
       </a>
+      {% endfor %}
     </div>
   </div>
 
@@ -585,9 +599,9 @@
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if (e.isIntersecting) {
-        var cards = document.querySelectorAll('.post-card');
+        var cards = document.querySelectorAll('.post-card, .rp-card');
         cards.forEach(function(c, i){
-          c.style.animation = 'postIn 0.55s cubic-bezier(0.22,1,0.36,1) ' + (i * 0.1 + 0.05) + 's forwards';
+          c.style.animation = 'rpFadeUp 0.5s cubic-bezier(0.22,1,0.36,1) ' + (i * 0.1 + 0.05) + 's forwards';
         });
         observer.disconnect();
       }
