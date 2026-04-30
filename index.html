@@ -1,204 +1,248 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>白の小站</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+---
+layout: default
+title: " "
+---
+
 <style>
-  :root {
-    --rose: #f472b6;
-    --mauve: #d8b4fe;
+html, body { overflow-x: hidden !important; max-width: 100vw; }
+
+/* ── LetterGlitch Canvas 背景 ── */
+#glitch-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+#glitch-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(circle, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 65%);
+}
+
+@keyframes heroDecoFloat {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-14px) rotate(10deg); }
+}
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+@keyframes rpFadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+</style>
+
+<!-- ── LetterGlitch Canvas ── -->
+<canvas id="glitch-canvas"></canvas>
+<div id="glitch-vignette"></div>
+<script>
+(function(){
+  var canvas = document.getElementById('glitch-canvas');
+  var ctx = canvas.getContext('2d');
+
+  var GLITCH_COLORS = ['#55CDFC', '#F7A8B8', '#FFFFFF'];
+  var GLITCH_SPEED  = 50;   // ms between updates
+  var SMOOTH        = true;
+  var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789'.split('');
+
+  var FONT_SIZE   = 16;
+  var CHAR_WIDTH  = 10;
+  var CHAR_HEIGHT = 20;
+
+  var letters = [];
+  var columns = 0, rows = 0;
+  var lastGlitch = Date.now();
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function randChar(){ return CHARS[Math.floor(Math.random() * CHARS.length)]; }
+  function randColor(){ return GLITCH_COLORS[Math.floor(Math.random() * GLITCH_COLORS.length)]; }
+
+  function hexToRgb(hex){
+    hex = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, function(m,r,g,b){ return r+r+g+g+b+b; });
+    var r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return r ? { r: parseInt(r[1],16), g: parseInt(r[2],16), b: parseInt(r[3],16) } : null;
   }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; overflow-x: hidden; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: #000;
-    color: #fff;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-height: 100vh;
-    overflow-x: hidden;
+  function lerpColor(s, e, t){
+    return 'rgb('+Math.round(s.r+(e.r-s.r)*t)+','+Math.round(s.g+(e.g-s.g)*t)+','+Math.round(s.b+(e.b-s.b)*t)+')';
   }
 
-  /* ── LetterGlitch fixed background ── */
-  #glitch-bg {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    background: #000;
-  }
-  #glitch-bg canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
-  #glitch-bg .vignette-outer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(circle, rgba(0,0,0,0) 60%, rgba(0,0,0,1) 100%);
-  }
-  #glitch-bg .overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: rgba(0,0,0,0.55);
+  function initLetters(cols, rws){
+    columns = cols; rows = rws;
+    letters = [];
+    for(var i = 0; i < cols * rws; i++){
+      letters.push({ char: randChar(), color: randColor(), targetColor: randColor(), colorProgress: 1 });
+    }
   }
 
-  /* ── Page layout ── */
-  .page {
-    position: relative;
-    z-index: 1;
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 20px 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  function resize(){
+    var W = window.innerWidth, H = window.innerHeight;
+    canvas.width  = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    initLetters(Math.ceil(W / CHAR_WIDTH), Math.ceil(H / CHAR_HEIGHT));
+    draw();
   }
 
-  /* ── Hero ── */
-  .hero {
-    width: 100%;
-    padding-top: 72px;
-    text-align: center;
-    opacity: 0;
-    animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
-  }
-  .welcome-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.65rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 28px;
-  }
-  .welcome-tag .line {
-    display: inline-block;
-    width: 24px; height: 1px;
-    background: linear-gradient(90deg, var(--rose), var(--mauve));
-  }
-  .hero-name-zh {
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(3rem, 10vw, 4.2rem);
-    font-weight: 300;
-    line-height: 1.05;
-    letter-spacing: 0.04em;
-    margin-bottom: 4px;
-  }
-  .hero-name-en {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(3rem, 10vw, 4.2rem);
-    font-style: italic;
-    line-height: 1.05;
-    margin-bottom: 28px;
-  }
-  .gradient-text {
-    background: linear-gradient(135deg, var(--rose), var(--mauve));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero-desc {
-    font-size: 0.9rem;
-    line-height: 2;
-    color: rgba(255,255,255,0.5);
-    font-weight: 300;
-    margin-bottom: 10px;
-  }
-  .hero-desc strong { font-weight: 500; color: rgba(255,255,255,0.88); }
-
-  /* ── Typewriter ── */
-  .typewriter-wrap { margin: 20px 0 28px; min-height: 3rem; }
-  .typewriter-text {
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(2rem, 7vw, 2.8rem);
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--rose), var(--mauve));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .cursor {
-    display: inline-block;
-    width: 3px; height: 0.85em;
-    background: var(--rose);
-    margin-left: 2px;
-    vertical-align: middle;
-    border-radius: 2px;
-    animation: cursorBlink 0.7s step-end infinite;
-  }
-  @keyframes cursorBlink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-
-  /* ── Tags ── */
-  .tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-  .tag { padding: 5px 16px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.04em; border: 1.5px solid transparent; }
-  .tag-yellow { background: rgba(254,249,195,0.1); color: #fde68a; border-color: rgba(253,230,138,0.25); }
-  .tag-purple { background: rgba(237,233,254,0.1); color: #c4b5fd; border-color: rgba(196,181,253,0.25); }
-  .tag-blue   { background: rgba(219,234,254,0.1); color: #93c5fd; border-color: rgba(147,197,253,0.25); }
-
-  /* ── CTA Buttons ── */
-  .cta-group {
-    width: 100%; max-width: 280px;
-    display: flex; flex-direction: column; gap: 10px;
-    margin-top: 36px;
-    opacity: 0;
-    animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.45s forwards;
-  }
-  .btn-primary {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 14px 28px;
-    background: linear-gradient(135deg, var(--rose), var(--mauve));
-    color: #fff; border-radius: 999px;
-    font-size: 0.88rem; font-weight: 600; letter-spacing: 0.06em;
-    text-decoration: none;
-    box-shadow: 0 8px 28px rgba(244,114,182,0.38);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(244,114,182,0.52); }
-  .btn-secondary {
-    display: flex; align-items: center; justify-content: center;
-    padding: 13px 28px;
-    background: rgba(255,255,255,0.07);
-    backdrop-filter: blur(12px);
-    color: rgba(255,255,255,0.82); border-radius: 999px;
-    font-size: 0.88rem; font-weight: 500; letter-spacing: 0.04em;
-    text-decoration: none;
-    border: 1.5px solid rgba(244,114,182,0.28);
-    transition: all 0.2s;
-  }
-  .btn-secondary:hover { border-color: var(--rose); background: rgba(249,168,201,0.1); transform: translateY(-2px); }
-
-  /* ── Section label ── */
-  .section-label {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
-    margin: 56px 0 24px;
-  }
-  .section-label .line {
-    display: inline-block; width: 24px; height: 1px;
-    background: linear-gradient(90deg, var(--rose), var(--mauve));
+  function draw(){
+    var W = window.innerWidth, H = window.innerHeight;
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = FONT_SIZE + 'px monospace';
+    ctx.textBaseline = 'top';
+    ctx.globalAlpha = 0.18;
+    for(var i = 0; i < letters.length; i++){
+      var l = letters[i];
+      ctx.fillStyle = l.color;
+      ctx.fillText(l.char, (i % columns) * CHAR_WIDTH, Math.floor(i / columns) * CHAR_HEIGHT);
+    }
+    ctx.globalAlpha = 1;
   }
 
-  /* ══════════════════════════════
-     Card Stack Gallery
-     ══════════════════════════════ */
-  .gallery-wrap {
-    width: 100%;
+  function updateLetters(){
+    var count = Math.max(1, Math.floor(letters.length * 0.05));
+    for(var i = 0; i < count; i++){
+      var idx = Math.floor(Math.random() * letters.length);
+      var l = letters[idx];
+      l.char = randChar();
+      l.targetColor = randColor();
+      if(!SMOOTH){ l.color = l.targetColor; l.colorProgress = 1; }
+      else { l.colorProgress = 0; }
+    }
+  }
+
+  function smoothStep(){
+    var needs = false;
+    for(var i = 0; i < letters.length; i++){
+      var l = letters[i];
+      if(l.colorProgress < 1){
+        l.colorProgress = Math.min(1, l.colorProgress + 0.05);
+        var s = hexToRgb(l.color), e = hexToRgb(l.targetColor);
+        if(s && e){ l.color = lerpColor(s, e, l.colorProgress); needs = true; }
+      }
+    }
+    if(needs) draw();
+  }
+
+  function loop(){
+    var now = Date.now();
+    if(now - lastGlitch >= GLITCH_SPEED){ updateLetters(); draw(); lastGlitch = now; }
+    if(SMOOTH) smoothStep();
+    requestAnimationFrame(loop);
+  }
+
+  var resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 100);
+  });
+
+  resize();
+  loop();
+})();
+</script>
+
+<!-- 装饰性小点 -->
+<div style="position:fixed;top:20%;left:4%;pointer-events:none;z-index:0;font-size:1.1rem;opacity:0.25;animation:heroDecoFloat 6s ease-in-out infinite;">.</div>
+<div style="position:fixed;bottom:25%;right:6%;pointer-events:none;z-index:0;font-size:0.9rem;opacity:0.2;animation:heroDecoFloat 6s ease-in-out 2s infinite;">•</div>
+<div style="position:fixed;top:35%;right:18%;pointer-events:none;z-index:0;font-size:0.8rem;opacity:0.15;animation:heroDecoFloat 6s ease-in-out 4s infinite;">§</div>
+
+<div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;min-height:calc(100vh - 80px);padding:20px 16px 48px;gap:0;">
+
+  <!-- ── Hero Text ── -->
+  <div style="width:100%;max-width:360px;text-align:center;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;margin-bottom:40px;">
+
+    <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px;">
+      <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
+      Welcome to my space
+      <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
+      窝爱泥们
+    </p>
+
+    <h1 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;">
+      你好，我是<br>
+      <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">白</em>
+    </h1>
+
+    <h1 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;">
+      Hello, I'm<br>
+      <em style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">White</em>
+    </h1>
+
+    <p style="font-size:0.93rem;line-height:1.85;opacity:0.68;margin-bottom:24px;font-weight:400;">
+      一个来自 <strong style="font-weight:700;opacity:1;">中国</strong> 的在校中学生<br>
+      A middle school student from <strong style="font-weight:700;opacity:1;">China</strong><br>
+    </p>
+
+    <p style="font-size:0.93rem;line-height:1.85;opacity:0.68;margin-bottom:24px;font-weight:400;">
+      我目前正在学习 <strong style="font-weight:700;opacity:1;">英语</strong> 这个语言<br>
+      I'm currently learning the <strong style="font-weight:700;opacity:1;"> English </strong>language<br>
+    </p>
+
+    <h2 style="font-size:clamp(2.6rem,8vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:16px;letter-spacing:-0.02em;border:none!important;padding:0!important;min-height:1.3em;">
+      <em id="typewriter" style="font-style:normal;background:linear-gradient(135deg,#f472b6,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"></em><span id="type-cursor" style="display:inline-block;width:3px;height:0.85em;background:#f472b6;margin-left:2px;vertical-align:middle;border-radius:2px;animation:cursorBlink 0.7s step-end infinite;"></span>
+    </h2>
+    <script>
+    (function(){
+      var texts=['無限進步','我爱你们'];
+      var el=document.getElementById('typewriter');
+      var ti=0,ci=0,deleting=false;
+      function tick(){
+        var full=texts[ti];
+        if(!deleting){
+          ci++;el.textContent=full.slice(0,ci);
+          if(ci===full.length){deleting=true;setTimeout(tick,1800);return;}
+          setTimeout(tick,120);
+        } else {
+          ci--;el.textContent=full.slice(0,ci);
+          if(ci===0){deleting=false;ti=(ti+1)%texts.length;setTimeout(tick,400);return;}
+          setTimeout(tick,60);
+        }
+      }
+      setTimeout(tick,800);
+    })();
+    </script>
+
+    <div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:0;">
+      <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#fef9c3;color:#854d0e;">📖 Note</span>
+      <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#ede9fe;color:#6d28d9;">🍥 Develop</span>
+      <span style="padding:5px 14px;border-radius:999px;font-size:0.72rem;font-weight:700;background:#dbeafe;color:#1e40af;">🇨🇳 China</span>
+    </div>
+
+  </div>
+
+  <!-- ── Buttons ── -->
+  <div style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:12px;opacity:0;animation:heroFadeUp 0.8s cubic-bezier(0.22,1,0.36,1) 0.55s forwards;">
+
+    <a href="/categories/" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg,#f472b6,#c084fc);color:#fff!important;border-radius:999px;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;text-decoration:none!important;box-shadow:0 8px 24px rgba(244,114,182,0.35);transition:all 0.2s;"
+      onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 32px rgba(244,114,182,0.5)';"
+      onmouseout="this.style.transform='';this.style.boxShadow='0 8px 24px rgba(244,114,182,0.35)';">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      分类
+    </a>
+
+    <a href="/about/" style="display:flex;align-items:center;justify-content:center;padding:14px 28px;background:transparent;border-radius:999px;font-size:0.9rem;font-weight:700;letter-spacing:0.04em;text-decoration:none!important;border:2px solid rgba(128,128,128,0.3);transition:all 0.2s;"
+      onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transform='translateY(-2px)';"
+      onmouseout="this.style.borderColor='rgba(128,128,128,0.3)';this.style.background='transparent';this.style.transform='';">
+      关于本站
+    </a>
+
+  </div>
+
+  <!-- ── 图片堆叠 ── -->
+  <style>
+  html, body { overflow-x: hidden !important; max-width: 100vw; }
+  .img-stack-card { will-change: transform; transform: translateZ(0); }
+
+  .card-stack-wrap {
     display: flex;
     justify-content: center;
-    margin-top: 0;
-    opacity: 0;
-    animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.65s forwards;
+    margin-top: 2rem;
   }
   .card-stack-container {
     position: relative;
@@ -216,12 +260,11 @@
     border-radius: 28px;
     background-size: cover;
     background-position: center;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
     transition:
       transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
       top 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    border: 1.5px solid rgba(255,255,255,0.18);
-    will-change: transform;
+    border: 1.5px solid rgba(255,255,255,0.8);
   }
   .img-stack-card-1 {
     background-image: url('https://i.111666.best/image/IpBLfH1Xm51hQolNPi13vK.jpg');
@@ -238,242 +281,72 @@
   .card-stack-container.expanded .img-stack-card-1 { top: 0;   transform: scale(1); }
   .card-stack-container.expanded .img-stack-card-2 { top: 210px; transform: scale(1); }
   .card-stack-container.expanded .img-stack-card-3 { top: 420px; transform: scale(1); }
+  </style>
 
-    /* ── Recent posts ── */
-  .posts-section { width: 100%; margin-top: 56px; }
-  .post-card {
-    display: block; padding: 18px 20px;
-    border-radius: 18px;
-    border: 1.5px solid rgba(244,114,182,0.14);
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(12px);
-    text-decoration: none; color: #fff;
-    transition: all 0.25s; margin-bottom: 12px;
-    opacity: 0; transform: translateY(18px);
-  }
-  .post-card:hover { border-color: rgba(244,114,182,0.38); background: rgba(255,255,255,0.08); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(244,114,182,0.13); }
-  .post-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-  .post-date { font-size:0.65rem; color:rgba(255,255,255,0.32); letter-spacing:0.04em; }
-  .post-category { font-size:0.62rem; padding:2px 10px; border-radius:999px; background:rgba(244,114,182,0.14); color:var(--rose); font-weight:600; border:1px solid rgba(244,114,182,0.22); }
-  .post-title { font-family:'Noto Serif SC',serif; font-size:0.97rem; font-weight:700; margin-bottom:5px; line-height:1.45; color:rgba(255,255,255,0.88); }
-  .post-excerpt { font-size:0.8rem; color:rgba(255,255,255,0.38); line-height:1.7; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:20px 16px 48px;">
+    <div class="card-stack-wrap">
+      <div class="card-stack-container" id="myStack">
+        <div class="img-stack-card img-stack-card-1"></div>
+        <div class="img-stack-card img-stack-card-2"></div>
+        <div class="img-stack-card img-stack-card-3"></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var el = document.getElementById('myStack');
+      el.addEventListener('click', function(){ el.classList.toggle('expanded'); });
+    })();
+    </script>
+  </div>
 
-  /* ── Keyframes ── */
-  @keyframes fadeUp { from{opacity:0;transform:translateY(28px);} to{opacity:1;transform:translateY(0);} }
-  @keyframes postIn { to{opacity:1;transform:translateY(0);} }
-</style>
-</head>
-<body>
-
-<!-- LetterGlitch Background — colors: #55CDFC, #F7A8B8, #FFFFFF -->
-<div id="glitch-bg">
-  <canvas id="glitch-canvas"></canvas>
-  <div class="vignette-outer"></div>
-  <div class="overlay"></div>
 </div>
 
-<div class="page">
+<!-- ── 最新文章 ── -->
+<div id="recent-posts" style="width:100%;max-width:400px;margin:48px auto 0;padding:0 16px 60px;">
 
-  <!-- Hero -->
-  <section class="hero">
-    <p class="welcome-tag">
-      <span class="line"></span>
-      Welcome to my space · 窝爱泥们
-      <span class="line"></span>
-    </p>
-    <h1 class="hero-name-zh">你好，我是<span class="gradient-text">白</span></h1>
-    <h1 class="hero-name-en">Hello, I'm <span class="gradient-text">White</span></h1>
-    <p class="hero-desc">一个来自 <strong>中国</strong> 的在校中学生<br>A middle school student from <strong>China</strong></p>
-    <p class="hero-desc">我目前正在学习 <strong>英语</strong> 这个语言<br>I'm currently learning the <strong>English</strong> language</p>
-    <div class="typewriter-wrap">
-      <span class="typewriter-text" id="typewriter"></span><span class="cursor"></span>
-    </div>
-    <div class="tags">
-      <span class="tag tag-yellow">📖 note</span>
-      <span class="tag tag-purple">🍥 develop</span>
-      <span class="tag tag-blue">🇨🇳 China</span>
-    </div>
-  </section>
+  <p style="font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-weight:400;margin-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;">
+    <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
+    最新文章
+    <span style="display:inline-block;width:22px;height:1.5px;background:#f9a8c9;"></span>
+  </p>
 
-  <!-- CTA -->
-  <div class="cta-group">
-    <a href="/categories/" class="btn-primary">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      分类
-    </a>
-    <a href="/about/" class="btn-secondary">关于本站</a>
-  </div>
-
-  <!-- Gallery — Card Stack -->
-  <div class="section-label"><span class="line"></span>Gallery<span class="line"></span></div>
-  <div class="gallery-wrap">
-    <div class="card-stack-container" id="myStack">
-      <div class="img-stack-card img-stack-card-1"></div>
-      <div class="img-stack-card img-stack-card-2"></div>
-      <div class="img-stack-card img-stack-card-3"></div>
-    </div>
-  </div>
-
-  <!-- Recent Posts -->
-  <div class="posts-section">
-    <div class="section-label" id="posts-anchor">
-      <span class="line"></span>最新文章<span class="line"></span>
-    </div>
-    <div id="posts-list">
-      {% for post in site.posts limit:3 %}
-      <a href="{{ post.url }}" class="post-card">
-        <div class="post-meta">
-          <span class="post-date">{{ post.date | date: "%Y/%m/%d" }}</span>
-          {% if post.categories.size > 0 %}
-          <span class="post-category">{{ post.categories | first }}</span>
-          {% endif %}
-        </div>
-        <div class="post-title">{{ post.title }}</div>
-        {% if post.excerpt %}
-        <div class="post-excerpt">{{ post.excerpt | strip_html | truncate: 80 }}</div>
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    {% for post in site.posts limit:3 %}
+    <a href="{{ post.url }}" class="rp-card"
+      style="display:block;padding:18px 20px;border-radius:16px;border:1.5px solid rgba(128,128,128,0.15);background:rgba(128,128,128,0.05);backdrop-filter:blur(8px);text-decoration:none!important;transition:all 0.25s;opacity:0;"
+      onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.08)';"
+      onmouseout="this.style.borderColor='rgba(128,128,128,0.15)';this.style.background='rgba(128,128,128,0.05)';this.style.transform='';this.style.boxShadow='';">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:0.68rem;opacity:0.45;letter-spacing:0.04em;">{{ post.date | date: "%Y/%m/%d" }}</span>
+        {% if post.categories.size > 0 %}
+        <span style="font-size:0.65rem;padding:2px 10px;border-radius:999px;background:rgba(244,114,182,0.12);color:#f472b6;font-weight:600;">{{ post.categories | first }}</span>
         {% endif %}
-      </a>
-      {% endfor %}
-    </div>
+      </div>
+      <div style="font-size:1rem;font-weight:700;margin-bottom:6px;line-height:1.4;">{{ post.title }}</div>
+      {% if post.excerpt %}
+      <div style="font-size:0.82rem;opacity:0.55;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ post.excerpt | strip_html | truncate: 80 }}</div>
+      {% endif %}
+    </a>
+    {% endfor %}
   </div>
 
 </div>
 
 <script>
-// ════════════════════════════════
-//  LetterGlitch — #55CDFC #F7A8B8 #FFFFFF
-// ════════════════════════════════
 (function(){
-  var glitchColors = ['#55CDFC', '#F7A8B8', '#FFFFFF'];
-  var glitchSpeed = 50, smooth = true;
-  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789';
-  var chars = Array.from(characters);
-  var canvas = document.getElementById('glitch-canvas');
-  var ctx = canvas.getContext('2d');
-  var fontSize = 16, charWidth = 10, charHeight = 20;
-  var letters = [], columns = 0, rows = 0;
-  var lastTime = Date.now(), animId;
-
-  function rChar(){ return chars[Math.floor(Math.random()*chars.length)]; }
-  function rColor(){ return glitchColors[Math.floor(Math.random()*glitchColors.length)]; }
-
-  function hexToRgb(hex){
-    if(!hex||hex[0]!=='#') return null;
-    hex = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, function(m,r,g,b){ return r+r+g+g+b+b; });
-    var r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return r ? { r:parseInt(r[1],16), g:parseInt(r[2],16), b:parseInt(r[3],16) } : null;
-  }
-  function lerp(a,b,t){
-    return 'rgb('+Math.round(a.r+(b.r-a.r)*t)+','+Math.round(a.g+(b.g-a.g)*t)+','+Math.round(a.b+(b.b-a.b)*t)+')';
-  }
-
-  function init(cols, rws){
-    columns = cols; rows = rws; letters = [];
-    for(var i=0; i<cols*rws; i++)
-      letters.push({ char:rChar(), color:rColor(), target:rColor(), progress:1 });
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.font = fontSize+'px monospace';
-    ctx.textBaseline = 'top';
-    for(var i=0; i<letters.length; i++){
-      ctx.fillStyle = letters[i].color;
-      ctx.fillText(letters[i].char, (i%columns)*charWidth, Math.floor(i/columns)*charHeight);
-    }
-  }
-
-  function update(){
-    var n = Math.max(1, Math.floor(letters.length*0.05));
-    for(var i=0; i<n; i++){
-      var idx = Math.floor(Math.random()*letters.length);
-      letters[idx].char = rChar();
-      letters[idx].target = rColor();
-      if(smooth){ letters[idx].progress = 0; }
-      else { letters[idx].color = letters[idx].target; letters[idx].progress = 1; }
-    }
-  }
-
-  function smoothStep(){
-    var dirty = false;
-    for(var i=0; i<letters.length; i++){
-      var l = letters[i];
-      if(l.progress < 1){
-        l.progress = Math.min(1, l.progress + 0.05);
-        var s = hexToRgb(l.color), e = hexToRgb(l.target);
-        if(s && e){ l.color = lerp(s,e,l.progress); dirty = true; }
-        else { l.color = l.target; l.progress = 1; }
-      }
-    }
-    if(dirty) draw();
-  }
-
-  function resize(){
-    var dpr = window.devicePixelRatio || 1;
-    var w = window.innerWidth, h = window.innerHeight;
-    canvas.width = w*dpr; canvas.height = h*dpr;
-    canvas.style.width = w+'px'; canvas.style.height = h+'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    init(Math.ceil(w/charWidth), Math.ceil(h/charHeight));
-    draw();
-  }
-
-  function animate(){
-    var now = Date.now();
-    if(now - lastTime >= glitchSpeed){ update(); draw(); lastTime = now; }
-    if(smooth) smoothStep();
-    animId = requestAnimationFrame(animate);
-  }
-
-  resize(); animate();
-  var t;
-  window.addEventListener('resize', function(){
-    clearTimeout(t);
-    t = setTimeout(function(){ cancelAnimationFrame(animId); resize(); animate(); }, 100);
-  });
-})();
-
-// ════════════════════════════════
-//  Card Stack — click to expand
-// ════════════════════════════════
-(function(){
-  var el = document.getElementById('myStack');
-  if(el) el.addEventListener('click', function(){ el.classList.toggle('expanded'); });
-})();
-
-// ════════════════════════════════
-//  Typewriter
-// ════════════════════════════════
-(function(){
-  var texts = ['無限進步','我爱你们'];
-  var el = document.getElementById('typewriter');
-  var ti=0, ci=0, del=false;
-  function tick(){
-    var f = texts[ti];
-    if(!del){ ci++; el.textContent=f.slice(0,ci); if(ci===f.length){del=true;setTimeout(tick,1800);return;} setTimeout(tick,130); }
-    else { ci--; el.textContent=f.slice(0,ci); if(ci===0){del=false;ti=(ti+1)%texts.length;setTimeout(tick,400);return;} setTimeout(tick,65); }
-  }
-  setTimeout(tick,900);
-})();
-
-// ════════════════════════════════
-//  Posts scroll reveal
-// ════════════════════════════════
-(function(){
-  var obs = new IntersectionObserver(function(entries){
+  var observer=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if(e.isIntersecting){
-        document.querySelectorAll('.post-card').forEach(function(c,i){
-          c.style.animation = 'postIn 0.55s cubic-bezier(0.22,1,0.36,1) '+(i*0.1+0.05)+'s forwards';
+        var cards=document.querySelectorAll('.rp-card');
+        cards.forEach(function(c,i){
+          c.style.animation='rpFadeUp 0.5s cubic-bezier(0.22,1,0.36,1) '+(i*0.1+0.05)+'s forwards';
         });
-        obs.disconnect();
+        observer.disconnect();
       }
     });
   },{threshold:0.1});
-  var a = document.getElementById('posts-anchor');
-  if(a) obs.observe(a);
+  var section=document.getElementById('recent-posts');
+  if(section)observer.observe(section);
 })();
 </script>
-</body>
-</html>
 
