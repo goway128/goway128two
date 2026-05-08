@@ -1,514 +1,442 @@
 ---
 layout: compress
 ---
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BubbleMenu — 白の小站 Demo</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <style>
-    /* ── Reset ── */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;-webkit-tap-highlight-color: transparent;
-    }
 
-    body {
-      font-family: "Source Han Serif SC", "Source Han Serif", serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #b3e8fb 0%, #ddf4ff 60%, #c9effe 100%);
-      overflow-x: hidden;
-    }
+<!doctype html>
 
-    /* ══════════════════════════════
-       BubbleMenu — Nav Bar══════════════════════════════ */
-    .bubble-menu {
-      left: 0; right: 0; top: 2em;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 0 2em;
-      pointer-events: none;
-      z-index: 99;
-    }
-    .bubble-menu.fixed{ position: fixed; }
-    .bubble-menu.absolute { position: absolute; }
+{% include origin-type.html %}
 
-    .bubble-menu .bubble {
-      --bubble-size: 48px;
-      width: var(--bubble-size);
-      height: var(--bubble-size);
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 4px 16px rgba(0,0,0,.12);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: auto;
-    }
-    .bubble-menu .logo-bubble,
-    .bubble-menu .toggle-bubble { will-change: transform; }
+{% include lang.html %}
 
-    /* Logo bubble — pill shape */
-    .bubble-menu .logo-bubble {
-      width: auto;
-      min-height: var(--bubble-size);
-      height: var(--bubble-size);
-      padding: 0 14px;
-      border-radius: calc(var(--bubble-size) / 2);
-      gap: 8px;
-      cursor: pointer;        /* lang switcher */
-    }
-    .bubble-menu .toggle-bubble {
-      width: var(--bubble-size);
-      height: var(--bubble-size);
-    }
+{% if site.theme_mode %}
+  {% capture prefer_mode %}data-mode="{{ site.theme_mode }}"{% endcapture %}
+{% endif %}
 
-    /* Avatar inside logo bubble */
-    .bubble-menu .logo-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-    .bubble-menu .logo-text {
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #1a3a4a;
-      white-space: nowrap;
-      line-height: 1;}
+<html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}" {{ prefer_mode }}>
+  {% include head.html lang=lang %}
+  
+<script src="{{ '/assets/js/auto-scroll-animation.js' | relative_url }}"></script>
 
-    /* Lang badge on logo bubble */
-    .bubble-menu .lang-badge {
-      font-size: 0.62rem;
-      font-weight: 700;
-      color: #0a6a8a;
-      background: rgba(10,106,138,0.1);
-      border-radius: 999px;
-      padding: 2px 7px;
-      white-space: nowrap;
-      line-height: 1.4;
-      flex-shrink: 0;
-    }
+<link rel="preconnect" href="https://fontsapi.zeoseven.com">
+<style>
+@import url("https://fontsapi.zeoseven.com/285/main/result.css");
+@keyframes pageSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+body, html {
+  font-family: "Source Han Serif SC", "Source Han Serif", serif !important;
+}
+#main-wrapper {
+  animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+#sidebar {
+  z-index: 99 !important;
+  background: linear-gradient(180deg,
+    #b3e8fb 0%,
+    #c9effe 40%,
+    #ddf4ff 60%,
+    #c9effe 80%,
+    #b3e8fb 100%
+  ) !important;
+}
+[data-mode="dark"] #sidebar {
+  background: #f9c8d8 !important;
+}
+#sidebar .site-title a,
+#sidebar .site-subtitle,
+#sidebar nav a,
+#sidebar .sidebar-bottom a,
+#sidebar .sidebar-bottom span,
+#sidebar nav span {
+  color: #1a3a4a !important;
+}
+[data-mode="dark"] #sidebar .site-title a,
+[data-mode="dark"] #sidebar .site-subtitle,
+[data-mode="dark"] #sidebar nav a,
+[data-mode="dark"] #sidebar .sidebar-bottom a,
+[data-mode="dark"] #sidebar .sidebar-bottom span,
+[data-mode="dark"] #sidebar nav span {
+  color: #4a1a2e !important;
+}
+#sidebar li.active a,
+#sidebar .nav-link.active {
+  background: rgba(255,255,255,0.55) !important;
+  border-radius: 8px !important;
+}
+#sidebar li.active span,
+#sidebar li.active a span {
+  color: #0a6a8a !important;
+  font-weight: 700 !important;
+}
+[data-mode="dark"] #sidebar li.active a,
+[data-mode="dark"] #sidebar .nav-link.active {
+  background: rgba(255,255,255,0.45) !important;
+  border-radius: 8px !important;
+}
+[data-mode="dark"] #sidebar li.active span,
+[data-mode="dark"] #sidebar li.active a span {
+  color: #7a1a3e !important;
+  font-weight: 700 !important;
+}
+</style>
+  
+  <body{% if page.layout == "post" %} class="post-layout"{% endif %}>
+    <div id="read-progress-track"><div id="read-progress-bar"><span id="read-progress-icon">🍥</span></div></div>
+    {% include sidebar.html lang=lang %}
 
-    /* Hamburger button */
-    .bubble-menu .menu-btn {
-      border: none;
-      background: #fff;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      outline: none;
-    }
-    .bubble-menu .menu-line {
-      width: 26px; height: 2px;
-      background: #1a3a4a;
-      border-radius: 2px;
-      display: block;
-      margin: 0 auto;transition: transform .3s ease, opacity .3s ease;transform-origin: center;
-    }
-    .bubble-menu .menu-line + .menu-line { margin-top: 6px; }
-    .bubble-menu .menu-btn.open .menu-line:first-child {
-      transform: translateY(4px) rotate(45deg);
-    }
-    .bubble-menu .menu-btn.open .menu-line:last-child {
-      transform: translateY(-4px) rotate(-45deg);
-    }
+    <div id="main-wrapper" class="d-flex justify-content-center">
+      <div class="container d-flex flex-column px-xxl-5">
+        {% include topbar.html lang=lang %}
 
-    @media (min-width: 768px) {
-      .bubble-menu .bubble { --bubble-size: 56px; }
-      .bubble-menu .logo-bubble { padding: 0 16px; }
-      .bubble-menu .logo-avatar { width: 36px; height: 36px; }
-      .bubble-menu .logo-text { font-size: 0.85rem; }
-    }
+        <div class="row flex-grow-1">
+          <main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            {% if layout.layout == 'default' %}
+              {% include refactor-content.html content=content lang=lang %}
+            {% else %}
+              {{ content }}
+            {% endif %}
+          </main>
 
-    /* ══════════════════════════════
-       Lang Panel (popup)
-    ══════════════════════════════ */
-    #lang-panel-bubble {
-      position: fixed;
-      z-index: 9999;
-      background: #fff;
-      border: 1.5px solid rgba(10,106,138,0.18);
-      border-radius: 16px;
-      padding: 8px;
-      display: none;
-      flex-direction: column;
-      gap: 4px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-      min-width: 130px;
-    }
-    #lang-panel-bubble.open { display: flex; }
-    .lang-opt-bubble {
-      padding: 8px 16px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .15s, color .15s;
-      color: #1a3a4a;
-      border: none;
-      background: transparent;
-      text-align: left;
-      font-family: inherit;
-    }
-    .lang-opt-bubble:hover { background: rgba(10,106,138,0.08); color: #0a6a8a; }
-    .lang-opt-bubble.active { color: #0a6a8a; background: rgba(10,106,138,0.12); font-weight: 700; }
+          <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
+            <div class="access">
+              {% include_cached update-list.html lang=lang %}
+              {% include_cached trending-tags.html lang=lang %}
+            </div>
 
-    /* ══════════════════════════════
-       BubbleMenu — Overlay / Pills
-    ══════════════════════════════ */
-    .bubble-menu-items {
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      z-index: 98;
-    }
-    .bubble-menu-items.fixed{ position: fixed; }
-    .bubble-menu-items.absolute { position: absolute; }
+            {% for _include in layout.panel_includes %}
+              {% assign _include_path = _include | append: '.html' %}
+              {% include {{ _include_path }} lang=lang %}
+            {% endfor %}
+          </aside>
+        </div>
 
-    .bubble-menu-items .pill-list {
-      list-style: none;
-      padding: 0 24px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0; row-gap: 4px;
-      width: 100%; max-width: 1600px;
-      margin: 0 auto;pointer-events: auto;
-      justify-content: stretch;
-    }
-    .bubble-menu-items .pill-col {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      flex: 0 0 calc(100% / 3);
-    }
-    /* centre last row when4 or5 items */
-    .bubble-menu-items .pill-col:nth-child(4):nth-last-child(2) {
-      margin-left: calc(100% / 6);
-    }
-    .bubble-menu-items .pill-col:nth-child(4):last-child {
-      margin-left: calc(100% / 3);
-    }
+        <div class="row">
+          <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            {% for _include in layout.tail_includes %}
+              {% assign _include_path = _include | append: '.html' %}
+              {% include {{ _include_path }} lang=lang %}
+            {% endfor %}
 
-    .bubble-menu-items .pill-link {
-      --pill-bg: #ffffff;
-      --pill-color: #1a3a4a;
-      --item-rot: 0deg;
-      --pill-min-h: 160px;
-      --hover-bg: #f3f4f6;
-      --hover-color: #1a3a4a;
-      width: 100%;
-      min-height: var(--pill-min-h);
-      padding: clamp(1.5rem, 3vw, 8rem) 0;
-      font-size: clamp(1.5rem, 4vw, 4rem);
-      font-weight: 400;
-      line-height: 0;
-      border-radius: 999px;
-      background: var(--pill-bg);
-      color: var(--pill-color);
-      text-decoration: none;
-      box-shadow: 0 4px 14px rgba(0,0,0,.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      transition: background .3s ease, color .3s ease;
-      will-change: transform;
-      white-space: nowrap;
-      overflow: hidden;
-      height: 10px;
-      outline: none;
-    }
-    .bubble-menu-items .pill-label {
-      display: inline-block;
-      will-change: transform, opacity;
-      height: 1.2em;
-      line-height: 1.2;
-    }
+            {% include_cached footer.html lang=lang %}
+          </div>
+        </div>
 
-    @media (min-width: 900px) {
-      .bubble-menu-items .pill-link {
-        transform: rotate(var(--item-rot));}
-      .bubble-menu-items .pill-link:hover {
-        transform: rotate(var(--item-rot)) scale(1.06);
-        background: var(--hover-bg);
-        color: var(--hover-color);
-      }
-      .bubble-menu-items .pill-link:active {
-        transform: rotate(var(--item-rot)) scale(.94);
-      }
-    }
+        {% include_cached search-results.html lang=lang %}
+      </div>
 
-    @media (max-width: 899px) {
-      .bubble-menu-items {
-        align-items: flex-start;
-        padding-top: 120px;
-      }
-      .bubble-menu-items .pill-list { row-gap: 16px; }
-      .bubble-menu-items .pill-col {
-        flex: 0 0 100%;
-        margin-left: 0 !important;
-        overflow: visible;
-      }
-      .bubble-menu-items .pill-link {
-        font-size: clamp(1.2rem, 3vw, 4rem);
-        padding: clamp(1rem, 2vw, 2rem) 0;
-        min-height: 80px;
-      }
-      .bubble-menu-items .pill-link:hover {
-        transform: scale(1.06);
-        background: var(--hover-bg);
-        color: var(--hover-color);
-      }
-      .bubble-menu-items .pill-link:active { transform: scale(.94); }
-    }
-
-    /* ── Demo page body ── */
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      text-align: center;
-      padding: 2rem;
-      pointer-events: none;
-    }
-    .hero h1 {
-      font-size: clamp(2rem, 6vw, 4rem);
-      color: #1a3a4a;
-      margin-bottom: .5rem;
-    }
-    .hero p { font-size: 1.1rem; color: #2a5a6a; opacity: .75; }
-  </style>
-</head>
-<body><!-- ① Nav bar -->
-  <nav class="bubble-menu absolute" aria-label="Main navigation">
-
-    <!-- Logo bubble — doubles as lang switcher -->
-    <div
-      id="logoBubble"
-      class="bubble logo-bubble"
-      role="button"
-      tabindex="0"
-      aria-label="切换语言"
-      style="background:#fff;">
-      <img
-        class="logo-avatar"
-        src="https://i.111666.best/image/XMUuxvqj9mZXisStXImrPR.jpg"
-        alt="白の小站头像"
-        onerror="this.style.display='none'"
-      />
-      <span class="logo-text">白の小站</span><span class="lang-badge" id="langBadge">简中</span>
+      <aside aria-label="Scroll to Top">
+        <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow">
+          <i class="fas fa-angle-up"></i>
+        </button>
+      </aside>
     </div>
 
-    <!-- Hamburger -->
-    <button
-      type="button"
-      id="menuToggle"
-      class="bubble toggle-bubble menu-btn"
-      aria-label="切换导航菜单"
-      aria-pressed="false"
-      style="background:#fff;"
-    >
-      <span class="menu-line"></span>
-      <span class="menu-line"></span>
-    </button></nav>
+    <div id="mask" class="d-none position-fixed w-100 h-100 z-1"></div>
 
-  <!-- ② Lang panel popup -->
-  <div id="lang-panel-bubble" role="menu" aria-label="语言选择">
-    <button class="lang-opt-bubble active" data-lang="zh">简体中文</button>
-    <button class="lang-opt-bubble"data-lang="en">English</button>
-    <button class="lang-opt-bubble"        data-lang="ja">日本語</button></div>
+    {% if site.pwa.enabled %}
+      {% include_cached notification.html lang=lang %}
+    {% endif %}
 
-  <!-- ③ Overlay with pill links -->
-  <div id="bubbleOverlay" class="bubble-menu-items absolute" aria-hidden="true">
-    <ul class="pill-list" role="menu" aria-label="导航链接"></ul>
-  </div>
+    {% for _include in layout.script_includes %}
+      {% assign _include_path = _include | append: '.html' %}
+      {% include {{ _include_path }} %}
+    {% endfor %}
 
-  <!-- ④ Demo page body -->
-  <main class="hero">
-    <h1>白の小站</h1>
-    <p>点击右上角 ☰ 展开导航 · 点击左上角头像切换语言</p></main>
+    {% include_cached search-loader.html lang=lang %}
 
-  <script>
-    /* ══════════════════════════════
-       i18n — 菜单标签翻译
-    ══════════════════════════════ */
-    const I18N_LABELS = {
-      zh: { home:'首页', categories:'分类', archives:'归档', about:'关于', friends:'友链' },
-      en: { home:'Home', categories:'Categories', archives:'Archives', about:'About', friends:'Friends' },
-      ja: { home:'ホーム', categories:'カテゴリ', archives:'アーカイブ', about:'概要', friends:'リンク集' },
-    };
-    const BADGE_LABELS = { zh:'简中', en:'EN', ja:'日本語' };
+    <style>
+      #lang-wrap {
+        padding: 0 1rem 0.8rem;
+        width: 100%;
+      }
+      #lang-switcher-btn {
+        width: 100%;
+        padding: 7px 14px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(128,128,128,0.25);
+        background: transparent;
+        color: var(--sidebar-muted-color, #aaa);
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      #lang-switcher-btn:hover { border-color: #f9a8c9; color: #f9a8c9; }
+      #lang-panel {
+        position: fixed;
+        z-index: 9999;
+        background: var(--card-bg, #21252b);
+        border: 1.5px solid rgba(128,128,128,0.2);
+        border-radius: 16px;
+        padding: 8px;
+        display: none;
+        flex-direction: column;
+        gap: 4px;
+        box-shadow: 0 -4px 32px rgba(0,0,0,0.3);
+        min-width: 130px;
+      }
+      #lang-panel.open { display: flex; }
+      .lang-option {
+        padding: 8px 16px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+        color: var(--sidebar-muted-color, #aaa);
+        border: none;
+        background: transparent;
+        text-align: left;
+      }
+      .lang-option:hover { background: rgba(249,168,201,0.12); color: #f9a8c9; }
+      .lang-option.active { color: #f472b6; background: rgba(244,114,182,0.1); }
+    </style>
 
-    /* ══════════════════════════════
-       Menu data — 对应你网站的导航
-    ══════════════════════════════ */
-    const ITEMS = [
-      { key:'home',href:'/',ariaLabel:'首页',rotation:-8, hoverStyles:{ bgColor:'#3b82f6', textColor:'#ffffff' } },
-      { key:'categories', href:'/categories/', ariaLabel:'分类',rotation: 8, hoverStyles:{ bgColor:'#10b981', textColor:'#ffffff' } },
-      { key:'archives',   href:'/archives/',   ariaLabel:'归档',   rotation: 8, hoverStyles:{ bgColor:'#f59e0b', textColor:'#ffffff' } },
-      { key:'about',      href:'/about/',      ariaLabel:'关于',   rotation: 8, hoverStyles:{ bgColor:'#f472b6', textColor:'#ffffff' } },
-      { key:'friends',    href:'/friends/',    ariaLabel:'友链',   rotation:-8, hoverStyles:{ bgColor:'#8b5cf6', textColor:'#ffffff' } },
-    ];
-
-    /* ── Config ── */
-    const MENU_BG            = '#ffffff';
-    const MENU_CONTENT_COLOR = '#1a3a4a';
-    const ANIMATION_EASE     = 'back.out(1.5)';
-    const ANIMATION_DURATION = 0.5;
-    const STAGGER_DELAY      = 0.12;
-
-    /* ══════════════════════════════
-       Build pill DOM
-    ══════════════════════════════ */
-    const pillList = document.querySelector('.pill-list');
-    const bubbles= [];
-    const labels   = [];ITEMS.forEach((item, i) => {
-      const li = document.createElement('li');
-      li.className = 'pill-col';
-      li.setAttribute('role', 'none');
-
-      const a = document.createElement('a');
-      a.className = 'pill-link';
-      a.href = item.href;
-      a.setAttribute('role', 'menuitem');
-      a.setAttribute('aria-label', item.ariaLabel);
-      a.style.setProperty('--item-rot',`${item.rotation ?? 0}deg`);
-      a.style.setProperty('--pill-bg',     MENU_BG);
-      a.style.setProperty('--pill-color',  MENU_CONTENT_COLOR);
-      a.style.setProperty('--hover-bg',    item.hoverStyles?.bgColor|| '#f3f4f6');
-      a.style.setProperty('--hover-color', item.hoverStyles?.textColor  || MENU_CONTENT_COLOR);
-
-      const span = document.createElement('span');
-      span.className = 'pill-label';
-      // label set by renderLabels() below
-
-      a.appendChild(span);
-      li.appendChild(a);
-      pillList.appendChild(li);
-
-      bubbles.push(a);
-      labels.push(span);
-    });
-
-    /* ══════════════════════════════
-       Language switcher
-    ══════════════════════════════ */
-    let curLang = localStorage.getItem('chirpy-lang') || 'zh';
-
-    function renderLabels() {
-      const map = I18N_LABELS[curLang] || I18N_LABELS.zh;
-      labels.forEach((span, i) => {
-        span.textContent = map[ITEMS[i].key] || ITEMS[i].key;
-      });
-      document.getElementById('langBadge').textContent = BADGE_LABELS[curLang] || curLang;
-      document.querySelectorAll('.lang-opt-bubble').forEach(b => {
-        b.classList.toggle('active', b.dataset.lang === curLang);
-      });
-    }
-
-    function setLang(lang) {
-      curLang = lang;
-      localStorage.setItem('chirpy-lang', lang);
-      renderLabels();
-    }
-
-    // Init labels
-    renderLabels();
-
-    // Lang panel toggle
-    const langPanel= document.getElementById('lang-panel-bubble');
-    const logoBubble = document.getElementById('logoBubble');
-
-    function openLangPanel() {
-      const r = logoBubble.getBoundingClientRect();
-      langPanel.style.left= r.left + 'px';
-      langPanel.style.top    = (r.bottom + 8) + 'px';
-      langPanel.classList.add('open');
-    }
-
-    logoBubble.addEventListener('click', e => {
-      e.stopPropagation();
-      langPanel.classList.contains('open') ? langPanel.classList.remove('open') : openLangPanel();
-    });
-    logoBubble.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLangPanel(); }
-    });
-    document.addEventListener('click', () => langPanel.classList.remove('open'));langPanel.addEventListener('click', e => e.stopPropagation());
-
-    document.querySelectorAll('.lang-opt-bubble').forEach(btn => {
-      btn.addEventListener('click', () => {
-        setLang(btn.dataset.lang);
-        langPanel.classList.remove('open');
-      });
-    });
-
-    /* ══════════════════════════════
-       Menu open / close
-    ══════════════════════════════ */
-    let isOpen = false;
-    const toggle= document.getElementById('menuToggle');
-    const overlay = document.getElementById('bubbleOverlay');
-
-    toggle.addEventListener('click', () => {
-      isOpen = !isOpen;
-      toggle.setAttribute('aria-pressed', String(isOpen));
-      toggle.classList.toggle('open', isOpen);
-      overlay.setAttribute('aria-hidden', String(!isOpen));
-      isOpen ? openMenu() : closeMenu();
-    });
-
-    /* ══════════════════════════════
-       GSAP animations
-    ══════════════════════════════ */
-    function openMenu() {
-      gsap.set(overlay, { display: 'flex' });
-      gsap.killTweensOf([...bubbles, ...labels]);
-      gsap.set(bubbles, { scale: 0, transformOrigin: '50% 50%' });
-      gsap.set(labels,{ y: 24, autoAlpha: 0 });
-
-      bubbles.forEach((bubble, i) => {
-        const delay = i * STAGGER_DELAY + gsap.utils.random(-0.05, 0.05);
-        const tl = gsap.timeline({ delay });
-        tl.to(bubble, { scale: 1, duration: ANIMATION_DURATION, ease: ANIMATION_EASE });
-        if (labels[i]) {
-          tl.to(labels[i], {
-            y: 0, autoAlpha: 1,
-            duration: ANIMATION_DURATION,
-            ease: 'power3.out',
-          }, `-=${ANIMATION_DURATION * 0.9}`);
+    <div id="lang-panel">
+      <button class="lang-option active" data-lang="zh">简体中文</button>
+      <button class="lang-option" data-lang="en">English</button>
+      <button class="lang-option" data-lang="ja">日本語</button>
+    </div>
+    <div id="lang-wrap">
+      <button id="lang-switcher-btn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        <span id="lang-btn-label">简体中文</span>
+      </button>
+    </div>
+    <script>
+    (function(){
+      var i18n={
+        zh:{'文章列表':'文章列表','云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向','心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页','起始页':'起始页','作者':'作者','发表于':'发表于','更新于':'更新于','字':'字','次浏览':'次浏览','分钟':'分钟','阅读':'阅读','相关文章':'相关文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','已复制！':'已复制！','复制链接':'复制链接','链接已复制！':'链接已复制！','搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果','最近更新':'最近更新','热门标签':'热门标签','目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新','找到':'找到','条结果':'条结果','友链':'友链','篇文章':'篇文章','本文由作者按照':'本文由作者按照','进行授权':'进行授权','文章':'文章','最近更新':'最近更新','相关文章':'相关文章','default':'首页'},
+        en:{'文章列表':'Posts','分类':'Categories','标签':'Tags','归档':'Archives','关于':'About','首页':'Home','起始页':'Start','作者':'Author','发表于':'Posted','更新于':'Updated','字':'words','次浏览':'views','分钟':'min','阅读':'read','相关文章':'Related','分享':'Share','下一篇':'Next','上一篇':'Prev','已复制！':'Copied!','复制链接':'Copy Link','链接已复制！':'Link copied!','搜索':'Search','取消':'Cancel','没有找到相关结果':'No results found','最近更新':'Recently Updated','热门标签':'Trending Tags','目录':'Contents','发现新版本的内容。':'New content available.','更新':'Update','找到':'Found','条结果':'results','友链':'Friends','篇文章':'articles','本文由作者按照':'Licensed under','进行授权':'by the author','文章':'Posts','篇文章':'articles','个分类':'categories'},
+        ja:{'文章列表':'記事一覧','云服务与厂商':'クラウドサービス','多元性别/取向':'ジェンダー','心理疾病':'メンタルヘルス','素材':'素材','药品':'薬品','杂谈':'雑談','分类':'カテゴリ','标签':'タグ','归档':'アーカイブ','关于':'概要','首页':'ホーム','起始页':'スタート','作者':'著者','发表于':'投稿日','更新于':'更新日','字':'文字','次浏览':'閲覧','分钟':'分','阅读':'読む','相关文章':'関連記事','分享':'共有','下一篇':'次へ','上一篇':'前へ','已复制！':'コピー完了!','复制链接':'リンクをコピー','链接已复制！':'コピーしました!','搜索':'検索','取消':'キャンセル','没有找到相关结果':'結果なし','最近更新':'最近の更新','热门标签':'人気タグ','目录':'目次','发现新版本的内容。':'新しいコンテンツ。','更新':'更新','找到':'見つかりました','条结果':'件','友链':'リンク集','篇文章':'本','本文由作者按照':'ライセンス','进行授权':'で公开','文章':'記事'},
+      };
+      var cur=localStorage.getItem('chirpy-lang')||'zh';
+      var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
+      var SKIP_CLASSES=['post-content','highlight','rouge','language-'];
+      function shouldSkip(node){
+        var p=node.parentElement;
+        while(p){
+          if(SKIP_TAGS[p.tagName])return true;
+          for(var i=0;i<SKIP_CLASSES.length;i++){
+            if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true;
+          }
+          p=p.parentElement;
         }
-      });}
-
-    function closeMenu() {
-      gsap.killTweensOf([...bubbles, ...labels]);
-      gsap.to(labels,  { y: 24, autoAlpha: 0, duration: 0.2, ease: 'power3.in' });
-      gsap.to(bubbles, {
-        scale: 0, duration: 0.2, ease: 'power3.in',
-        onComplete: () => gsap.set(overlay, { display: 'none' }),
+        return false;
+      }
+      function applyLang(lang){
+        var map=i18n[lang];
+        var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
+        var node;
+        while((node=walker.nextNode())){
+          var raw=node.nodeValue;
+          var txt=raw.trim();
+          if(!txt||txt.length<2)continue;
+          if(shouldSkip(node))continue;
+          if(!node._zhKey)node._zhKey=txt;
+          if(map[node._zhKey])node.nodeValue=raw.replace(node._zhKey,map[node._zhKey]);
+        }
+        var inp=document.querySelector('input[type="search"],#search-input');
+        if(inp){
+          if(!inp._zhPh)inp._zhPh=inp.placeholder;
+          if(map[inp._zhPh])inp.placeholder=map[inp._zhPh];
+        }
+        document.querySelectorAll('[data-bs-original-title]').forEach(function(el){
+          if(!el._zhTitle)el._zhTitle=el.getAttribute('data-bs-original-title');
+          if(map[el._zhTitle])el.setAttribute('data-bs-original-title',map[el._zhTitle]);
+        });
+        var labels={zh:'简中',en:'EN',ja:'日本語'};
+        document.getElementById('lang-btn-label').textContent=labels[lang]||lang;
+        document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang);});
+        cur=lang;localStorage.setItem('chirpy-lang',lang);
+      }
+      var panel=document.getElementById('lang-panel');
+      var wrap=document.getElementById('lang-wrap');
+      var btn=document.getElementById('lang-switcher-btn');
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        var r=btn.getBoundingClientRect();
+        panel.style.left=r.left+'px';
+        panel.style.bottom=(window.innerHeight-r.top+8)+'px';
+        panel.classList.toggle('open');
       });
-    }
-
-    /* ── Resize: re-apply rotation on desktop ── */
-    window.addEventListener('resize', () => {
-      if (!isOpen) return;
-      const isDesktop = window.innerWidth >= 900;
-      bubbles.forEach((bubble, i) => {
-        gsap.set(bubble, { rotation: isDesktop ? (ITEMS[i].rotation ?? 0) : 0 });
+      document.addEventListener('click',function(){panel.classList.remove('open');});
+      panel.addEventListener('click',function(e){e.stopPropagation();});
+      document.querySelectorAll('.lang-option').forEach(function(opt){
+        opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open');});
       });
-    });</script>
+      window.addEventListener('DOMContentLoaded',function(){
+        var sidebar=document.getElementById('sidebar');
+        if(sidebar){
+          var bottom=sidebar.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');
+          if(!bottom){
+            var divs=sidebar.querySelectorAll('div');
+            bottom=divs[divs.length-1];
+          }
+          sidebar.insertBefore(wrap,bottom);
+        }
+        if(cur!=='zh')applyLang(cur);
+      });
+    })();
+    </script>
+
+<style>
+/* --- 公共样式 --- */
+.page-fade-out {
+  animation: pageFadeOut 0.3s ease forwards !important;
+}
+@keyframes pageFadeOut {
+  from { opacity:1; transform:translateY(0); }
+  to   { opacity:0; transform:translateY(-12px); }
+}
+
+/* 默认亮色背景 */
+body, #main-wrapper, #main-wrapper .container, main {
+  background-color: #fce8f0 !important;
+}
+
+/* --- 暗黑模式样式强化 --- */
+
+/* 1. 背景：紫红渐变 */
+html[data-mode="dark"] body,
+html[data-mode="dark"] #main-wrapper,
+html[data-mode="dark"] #main-wrapper .container,
+html[data-mode="dark"] main {
+  background: linear-gradient(160deg, #2d0a1a 0%, #1a0510 100%) !important;
+}
+
+/* 2. 尾部和页脚透明化 */
+#tail-wrapper, footer, #footer {
+  background-color: transparent !important;
+}
+
+/* 3. 卡片样式：亮色与暗色区分 */
+.card-wrapper.card,
+.card-wrapper,
+.list-group-item {
+  background-color: rgba(173,216,255,0.18) !important;
+  border-color: rgba(100,180,255,0.25) !important;
+  transition: all 0.2s;
+}
+
+.card-wrapper.card:hover,
+.card-wrapper:hover,
+.list-group-item:hover {
+  background-color: rgba(173,216,255,0.35) !important;
+  transform: translateY(-2px);
+}
+
+/* 暗色模式下的深棕色卡片 */
+html[data-mode="dark"] .card,
+html[data-mode="dark"] .card-wrapper,
+html[data-mode="dark"] .list-group-item,
+html[data-mode="dark"] .categories .list-group-item {
+  background-color: #3e2723 !important; /* 深棕色 */
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  color: #d7ccc8 !important; /* 浅棕色文字，增强对比度 */
+}
+
+html[data-mode="dark"] .card:hover,
+html[data-mode="dark"] .card-wrapper:hover,
+html[data-mode="dark"] .list-group-item:hover {
+  background-color: #4e342e !important; /* 悬停时稍微加亮 */
+}
+
+/* 阅读进度条样式 */
+#read-progress-track {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 100vh;
+  background: rgba(128,128,128,0.12);
+  z-index: 9998;
+  display: none;
+}
+#read-progress-bar {
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(180deg,
+    #55CDFC 0%,
+    #F7A8B8 40%,
+    #FFFFFF 60%,
+    #F7A8B8 80%,
+    #55CDFC 100%
+  );
+  border-radius: 0 0 4px 4px;
+  transition: height 0.08s linear;
+  position: relative;
+}
+#read-progress-icon {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+  pointer-events: none;
+  transition: bottom 0.08s linear;
+}
+</style>
+
+<script>
+(function(){
+  var track=document.getElementById('read-progress-track');
+  var bar=document.getElementById('read-progress-bar');
+  if(track&&bar&&document.body.classList.contains('post-layout')){
+    track.style.display='block';
+    window.addEventListener('scroll',function(){
+      var scrolled=document.documentElement.scrollTop||document.body.scrollTop;
+      var total=document.documentElement.scrollHeight-window.innerHeight;
+      bar.style.height=(total>0?Math.min(100,scrolled/total*100):0)+'%';
+    },{passive:true});
+  }
+})();
+(function(){
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a');
+    if(!a)return;
+    var href=a.getAttribute('href');
+    if(!href||href.startsWith('#')||href.startsWith('javascript')||a.target==='_blank')return;
+    if(href.startsWith('http')&&!href.includes(location.hostname))return;
+    e.preventDefault();
+    var wrapper=document.getElementById('main-wrapper');
+    if(wrapper)wrapper.classList.add('page-fade-out');
+    setTimeout(function(){location.href=href;},280);
+  });
+})();
+(function(){
+  var post=document.querySelector('#post-wrapper,article,.post-content');
+  if(!post)return;
+  var els=post.querySelectorAll('h1,h2,h3,h4,p,ul,ol,blockquote,pre,table,img,.card,hr');
+  els.forEach(function(el,i){
+    el.style.opacity='0';
+    el.style.transform='translateY(22px)';
+    el.style.transition='opacity 0.5s ease, transform 0.5s ease';
+    el.style.transitionDelay=Math.min(i*40,400)+'ms';
+  });
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.style.opacity='1';
+        entry.target.style.transform='translateY(0)';
+        entry.target.addEventListener('transitionend',function(){
+          entry.target.style.transitionDelay='';
+        },{once:true});
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+  els.forEach(function(el){io.observe(el);});
+})();
+</script>
 </body>
 </html>
+
+
