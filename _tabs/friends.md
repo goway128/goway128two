@@ -15,24 +15,25 @@ icon: fa-solid fa-at
 
 我的信息：
 
-{% highlight md %}
+---
+
 name 白
+
 url https://goway0128.top
-avatar https://i.111666.best/image/AQAH3evyedaM9JXjas8PCA.jpg
+
+avatar https://img.life-white.uk/file/AgACAgQAAyEGAATrQHCPAAMMagQFi_l2KCPVk8AITeioEXXq9WUAAl8Paxto0yFQOrKizTsT7tQBAAMCAAN4AAM7BA.jpg
+
 desc 白の小站
-{% endhighlight %}
 
-## 如果想加入这里
+---
 
-请像下面的例子发送邮件到 `goway@goway128.online` 或者 `goway128.outlook`
+#### 欢迎各位加入awa
 
-{% highlight md %}
-name example
-url https://example...
-avatar https://example...
-desc（可选）
-{% endhighlight %}
+我的联系方式
 
+邮箱'love@life-white.uk'
+
+   
 <div style="display:flex;flex-direction:column;gap:14px;max-width:680px;margin:2rem 0;padding:0;">
 
   <a href="https://mahiro.uk/" target="_blank" rel="noopener"
