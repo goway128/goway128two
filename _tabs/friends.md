@@ -15,13 +15,13 @@ icon: fa-solid fa-at
 
 ### 我的信息
 
-名字： 白
+NAME `白`
 
-URL https://goway0128.top
+URL `https://goway0128.top`
 
-头像 https://img.life-white.uk/file/AgACAgQAAyEGAATrQHCPAAMMagQFi_l2KCPVk8AITeioEXXq9WUAAl8Paxto0yFQOrKizTsT7tQBAAMCAAN4AAM7BA.jpg
+AVATER `https://img.life-white.uk/file/AgACAgQAAyEGAATrQHCPAAMMagQFi_l2KCPVk8AITeioEXXq9WUAAl8Paxto0yFQOrKizTsT7tQBAAMCAAN4AAM7BA.jpg`
 
-介绍 白の小站
+DOES `白の小站
 
 
 
