@@ -13,25 +13,23 @@ icon: fa-solid fa-at
 }
 </style>
 
-我的信息：
+### 我的信息
 
----
+名字： 白
 
-name 白
+URL https://goway0128.top
 
-url https://goway0128.top
+头像 https://img.life-white.uk/file/AgACAgQAAyEGAATrQHCPAAMMagQFi_l2KCPVk8AITeioEXXq9WUAAl8Paxto0yFQOrKizTsT7tQBAAMCAAN4AAM7BA.jpg
 
-avatar https://img.life-white.uk/file/AgACAgQAAyEGAATrQHCPAAMMagQFi_l2KCPVk8AITeioEXXq9WUAAl8Paxto0yFQOrKizTsT7tQBAAMCAAN4AAM7BA.jpg
+介绍 白の小站
 
-desc 白の小站
 
----
 
 #### 欢迎各位加入awa
 
 我的联系方式
 
-邮箱'love@life-white.uk'
+email `love@life-white.uk`
 
 ---
 
