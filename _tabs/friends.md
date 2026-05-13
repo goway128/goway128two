@@ -21,7 +21,7 @@ URL `https://goway0128.top`
 
 AVATER `https://img.life-white.uk/file/AgACAgQAAyEGAATrQHCPAAMMagQFi_l2KCPVk8AITeioEXXq9WUAAl8Paxto0yFQOrKizTsT7tQBAAMCAAN4AAM7BA.jpg`
 
-DOES `白の小站
+DOES `白の小站`
 
 
 
