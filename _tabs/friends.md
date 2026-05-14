@@ -23,14 +23,6 @@ AVATER `https://img.life-white.uk/file/AgACAgQAAyEGAATrQHCPAAMMagQFi_l2KCPVk8AIT
 
 DOES `白の小站`
 
-
-
-#### 欢迎各位加入awa
-
-我的联系方式
-
-email `love@life-white.uk`
-
 ---
 
    
