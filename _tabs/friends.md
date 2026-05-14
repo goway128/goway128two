@@ -50,14 +50,14 @@ DOES `白の小站`
     </div>
   </a>
 
-  <a href="" target="_blank" rel="noopener"
+  <a href="https://www.qingfengnb.cn/" target="_blank" rel="noopener"
     style="display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:16px;border:1.5px solid rgba(128,128,128,0.18);background:rgba(128,128,128,0.06);backdrop-filter:blur(8px);text-decoration:none!important;transition:all 0.25s;opacity:0;animation:friendSlideIn 0.5s ease forwards;animation-delay:0.05s;"
     onmouseover="this.style.borderColor='#f9a8c9';this.style.background='rgba(249,168,201,0.08)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.1)';"
     onmouseout="this.style.borderColor='rgba(128,128,128,0.18)';this.style.background='rgba(128,128,128,0.06)';this.style.transform='';this.style.boxShadow='';">
-    <img src="" alt="" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+    <img src="https://img.qingfengnb.cn/LightPicture/2025/07/bec6eb9625656d60.jpg" alt="" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;">
     <div style="min-width:0;">
-      <div style="font-size:1rem;font-weight:700;margin-bottom:4px;"></div>
-      <div style="font-size:0.85rem;opacity:0.6;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;"></div>
+      <div style="font-size:1rem;font-weight:700;margin-bottom:4px;">轻风blog</div>
+      <div style="font-size:0.85rem;opacity:0.6;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">茫茫人海，多么幸运才能遇见你！</div>
     </div>
   </a>
 
