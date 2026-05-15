@@ -237,15 +237,11 @@ body, html {
       var raw=node.nodeValue;
       var txt=raw.trim();
       if(!txt||txt.length<2)continue;
+      
       if(shouldSkip(node))continue;
-
-      // 第一次访问时，记录原始中文 key
       if(!node._zhKey) node._zhKey=txt;
 
       var zhKey=node._zhKey;
-
-      // ✅ 修复核心：先把节点内容还原为原始中文，再翻译到目标语言
-      // 这样无论当前 DOM 是什么语言，都能正确切换
       var restored=raw.replace(raw.trim(), zhKey);
       var target=map[zhKey];
       if(target && target!==zhKey){
