@@ -208,80 +208,112 @@ body, html {
       </button>
     </div>
     <script>
-    (function(){
-      var i18n={
-        zh:{'文章列表':'文章列表','云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向','心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页','起始页':'起始页','作者':'作者','发表于':'发表于','更新于':'更新于','字':'字','次浏览':'次浏览','分钟':'分钟','阅读':'阅读','相关文章':'相关文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','已复制！':'已复制！','复制链接':'复制链接','链接已复制！':'链接已复制！','搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果','最近更新':'最近更新','热门标签':'热门标签','目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新','找到':'找到','条结果':'条结果','友链':'友链','篇文章':'篇文章','本文由作者按照':'本文由作者按照','进行授权':'进行授权','文章':'文章','最近更新':'最近更新','相关文章':'相关文章','default':'首页'},
-        en:{'文章列表':'Posts','分类':'Categories','标签':'Tags','归档':'Archives','关于':'About','首页':'Home','起始页':'Start','作者':'Author','发表于':'Posted','更新于':'Updated','字':'words','次浏览':'views','分钟':'min','阅读':'read','相关文章':'Related','分享':'Share','下一篇':'Next','上一篇':'Prev','已复制！':'Copied!','复制链接':'Copy Link','链接已复制！':'Link copied!','搜索':'Search','取消':'Cancel','没有找到相关结果':'No results found','最近更新':'Recently Updated','热门标签':'Trending Tags','目录':'Contents','发现新版本的内容。':'New content available.','更新':'Update','找到':'Found','条结果':'results','友链':'Friends','篇文章':'articles','本文由作者按照':'Licensed under','进行授权':'by the author','文章':'Posts','篇文章':'articles','个分类':'categories'},
-      };
-      var cur=localStorage.getItem('chirpy-lang')||'zh';
-      var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
-      var SKIP_CLASSES=['post-content','highlight','rouge','language-'];
-      function shouldSkip(node){
-        var p=node.parentElement;
-        while(p){
-          if(SKIP_TAGS[p.tagName])return true;
-          for(var i=0;i<SKIP_CLASSES.length;i++){
-            if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true;
-          }
-          p=p.parentElement;
-        }
-        return false;
+(function(){
+  var i18n={
+    zh:{'文章列表':'文章列表','云服务与厂商':'云服务与厂商','多元性别/取向':'多元性别/取向','心理疾病':'心理疾病','素材':'素材','药品':'药品','杂谈':'杂谈','分类':'分类','标签':'标签','归档':'归档','关于':'关于','首页':'首页','起始页':'起始页','作者':'作者','发表于':'发表于','更新于':'更新于','字':'字','次浏览':'次浏览','分钟':'分钟','阅读':'阅读','相关文章':'相关文章','分享':'分享','下一篇':'下一篇','上一篇':'上一篇','已复制！':'已复制！','复制链接':'复制链接','链接已复制！':'链接已复制！','搜索':'搜索','取消':'取消','没有找到相关结果':'没有找到相关结果','最近更新':'最近更新','热门标签':'热门标签','目录':'目录','发现新版本的内容。':'发现新版本的内容。','更新':'更新','找到':'找到','条结果':'条结果','友链':'友链','篇文章':'篇文章','本文由作者按照':'本文由作者按照','进行授权':'进行授权','文章':'文章','default':'首页'},
+    en:{'文章列表':'Posts','分类':'Categories','标签':'Tags','归档':'Archives','关于':'About','首页':'Home','起始页':'Start','作者':'Author','发表于':'Posted','更新于':'Updated','字':'words','次浏览':'views','分钟':'min','阅读':'read','相关文章':'Related','分享':'Share','下一篇':'Next','上一篇':'Prev','已复制！':'Copied!','复制链接':'Copy Link','链接已复制！':'Link copied!','搜索':'Search','取消':'Cancel','没有找到相关结果':'No results found','最近更新':'Recently Updated','热门标签':'Trending Tags','目录':'Contents','发现新版本的内容。':'New content available.','更新':'Update','找到':'Found','条结果':'results','友链':'Friends','篇文章':'articles','本文由作者按照':'Licensed under','进行授权':'by the author','文章':'Posts','个分类':'categories'},
+  };
+  var cur=localStorage.getItem('chirpy-lang')||'zh';
+  var SKIP_TAGS={SCRIPT:1,STYLE:1,NOSCRIPT:1,IFRAME:1,CODE:1,PRE:1,TEXTAREA:1};
+  var SKIP_CLASSES=['post-content','highlight','rouge','language-'];
+
+  function shouldSkip(node){
+    var p=node.parentElement;
+    while(p){
+      if(SKIP_TAGS[p.tagName])return true;
+      for(var i=0;i<SKIP_CLASSES.length;i++){
+        if(p.classList&&p.classList.contains(SKIP_CLASSES[i]))return true;
       }
-      function applyLang(lang){
-        var map=i18n[lang];
-        var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
-        var node;
-        while((node=walker.nextNode())){
-          var raw=node.nodeValue;
-          var txt=raw.trim();
-          if(!txt||txt.length<2)continue;
-          if(shouldSkip(node))continue;
-          if(!node._zhKey)node._zhKey=txt;
-          if(map[node._zhKey])node.nodeValue=raw.replace(node._zhKey,map[node._zhKey]);
-        }
-        var inp=document.querySelector('input[type="search"],#search-input');
-        if(inp){
-          if(!inp._zhPh)inp._zhPh=inp.placeholder;
-          if(map[inp._zhPh])inp.placeholder=map[inp._zhPh];
-        }
-        document.querySelectorAll('[data-bs-original-title]').forEach(function(el){
-          if(!el._zhTitle)el._zhTitle=el.getAttribute('data-bs-original-title');
-          if(map[el._zhTitle])el.setAttribute('data-bs-original-title',map[el._zhTitle]);
-        });
-        var labels={zh:'简中',en:'EN'};
-        document.getElementById('lang-btn-label').textContent=labels[lang]||lang;
-        document.querySelectorAll('.lang-option').forEach(function(b){b.classList.toggle('active',b.dataset.lang===lang);});
-        cur=lang;localStorage.setItem('chirpy-lang',lang);
+      p=p.parentElement;
+    }
+    return false;
+  }
+
+  function applyLang(lang){
+    var map=i18n[lang];
+    var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
+    var node;
+    while((node=walker.nextNode())){
+      var raw=node.nodeValue;
+      var txt=raw.trim();
+      if(!txt||txt.length<2)continue;
+      if(shouldSkip(node))continue;
+
+      // 第一次访问时，记录原始中文 key
+      if(!node._zhKey) node._zhKey=txt;
+
+      var zhKey=node._zhKey;
+
+      // ✅ 修复核心：先把节点内容还原为原始中文，再翻译到目标语言
+      // 这样无论当前 DOM 是什么语言，都能正确切换
+      var restored=raw.replace(raw.trim(), zhKey);
+      var target=map[zhKey];
+      if(target && target!==zhKey){
+        node.nodeValue=restored.replace(zhKey, target);
+      } else {
+        node.nodeValue=restored;
       }
-      var panel=document.getElementById('lang-panel');
-      var wrap=document.getElementById('lang-wrap');
-      var btn=document.getElementById('lang-switcher-btn');
-      btn.addEventListener('click',function(e){
-        e.stopPropagation();
-        var r=btn.getBoundingClientRect();
-        panel.style.left=r.left+'px';
-        panel.style.bottom=(window.innerHeight-r.top+8)+'px';
-        panel.classList.toggle('open');
-      });
-      document.addEventListener('click',function(){panel.classList.remove('open');});
-      panel.addEventListener('click',function(e){e.stopPropagation();});
-      document.querySelectorAll('.lang-option').forEach(function(opt){
-        opt.addEventListener('click',function(){applyLang(opt.dataset.lang);panel.classList.remove('open');});
-      });
-      window.addEventListener('DOMContentLoaded',function(){
-        var sidebar=document.getElementById('sidebar');
-        if(sidebar){
-          var bottom=sidebar.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');
-          if(!bottom){
-            var divs=sidebar.querySelectorAll('div');
-            bottom=divs[divs.length-1];
-          }
-          sidebar.insertBefore(wrap,bottom);
-        }
-        if(cur!=='zh')applyLang(cur);
-      });
-    })();
-    </script>
+    }
+
+    // 搜索框 placeholder
+    var inp=document.querySelector('input[type="search"],#search-input');
+    if(inp){
+      if(!inp._zhPh) inp._zhPh=inp.placeholder;
+      var phTarget=map[inp._zhPh];
+      inp.placeholder=phTarget||inp._zhPh;
+    }
+
+    // Bootstrap tooltip
+    document.querySelectorAll('[data-bs-original-title]').forEach(function(el){
+      if(!el._zhTitle) el._zhTitle=el.getAttribute('data-bs-original-title');
+      var ttTarget=map[el._zhTitle];
+      el.setAttribute('data-bs-original-title', ttTarget||el._zhTitle);
+    });
+
+    var labels={zh:'简中',en:'EN'};
+    document.getElementById('lang-btn-label').textContent=labels[lang]||lang;
+    document.querySelectorAll('.lang-option').forEach(function(b){
+      b.classList.toggle('active',b.dataset.lang===lang);
+    });
+    cur=lang;
+    localStorage.setItem('chirpy-lang',lang);
+  }
+
+  var panel=document.getElementById('lang-panel');
+  var wrap=document.getElementById('lang-wrap');
+  var btn=document.getElementById('lang-switcher-btn');
+
+  btn.addEventListener('click',function(e){
+    e.stopPropagation();
+    var r=btn.getBoundingClientRect();
+    panel.style.left=r.left+'px';
+    panel.style.bottom=(window.innerHeight-r.top+8)+'px';
+    panel.classList.toggle('open');
+  });
+  document.addEventListener('click',function(){panel.classList.remove('open');});
+  panel.addEventListener('click',function(e){e.stopPropagation();});
+
+  document.querySelectorAll('.lang-option').forEach(function(opt){
+    opt.addEventListener('click',function(){
+      applyLang(opt.dataset.lang);
+      panel.classList.remove('open');
+    });
+  });
+
+  window.addEventListener('DOMContentLoaded',function(){
+    var sidebar=document.getElementById('sidebar');
+    if(sidebar){
+      var bottom=sidebar.querySelector('.sidebar-bottom,.d-flex.w-100,div[class*="bottom"]');
+      if(!bottom){
+        var divs=sidebar.querySelectorAll('div');
+        bottom=divs[divs.length-1];
+      }
+      sidebar.insertBefore(wrap,bottom);
+    }
+    if(cur!=='zh') applyLang(cur);
+  });
+})();
+</script>
 
 <style>
 /* --- 公共样式 --- */
