@@ -6,7 +6,6 @@ title: " "
 <style>
 html, body { overflow-x: hidden !important; max-width: 100vw; }
 
-/* ── LetterGlitch Canvas 背景 ── */
 #glitch-canvas {
   position: fixed;
   inset: 0;
@@ -38,7 +37,6 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 }
 </style>
 
-<!-- ── LetterGlitch Canvas ── -->
 <canvas id="glitch-canvas"></canvas>
 <div id="glitch-vignette"></div>
 <script>
@@ -47,7 +45,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   var ctx = canvas.getContext('2d');
 
   var GLITCH_COLORS = ['#55CDFC', '#F7A8B8', '#FFFFFF'];
-  var GLITCH_SPEED  = 50;   // ms between updates
+  var GLITCH_SPEED  = 50;   
   var SMOOTH        = true;
   var CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$&*()-_+=/[]{};:<>.,0123456789'.split('');
 
@@ -189,7 +187,7 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     </h2>
     <script>
     (function(){
-      var texts=['無限進步','我爱你们'];
+      var texts=['無限進步','114514'];
       var el=document.getElementById('typewriter');
       var ti=0,ci=0,deleting=false;
       function tick(){
