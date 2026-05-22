@@ -1,12 +1,8 @@
+{% unless page.url == "/" %}
 <footer style="background: var(--main-bg); color: #aaa; padding: 50px 20px 30px; font-size: 0.95rem;">
   <div style="max-width: 1200px; margin: 0 auto;">
-    
-    <div style="display: grid; 
-                grid-template-columns: repeat(4, 1fr); 
-                gap: 40px 30px; 
-                justify-items: center;">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px 30px; justify-items: center;">
 
-      <!-- 项目 -->
       <div style="text-align: center; width: 100%; max-width: 240px;">
         <h4 style="color: #fff; margin-bottom: 18px; font-size: 1.15rem;">图床</h4>
         <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
@@ -15,7 +11,6 @@
         </ul>
       </div>
 
-      <!-- 页面 -->
       <div style="text-align: center; width: 100%; max-width: 240px;">
         <h4 style="color: #fff; margin-bottom: 18px; font-size: 1.15rem;">开发</h4>
         <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
@@ -26,7 +21,6 @@
         </ul>
       </div>
 
-      <!-- 服务 -->
       <div style="text-align: center; width: 100%; max-width: 240px;">
         <h4 style="color: #fff; margin-bottom: 18px; font-size: 1.15rem;">AI服务</h4>
         <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
@@ -43,9 +37,8 @@
           <li><a href="https://status.life-white.uk/" style="color: #55cdfc; text-decoration: none;">监控</a></li>
         </ul>
       </div>
-   
-    </div>
-</div>
 
+    </div>
   </div>
 </footer>
+{% endunless %}
