@@ -22,7 +22,7 @@ layout: compress
 @import url("https://fontsapi.zeoseven.com/285/main/result.css");
 @keyframes pageSlideUp {
   from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); }
 }
 body, html {
   font-family: "Source Han Serif SC", "Source Han Serif", serif !important;
@@ -112,17 +112,17 @@ body, html {
         </div>
 
         <div class="row">
-  <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
-    {% for _include in layout.tail_includes %}
-      {% assign _include_path = _include | append: '.html' %}
-      {% include {{ _include_path }} lang=lang %}
-    {% endfor %}
+          <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
+            {% for _include in layout.tail_includes %}
+              {% assign _include_path = _include | append: '.html' %}
+              {% include {{ _include_path }} lang=lang %}
+            {% endfor %}
 
-    {% if page.hide_footer != true %}
-      {% include footer.html lang=lang %}
-    {% endif %}
-  </div>
-</div>
+            {% if page.hide_footer != true %}
+              {% include footer.html lang=lang %}
+            {% endif %}
+          </div>
+        </div>
 
         {% include_cached search-results.html lang=lang %}
       </div>
@@ -284,7 +284,7 @@ body, html {
       });
     })();
     </script>
-    
+
 <style>
 .page-fade-out {
   animation: pageFadeOut 0.3s ease forwards !important;
@@ -432,6 +432,4 @@ html[data-mode="dark"] .list-group-item:hover {
 </script>
 </body>
 </html>
-
-
 
