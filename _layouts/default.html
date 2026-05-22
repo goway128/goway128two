@@ -295,8 +295,10 @@ body, html {
   to   { opacity:0; transform:translateY(-12px); }
 }
 
-/* 默认亮色背景 */
-body, #main-wrapper, #main-wrapper .container, main {
+html:not([data-mode="dark"]) body,
+html:not([data-mode="dark"]) #main-wrapper,
+html:not([data-mode="dark"]) #main-wrapper .container,
+html:not([data-mode="dark"]) main {
   background-color: #fce8f0 !important;
 }
 
