@@ -284,15 +284,14 @@ body, html {
       });
     })();
     </script>
-
+    
 <style>
-/* --- 公共样式 --- */
 .page-fade-out {
   animation: pageFadeOut 0.3s ease forwards !important;
 }
 @keyframes pageFadeOut {
   from { opacity:1; transform:translateY(0); }
-  to   { opacity:0; transform:translateY(-12px); }
+  to { opacity:0; transform:translateY(-12px); }
 }
 
 html:not([data-mode="dark"]) body,
@@ -302,9 +301,6 @@ html:not([data-mode="dark"]) main {
   background-color: #fce8f0 !important;
 }
 
-/* --- 暗黑模式样式强化 --- */
-
-/* 1. 背景：紫红渐变 */
 html[data-mode="dark"] body,
 html[data-mode="dark"] #main-wrapper,
 html[data-mode="dark"] #main-wrapper .container,
@@ -312,12 +308,10 @@ html[data-mode="dark"] main {
   background: linear-gradient(160deg, #2d0a1a 0%, #1a0510 100%) !important;
 }
 
-/* 2. 尾部和页脚透明化 */
 #tail-wrapper, footer, #footer {
   background-color: transparent !important;
 }
 
-/* 3. 卡片样式：亮色与暗色区分 */
 .card-wrapper.card,
 .card-wrapper,
 .list-group-item {
@@ -333,23 +327,21 @@ html[data-mode="dark"] main {
   transform: translateY(-2px);
 }
 
-/* 暗色模式下的深棕色卡片 */
 html[data-mode="dark"] .card,
 html[data-mode="dark"] .card-wrapper,
 html[data-mode="dark"] .list-group-item,
 html[data-mode="dark"] .categories .list-group-item {
-  background-color: #3e2723 !important; /* 深棕色 */
+  background-color: #3e2723 !important;
   border-color: rgba(255, 255, 255, 0.05) !important;
-  color: #d7ccc8 !important; /* 浅棕色文字，增强对比度 */
+  color: #d7ccc8 !important;
 }
 
 html[data-mode="dark"] .card:hover,
 html[data-mode="dark"] .card-wrapper:hover,
 html[data-mode="dark"] .list-group-item:hover {
-  background-color: #4e342e !important; /* 悬停时稍微加亮 */
+  background-color: #4e342e !important;
 }
 
-/* 阅读进度条样式 */
 #read-progress-track {
   position: fixed;
   right: 0;
