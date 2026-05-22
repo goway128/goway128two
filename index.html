@@ -18,6 +18,194 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
   from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
 }
+
+.music-player-widget,
+.music-player-widget * {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.music-player-widget *:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.music-player-widget {
+  width: 100%;
+  max-width: 300px;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 24px;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.28);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 12px 35px rgba(244,114,182,0.14), 0 6px 24px rgba(192,132,252,0.12);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  color: #fff;
+  user-select: none;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.music-player-widget:hover {
+  transform: translateY(-2px);
+  border-color: rgba(249,168,201,0.45);
+  box-shadow: 0 16px 40px rgba(244,114,182,0.18), 0 8px 28px rgba(192,132,252,0.16);
+}
+
+.music-cover {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 8px 20px rgba(0,0,0,.18);
+  border: 1px solid rgba(255,255,255,0.22);
+}
+
+.music-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.music-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.music-meta {
+  min-width: 0;
+}
+
+.music-title {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -.01em;
+}
+
+.music-subtitle {
+  margin-top: 4px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.music-play-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg,#f472b6,#c084fc);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(244,114,182,0.28);
+  transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+}
+
+.music-play-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 12px 28px rgba(244,114,182,0.36);
+}
+
+.music-play-btn:active {
+  transform: scale(.95);
+}
+
+.music-progress-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.music-progress {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  border: none;
+  cursor: pointer;
+}
+
+.music-progress::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 999px;
+  border: none;
+}
+
+.music-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #f472b6;
+  box-shadow: 0 0 0 3px rgba(244,114,182,0.14);
+}
+
+.music-progress::-moz-range-track {
+  height: 5px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+}
+
+.music-progress::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #f472b6;
+  box-shadow: 0 0 0 3px rgba(244,114,182,0.14);
+}
+
+.music-time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  line-height: 1;
+  color: rgba(255,255,255,0.62);
+}
+
+.music-status {
+  min-width: 48px;
+  text-align: right;
+  font-size: 10px;
+  color: #ffd1e2;
+  flex-shrink: 0;
+  text-transform: lowercase;
+}
 </style>
 
 <div style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;clip-path:inset(0);">
@@ -148,232 +336,41 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
       关于本站
     </a>
 
-    <div style="display:flex;justify-content:center;margin-top:12px;">
-      <div class="music-player-widget">
-        <div class="music-cover">
-          <img src="https://i.ibb.co/1GDtWdn5/1779428162478.jpg" alt="Sinos De Natal cover" />
+    <div class="music-player-widget">
+      <div class="music-cover">
+        <img src="https://i.ibb.co/1GDtWdn5/1779428162478.jpg" alt="Sinos De Natal cover" />
+      </div>
+
+      <div class="music-main">
+        <div class="music-meta">
+          <div class="music-title">Sinos De Natal (Mashup)</div>
+          <div class="music-subtitle">我们绝不承认任何结局</div>
         </div>
 
-        <div class="music-main">
-          <div class="music-meta">
-            <div class="music-title">Sinos De Natal (Mashup)</div>
-            <div class="music-subtitle">“我们绝不承认任何结局”</div>
-          </div>
+        <div class="music-controls">
+          <button class="music-play-btn" id="playBtn" type="button">▶</button>
 
-          <div class="music-controls">
-            <button class="music-play-btn" id="playBtn" type="button">▶</button>
-
-            <div class="music-progress-wrap">
-              <input id="seekBar" class="music-progress" type="range" min="0" max="100" value="0" />
-              <div class="music-time-row">
-                <span id="currentTime">0:00</span>
-                <span id="duration">0:00</span>
-              </div>
+          <div class="music-progress-wrap">
+            <input id="seekBar" class="music-progress" type="range" min="0" max="100" value="0" />
+            <div class="music-time-row">
+              <span id="currentTime">0:00</span>
+              <span id="duration">0:00</span>
             </div>
-
-            <div class="music-status" id="status">ready</div>
           </div>
+
+          <div class="music-status" id="status">ready</div>
         </div>
       </div>
     </div>
 
-    <audio
-      id="audio"
-      preload="metadata"
-      src="https://iot202.music.126.net/Yml6PWlvdCZjaGFubmVsPW5ldGVhc2Umc2NlbmU9YW5kcmNhcg/20260522135903/b68586000db5152c0f581e831c44da55/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/76619716019/8ea6/2a82/da62/0eb7de5dc3092f3339b723ed33741fe3.mp3"
-    ></audio>
+    <audio id="audio" preload="metadata" crossorigin="anonymous">
+      <source src="https://img.life-white.uk/file/BAACAgQAAyEGAATrQHCPAAMVahBVWJnQBYvBjyjx03wLGtQh59YAAn0eAAJXDYFQp8xLc7mO7t47BA.mp4" type="audio/mp4">
+      您的浏览器暂不支持音频播放。
+    </audio>
 
   </div>
 
   <style>
-  .music-player-widget,
-  .music-player-widget * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .music-player-widget *:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
-  .music-player-widget {
-    width: 388px;
-    max-width: 100%;
-    height: 110px;
-    background: linear-gradient(180deg, #181818, #121212);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    box-shadow: 0 12px 36px rgba(0,0,0,.35);
-    user-select: none;
-    color: #fff;
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-
-  .music-cover {
-    width: 84px;
-    height: 84px;
-    border-radius: 12px;
-    flex-shrink: 0;
-    overflow: hidden;
-    background: #222;
-    box-shadow: 0 8px 20px rgba(0,0,0,.24);
-  }
-
-  .music-cover img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-    pointer-events: none;
-  }
-
-  .music-main {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .music-meta {
-    min-width: 0;
-  }
-
-  .music-title {
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1.2;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    letter-spacing: .1px;
-  }
-
-  .music-subtitle {
-    margin-top: 4px;
-    font-size: 12px;
-    color: #b3b3b3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .music-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
-  }
-
-  .music-play-btn {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: 999px;
-    background: #fff;
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: transform .15s ease, opacity .15s ease;
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-  .music-play-btn:hover { transform: scale(1.05); }
-  .music-play-btn:active { transform: scale(.96); }
-
-  .music-progress-wrap {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .music-progress {
-    width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
-    height: 4px;
-    border-radius: 999px;
-    background: #404040;
-    border: none;
-    cursor: pointer;
-  }
-
-  .music-progress:focus,
-  .music-progress:active {
-    outline: none;
-    box-shadow: none;
-  }
-
-  .music-progress::-webkit-slider-runnable-track {
-    height: 4px;
-    border-radius: 999px;
-    border: none;
-  }
-
-  .music-progress::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    margin-top: -4px;
-    border-radius: 50%;
-    background: #ff4d6d;
-    border: none;
-    box-shadow: none;
-  }
-
-  .music-progress::-moz-range-track {
-    height: 4px;
-    border-radius: 999px;
-    background: transparent;
-    border: none;
-  }
-
-  .music-progress::-moz-range-thumb {
-    width: 12px;
-    height: 12px;
-    border: none;
-    border-radius: 50%;
-    background: #ff4d6d;
-    box-shadow: none;
-  }
-
-  .music-time-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 10px;
-    color: #a7a7a7;
-    line-height: 1;
-  }
-
-  .music-status {
-    min-width: 46px;
-    text-align: right;
-    font-size: 10px;
-    color: #ff7a90;
-    flex-shrink: 0;
-    text-transform: lowercase;
-  }
-
-  button,
-  input,
-  img,
-  div {
-    -webkit-tap-highlight-color: transparent;
-  }
-
   html, body { overflow-x: hidden !important; max-width: 100vw; }
 
   .card-stack-wrap {
@@ -478,93 +475,93 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
 </div>
 
 <script>
-  const audio = document.getElementById('audio');
-  const playBtn = document.getElementById('playBtn');
-  const seekBar = document.getElementById('seekBar');
-  const currentTimeEl = document.getElementById('currentTime');
-  const durationEl = document.getElementById('duration');
-  const statusEl = document.getElementById('status');
+const audio = document.getElementById('audio');
+const playBtn = document.getElementById('playBtn');
+const seekBar = document.getElementById('seekBar');
+const currentTimeEl = document.getElementById('currentTime');
+const durationEl = document.getElementById('duration');
+const statusEl = document.getElementById('status');
 
-  function formatTime(time) {
-    if (!isFinite(time)) return '0:00';
-    const min = Math.floor(time / 60);
-    const sec = Math.floor(time % 60).toString().padStart(2, '0');
-    return `${min}:${sec}`;
-  }
+function formatTime(time) {
+  if (!isFinite(time)) return '0:00';
+  const min = Math.floor(time / 60);
+  const sec = Math.floor(time % 60).toString().padStart(2, '0');
+  return `${min}:${sec}`;
+}
 
-  function updateSeekStyle() {
-    const value = Number(seekBar.value);
-    seekBar.style.background =
-      `linear-gradient(to right, #ff4d6d 0%, #ff4d6d ${value}%, #404040 ${value}%, #404040 100%)`;
-  }
+function updateSeekStyle() {
+  const value = Number(seekBar.value);
+  seekBar.style.background = `linear-gradient(to right, #f472b6 0%, #c084fc ${value}%, rgba(255,255,255,0.18) ${value}%, rgba(255,255,255,0.18) 100%)`;
+}
 
-  async function togglePlay() {
-    try {
-      if (audio.paused) {
-        await audio.play();
-      } else {
-        audio.pause();
-      }
-    } catch (e) {
-      statusEl.textContent = 'error';
-      console.error(e);
+async function togglePlay() {
+  try {
+    if (audio.paused) {
+      await audio.play();
+    } else {
+      audio.pause();
     }
-  }
-
-  playBtn.addEventListener('click', togglePlay);
-
-  audio.addEventListener('loadedmetadata', () => {
-    durationEl.textContent = formatTime(audio.duration);
-  });
-
-  audio.addEventListener('timeupdate', () => {
-    if (audio.duration) {
-      const percent = (audio.currentTime / audio.duration) * 100;
-      seekBar.value = percent;
-      updateSeekStyle();
-    }
-    currentTimeEl.textContent = formatTime(audio.currentTime);
-  });
-
-  seekBar.addEventListener('input', () => {
-    updateSeekStyle();
-  });
-
-  seekBar.addEventListener('change', () => {
-    if (audio.duration) {
-      audio.currentTime = (seekBar.value / 100) * audio.duration;
-    }
-  });
-
-  audio.addEventListener('play', () => {
-    playBtn.textContent = '❚❚';
-    statusEl.textContent = 'playing';
-  });
-
-  audio.addEventListener('pause', () => {
-    if (!audio.ended) statusEl.textContent = 'paused';
-    playBtn.textContent = '▶';
-  });
-
-  audio.addEventListener('ended', () => {
-    playBtn.textContent = '▶';
-    statusEl.textContent = 'ended';
-    seekBar.value = 0;
-    updateSeekStyle();
-  });
-
-  audio.addEventListener('waiting', () => {
-    statusEl.textContent = 'loading';
-  });
-
-  audio.addEventListener('canplay', () => {
-    if (audio.paused) statusEl.textContent = 'ready';
-  });
-
-  audio.addEventListener('error', () => {
+  } catch (e) {
     statusEl.textContent = 'error';
-  });
+    console.error(e);
+  }
+}
 
+playBtn.addEventListener('click', togglePlay);
+
+audio.addEventListener('loadedmetadata', () => {
+  durationEl.textContent = formatTime(audio.duration);
+  statusEl.textContent = 'ready';
+});
+
+audio.addEventListener('timeupdate', () => {
+  if (audio.duration) {
+    const percent = (audio.currentTime / audio.duration) * 100;
+    seekBar.value = percent;
+    updateSeekStyle();
+  }
+  currentTimeEl.textContent = formatTime(audio.currentTime);
+});
+
+seekBar.addEventListener('input', () => {
   updateSeekStyle();
-</script>
+});
 
+seekBar.addEventListener('change', () => {
+  if (audio.duration) {
+    audio.currentTime = (seekBar.value / 100) * audio.duration;
+  }
+});
+
+audio.addEventListener('play', () => {
+  playBtn.textContent = '❚❚';
+  statusEl.textContent = 'playing';
+});
+
+audio.addEventListener('pause', () => {
+  if (!audio.ended) statusEl.textContent = 'paused';
+  playBtn.textContent = '▶';
+});
+
+audio.addEventListener('ended', () => {
+  playBtn.textContent = '▶';
+  statusEl.textContent = 'ended';
+  seekBar.value = 0;
+  currentTimeEl.textContent = '0:00';
+  updateSeekStyle();
+});
+
+audio.addEventListener('waiting', () => {
+  statusEl.textContent = 'loading';
+});
+
+audio.addEventListener('canplay', () => {
+  if (audio.paused) statusEl.textContent = 'ready';
+});
+
+audio.addEventListener('error', () => {
+  statusEl.textContent = 'error';
+});
+
+updateSeekStyle();
+</script>
