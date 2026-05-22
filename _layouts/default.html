@@ -8,7 +8,9 @@ layout: compress
 
 {% include lang.html %}
 
-{% assign prefer_mode = '' %}
+{% if site.theme_mode %}
+  {% capture prefer_mode %}data-mode="{{ site.theme_mode }}"{% endcapture %}
+{% endif %}
 
 <html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}">
 
