@@ -1,5 +1,5 @@
 ---
-layout: page
+layout: music
 title: 音乐
 icon: fas fa-music
 order: 6
