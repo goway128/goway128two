@@ -209,8 +209,8 @@ body {
   width: 100% !important;
   max-width: none !important;
   margin: 0 auto !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  padding-left: clamp(24px, 5vw, 88px) !important;
+  padding-right: clamp(24px, 5vw, 88px) !important;
   box-sizing: border-box;
 }
 
@@ -225,7 +225,7 @@ body {
 
 #main-wrapper main {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 1180px !important;
   flex: 0 0 100% !important;
   margin: 0 auto !important;
   padding-left: 0 !important;
@@ -235,7 +235,7 @@ body {
 
 #tail-wrapper {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 1180px !important;
   flex: 0 0 100% !important;
   margin: 0 auto !important;
   padding-left: 0 !important;
@@ -298,31 +298,92 @@ footer,
 .card-wrapper.card,
 .card-wrapper,
 .list-group-item {
-  background-color: rgba(173, 216, 255, 0.18) !important;
-  border-color: rgba(100, 180, 255, 0.25) !important;
+  background-color: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(255, 255, 255, 0.85) !important;
   transition: all 0.2s;
 }
 
 .card-wrapper.card:hover,
 .card-wrapper:hover,
 .list-group-item:hover {
-  background-color: rgba(173, 216, 255, 0.35) !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
   transform: translateY(-2px);
+}
+
+.categories,
+#categories,
+.category,
+.category-card,
+.categories .card,
+.categories .card-wrapper,
+.categories .list-group,
+.categories .list-group-item,
+#categories .card,
+#categories .card-wrapper,
+#categories .list-group,
+#categories .list-group-item,
+main .categories,
+main #categories {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border-color: rgba(85, 205, 252, 0.18) !important;
+}
+
+.categories .card,
+.categories .card-wrapper,
+.categories .list-group-item,
+#categories .card,
+#categories .card-wrapper,
+#categories .list-group-item,
+main .card.categories,
+main .card-wrapper.categories {
+  color: #5f6870 !important;
+  box-shadow: 0 10px 30px rgba(85, 205, 252, 0.12) !important;
+}
+
+.categories .list-group-item:hover,
+#categories .list-group-item:hover,
+.categories .card:hover,
+#categories .card:hover,
+.categories .card-wrapper:hover,
+#categories .card-wrapper:hover {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+.categories a,
+#categories a,
+.categories span,
+#categories span {
+  color: inherit;
 }
 
 html[data-mode="dark"] .card,
 html[data-mode="dark"] .card-wrapper,
 html[data-mode="dark"] .list-group-item,
-html[data-mode="dark"] .categories .list-group-item {
-  background-color: #3e2723 !important;
-  border-color: rgba(255, 255, 255, 0.05) !important;
-  color: #d7ccc8 !important;
+html[data-mode="dark"] .categories .list-group-item,
+html[data-mode="dark"] .categories .card,
+html[data-mode="dark"] .categories .card-wrapper,
+html[data-mode="dark"] #categories .list-group-item,
+html[data-mode="dark"] #categories .card,
+html[data-mode="dark"] #categories .card-wrapper {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  border-color: rgba(85, 205, 252, 0.18) !important;
+  color: #5f6870 !important;
 }
 
 html[data-mode="dark"] .card:hover,
 html[data-mode="dark"] .card-wrapper:hover,
-html[data-mode="dark"] .list-group-item:hover {
-  background-color: #4e342e !important;
+html[data-mode="dark"] .list-group-item:hover,
+html[data-mode="dark"] .categories .list-group-item:hover,
+html[data-mode="dark"] .categories .card:hover,
+html[data-mode="dark"] .categories .card-wrapper:hover,
+html[data-mode="dark"] #categories .list-group-item:hover,
+html[data-mode="dark"] #categories .card:hover,
+html[data-mode="dark"] #categories .card-wrapper:hover {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
 }
 
 #read-progress-track {
@@ -372,6 +433,11 @@ html[data-mode="dark"] .list-group-item:hover {
 
   #main-wrapper {
     padding-top: 72px !important;
+  }
+
+  #main-wrapper > .container {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
   }
 }
 </style>
