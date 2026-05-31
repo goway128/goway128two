@@ -66,12 +66,12 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 56px;
+  height: 72px;
   z-index: 9997;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
+  padding: 0 28px;
   box-sizing: border-box;
 }
 
@@ -84,8 +84,8 @@ body {
   color: #55CDFC;
   cursor: pointer;
   padding: 0;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -177,7 +177,8 @@ body {
 }
 
 #mobile-menu .menu-item:nth-child(2),
-#mobile-menu .menu-item:nth-child(3) {
+#mobile-menu .menu-item:nth-child(3),
+#mobile-menu .menu-item:nth-child(4) {
   transition-delay: 100ms;
 }
 
@@ -198,7 +199,7 @@ body {
   max-width: none !important;
   min-height: 100vh;
   margin: 0 !important;
-  padding: 56px 0 0 0 !important;
+  padding: 72px 0 0 0 !important;
   transform: none;
   animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   display: flex !important;
@@ -209,8 +210,8 @@ body {
   width: 100% !important;
   max-width: none !important;
   margin: 0 auto !important;
-  padding-left: clamp(24px, 5vw, 88px) !important;
-  padding-right: clamp(24px, 5vw, 88px) !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
   box-sizing: border-box;
 }
 
@@ -225,7 +226,7 @@ body {
 
 #main-wrapper main {
   width: 100% !important;
-  max-width: 1180px !important;
+  max-width: none !important;
   flex: 0 0 100% !important;
   margin: 0 auto !important;
   padding-left: 0 !important;
@@ -235,7 +236,7 @@ body {
 
 #tail-wrapper {
   width: 100% !important;
-  max-width: 1180px !important;
+  max-width: none !important;
   flex: 0 0 100% !important;
   margin: 0 auto !important;
   padding-left: 0 !important;
@@ -298,190 +299,80 @@ footer,
 .card-wrapper.card,
 .card-wrapper,
 .list-group-item {
-  background-color: rgba(255, 255, 255, 0.78) !important;
-  border-color: rgba(255, 255, 255, 0.85) !important;
+  background-color: rgba(173, 216, 255, 0.18) !important;
+  border-color: rgba(100, 180, 255, 0.25) !important;
   transition: all 0.2s;
 }
 
 .card-wrapper.card:hover,
 .card-wrapper:hover,
 .list-group-item:hover {
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  background-color: rgba(173, 216, 255, 0.35) !important;
   transform: translateY(-2px);
 }
 
-.categories,
-#categories,
-.category,
-.category-card,
-.categories .card,
-.categories .card-wrapper,
-.categories .list-group,
-.categories .list-group-item,
-#categories .card,
-#categories .card-wrapper,
-#categories .list-group,
-#categories .list-group-item,
-main .categories,
-main #categories {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  border-color: rgba(85, 205, 252, 0.18) !important;
+html[data-mode="dark"] .card,
+html[data-mode="dark"] .card-wrapper,
+html[data-mode="dark"] .list-group-item,
+html[data-mode="dark"] .categories .list-group-item {
+  background-color: #3e2723 !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+  color: #d7ccc8 !important;
 }
 
-.categories .card,
-.categories .card-wrapper,
-.categories .list-group-item,
-#categories .card,
-#categories .card-wrapper,
-#categories .list-group-item,
-main .card.categories,
-main .card-wrapper.categories {
-  color: #5f6870 !important;
-  box-shadow: 0 10px 30px rgba(85, 205, 252, 0.12) !important;
-}
-
-.categories .list-group-item:hover,
-#categories .list-group-item:hover,
-.categories .card:hover,
-#categories .card:hover,
-.categories .card-wrapper:hover,
-#categories .card-wrapper:hover {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-}
-
-.categories a,
-#categories a,
-.categories span,
-#categories span {
-  color: inherit;
-}
-
-html[data-mode="dark"] .categories,
-html[data-mode="dark"] #categories,
-html[data-mode="dark"] .category,
-html[data-mode="dark"] .category-card,
-html[data-mode="dark"] .categories .card,
-html[data-mode="dark"] .categories .card-wrapper,
-html[data-mode="dark"] .categories .list-group,
-html[data-mode="dark"] .categories .list-group-item,
-html[data-mode="dark"] #categories .card,
-html[data-mode="dark"] #categories .card-wrapper,
-html[data-mode="dark"] #categories .list-group,
-html[data-mode="dark"] #categories .list-group-item,
-html[data-mode="dark"] main .categories,
-html[data-mode="dark"] main #categories {
-  background-color: #ffffff !important;
-  background: linear-gradient(135deg, #ffffff 0%, #ffffff 58%, rgba(85, 205, 252, 0.22) 100%) !important;
-  border-color: rgba(85, 205, 252, 0.55) !important;
-}
-
-html[data-mode="dark"] .categories .card,
-html[data-mode="dark"] .categories .card-wrapper,
-html[data-mode="dark"] .categories .list-group-item,
-html[data-mode="dark"] #categories .card,
-html[data-mode="dark"] #categories .card-wrapper,
-html[data-mode="dark"] #categories .list-group-item,
-html[data-mode="dark"] main .card.categories,
-html[data-mode="dark"] main .card-wrapper.categories {
-  background-color: #ffffff !important;
-  background: linear-gradient(135deg, #ffffff 0%, #ffffff 62%, rgba(85, 205, 252, 0.28) 100%) !important;
-  color: #2c6f86 !important;
-  border-color: rgba(85, 205, 252, 0.55) !important;
-  box-shadow: 0 12px 34px rgba(85, 205, 252, 0.22) !important;
-}
-
-html[data-mode="dark"] .categories .list-group-item:hover,
-html[data-mode="dark"] #categories .list-group-item:hover,
-html[data-mode="dark"] .categories .card:hover,
-html[data-mode="dark"] #categories .card:hover,
-html[data-mode="dark"] .categories .card-wrapper:hover,
-html[data-mode="dark"] #categories .card-wrapper:hover {
-  background-color: #ffffff !important;
-  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.96) 48%, rgba(85, 205, 252, 0.38) 100%) !important;
-  border-color: #55CDFC !important;
-  box-shadow: 0 16px 42px rgba(85, 205, 252, 0.34) !important;
-}
-
-html[data-mode="dark"] .categories a,
-html[data-mode="dark"] #categories a {
-  color: #0a6a8a !important;
-}
-
-html[data-mode="dark"] .categories span,
-html[data-mode="dark"] #categories span,
-html[data-mode="dark"] .categories i,
-html[data-mode="dark"] #categories i,
-html[data-mode="dark"] .categories svg,
-html[data-mode="dark"] #categories svg {
-  color: #55CDFC !important;
-}
-
-html[data-mode="dark"] .card:not(.categories):not(.category-card),
-html[data-mode="dark"] .card-wrapper:not(.categories):not(.category-card),
-html[data-mode="dark"] .list-group-item:not(.categories):not(.category-card) {
-  background-color: rgba(255, 255, 255, 0.86) !important;
-  border-color: rgba(85, 205, 252, 0.25) !important;
-  color: #5f6870 !important;
+html[data-mode="dark"] .card:hover,
+html[data-mode="dark"] .card-wrapper:hover,
+html[data-mode="dark"] .list-group-item:hover {
+  background-color: #4e342e !important;
 }
 
 #read-progress-track {
   position: fixed;
-  left: 0;
-  top: 56px;
-  width: 100%;
-  height: 6px;
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 100vh;
   background: rgba(128, 128, 128, 0.12);
-  z-index: 9996;
+  z-index: 9998;
   display: none;
 }
 
 #read-progress-bar {
-  width: 0%;
-  height: 100%;
+  width: 100%;
+  height: 0%;
   background: linear-gradient(
-    90deg,
+    180deg,
     #55CDFC 0%,
     #F7A8B8 40%,
     #FFFFFF 60%,
     #F7A8B8 80%,
     #55CDFC 100%
   );
-  border-radius: 0 4px 4px 0;
-  transition: width 0.08s linear;
+  border-radius: 0 0 4px 4px;
+  transition: height 0.08s linear;
   position: relative;
 }
 
 #read-progress-icon {
   position: absolute;
-  right: -10px;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 18px;
   line-height: 1;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
   pointer-events: none;
-  transition: right 0.08s linear;
+  transition: bottom 0.08s linear;
 }
 
 @media (max-width: 768px) {
   #site-top-menu {
-    height: 56px;
-    padding: 0 20px;
+    height: 72px;
+    padding: 0 24px;
   }
 
   #main-wrapper {
-    padding-top: 56px !important;
-  }
-
-  #main-wrapper > .container {
-    padding-left: 18px !important;
-    padding-right: 18px !important;
-  }
-
-  #read-progress-track {
-    top: 56px;
+    padding-top: 72px !important;
   }
 }
 </style>
@@ -491,10 +382,10 @@ html[data-mode="dark"] .list-group-item:not(.categories):not(.category-card) {
 
   <header id="site-top-menu" class="glass-panel">
     <button aria-label="Menu" id="menu-toggle" type="button">
-      <span class="material-symbols-outlined" style="font-size: 32px; font-variation-settings: 'FILL' 0;">menu</span>
+      <span class="material-symbols-outlined" style="font-size: 36px; font-variation-settings: 'FILL' 0;">menu</span>
     </button>
     <span id="site-top-title">{{ page.title | default: site.title | default: "WHITE" }}</span>
-    <div style="width: 40px; height: 40px;"></div>
+    <div style="width: 44px; height: 44px;"></div>
   </header>
 
   <div id="mobile-menu" class="glass-panel">
@@ -505,6 +396,7 @@ html[data-mode="dark"] .list-group-item:not(.categories):not(.category-card) {
       <a class="menu-item" href="https://blog.goway0128.top/">home</a>
       <a class="menu-item" href="https://blog.goway0128.top/categories">categories</a>
       <a class="menu-item" href="https://blog.goway0128.top/about">about</a>
+      <a class="menu-item" href="https://blog.goway0128.top/friends">friends</a>
     </nav>
   </div>
 
@@ -588,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('scroll',function(){
       var scrolled=document.documentElement.scrollTop||document.body.scrollTop;
       var total=document.documentElement.scrollHeight-window.innerHeight;
-      bar.style.width=(total>0?Math.min(100,scrolled/total*100):0)+'%';
+      bar.style.height=(total>0?Math.min(100,scrolled/total*100):0)+'%';
     },{passive:true});
   }
 })();
@@ -634,4 +526,3 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 </body>
 </html>
-
