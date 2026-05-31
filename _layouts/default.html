@@ -62,6 +62,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
+  min-height: 72px;
 }
 
 #menu-toggle {
@@ -284,6 +285,30 @@ html[data-mode="dark"] .list-group-item:hover {
   pointer-events: none;
   transition: bottom 0.08s linear;
 }
+
+#topbar-wrapper,
+#topbar,
+#sidebar,
+.sidebar,
+#search-trigger,
+#breadcrumb,
+.breadcrumb {
+  display: none !important;
+}
+
+@media (min-width: 992px) {
+  #main-wrapper {
+    margin-left: 0 !important;
+  }
+
+  #main-wrapper .container {
+    max-width: 1140px;
+  }
+
+  main {
+    width: 100%;
+  }
+}
 </style>
 
 <body{% if page.layout == "post" %} class="post-layout"{% endif %}>
@@ -302,17 +327,15 @@ html[data-mode="dark"] .list-group-item:hover {
       <span class="material-symbols-outlined" style="font-size: 40px; font-variation-settings: 'FILL' 0;">close</span>
     </button>
     <nav>
-      <a class="menu-item" href="projects.html">projects</a>
+      <a class="menu-item" href="{{ '/projects.html' | relative_url }}">projects</a>
       <a class="menu-item" href="https://blog.life-white.uk/friends">friends</a>
-      <a class="menu-item" href="index.html">website</a>
+      <a class="menu-item" href="{{ '/index.html' | relative_url }}">website</a>
       <a class="menu-item" href="https://status.life-white.uk/">monitoring</a>
     </nav>
   </div>
 
   <div id="main-wrapper" class="d-flex justify-content-center">
     <div class="container d-flex flex-column px-xxl-5">
-      {% include topbar.html lang=lang %}
-
       <div class="row flex-grow-1">
         <main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4">
           {% if layout.layout == 'default' %}
