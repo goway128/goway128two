@@ -388,41 +388,41 @@ html[data-mode="dark"] #categories .card-wrapper:hover {
 
 #read-progress-track {
   position: fixed;
-  right: 0;
+  left: 0;
   top: 56px;
-  width: 6px;
-  height: calc(100vh - 56px);
+  width: 100%;
+  height: 6px;
   background: rgba(128, 128, 128, 0.12);
   z-index: 9996;
   display: none;
 }
 
 #read-progress-bar {
-  width: 100%;
-  height: 0%;
+  width: 0%;
+  height: 100%;
   background: linear-gradient(
-    180deg,
+    90deg,
     #55CDFC 0%,
     #F7A8B8 40%,
     #FFFFFF 60%,
     #F7A8B8 80%,
     #55CDFC 100%
   );
-  border-radius: 0 0 4px 4px;
-  transition: height 0.08s linear;
+  border-radius: 0 4px 4px 0;
+  transition: width 0.08s linear;
   position: relative;
 }
 
 #read-progress-icon {
   position: absolute;
-  bottom: -14px;
-  left: 50%;
-  transform: translateX(-50%);
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 18px;
   line-height: 1;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
   pointer-events: none;
-  transition: bottom 0.08s linear;
+  transition: right 0.08s linear;
 }
 
 @media (max-width: 768px) {
@@ -442,7 +442,6 @@ html[data-mode="dark"] #categories .card-wrapper:hover {
 
   #read-progress-track {
     top: 56px;
-    height: calc(100vh - 56px);
   }
 }
 </style>
@@ -549,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('scroll',function(){
       var scrolled=document.documentElement.scrollTop||document.body.scrollTop;
       var total=document.documentElement.scrollHeight-window.innerHeight;
-      bar.style.height=(total>0?Math.min(100,scrolled/total*100):0)+'%';
+      bar.style.width=(total>0?Math.min(100,scrolled/total*100):0)+'%';
     },{passive:true});
   }
 })();
@@ -595,4 +594,3 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 </body>
 </html>
-
