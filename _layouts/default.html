@@ -358,32 +358,72 @@ main .card-wrapper.categories {
   color: inherit;
 }
 
-html[data-mode="dark"] .card,
-html[data-mode="dark"] .card-wrapper,
-html[data-mode="dark"] .list-group-item,
-html[data-mode="dark"] .categories .list-group-item,
+html[data-mode="dark"] .categories,
+html[data-mode="dark"] #categories,
+html[data-mode="dark"] .category,
+html[data-mode="dark"] .category-card,
 html[data-mode="dark"] .categories .card,
 html[data-mode="dark"] .categories .card-wrapper,
-html[data-mode="dark"] #categories .list-group-item,
+html[data-mode="dark"] .categories .list-group,
+html[data-mode="dark"] .categories .list-group-item,
 html[data-mode="dark"] #categories .card,
-html[data-mode="dark"] #categories .card-wrapper {
+html[data-mode="dark"] #categories .card-wrapper,
+html[data-mode="dark"] #categories .list-group,
+html[data-mode="dark"] #categories .list-group-item,
+html[data-mode="dark"] main .categories,
+html[data-mode="dark"] main #categories {
   background-color: #ffffff !important;
-  background: #ffffff !important;
-  border-color: rgba(85, 205, 252, 0.18) !important;
-  color: #5f6870 !important;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 58%, rgba(85, 205, 252, 0.22) 100%) !important;
+  border-color: rgba(85, 205, 252, 0.55) !important;
 }
 
-html[data-mode="dark"] .card:hover,
-html[data-mode="dark"] .card-wrapper:hover,
-html[data-mode="dark"] .list-group-item:hover,
+html[data-mode="dark"] .categories .card,
+html[data-mode="dark"] .categories .card-wrapper,
+html[data-mode="dark"] .categories .list-group-item,
+html[data-mode="dark"] #categories .card,
+html[data-mode="dark"] #categories .card-wrapper,
+html[data-mode="dark"] #categories .list-group-item,
+html[data-mode="dark"] main .card.categories,
+html[data-mode="dark"] main .card-wrapper.categories {
+  background-color: #ffffff !important;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 62%, rgba(85, 205, 252, 0.28) 100%) !important;
+  color: #2c6f86 !important;
+  border-color: rgba(85, 205, 252, 0.55) !important;
+  box-shadow: 0 12px 34px rgba(85, 205, 252, 0.22) !important;
+}
+
 html[data-mode="dark"] .categories .list-group-item:hover,
-html[data-mode="dark"] .categories .card:hover,
-html[data-mode="dark"] .categories .card-wrapper:hover,
 html[data-mode="dark"] #categories .list-group-item:hover,
+html[data-mode="dark"] .categories .card:hover,
 html[data-mode="dark"] #categories .card:hover,
+html[data-mode="dark"] .categories .card-wrapper:hover,
 html[data-mode="dark"] #categories .card-wrapper:hover {
   background-color: #ffffff !important;
-  background: #ffffff !important;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.96) 48%, rgba(85, 205, 252, 0.38) 100%) !important;
+  border-color: #55CDFC !important;
+  box-shadow: 0 16px 42px rgba(85, 205, 252, 0.34) !important;
+}
+
+html[data-mode="dark"] .categories a,
+html[data-mode="dark"] #categories a {
+  color: #0a6a8a !important;
+}
+
+html[data-mode="dark"] .categories span,
+html[data-mode="dark"] #categories span,
+html[data-mode="dark"] .categories i,
+html[data-mode="dark"] #categories i,
+html[data-mode="dark"] .categories svg,
+html[data-mode="dark"] #categories svg {
+  color: #55CDFC !important;
+}
+
+html[data-mode="dark"] .card:not(.categories):not(.category-card),
+html[data-mode="dark"] .card-wrapper:not(.categories):not(.category-card),
+html[data-mode="dark"] .list-group-item:not(.categories):not(.category-card) {
+  background-color: rgba(255, 255, 255, 0.86) !important;
+  border-color: rgba(85, 205, 252, 0.25) !important;
+  color: #5f6870 !important;
 }
 
 #read-progress-track {
@@ -594,3 +634,4 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 </body>
 </html>
+
