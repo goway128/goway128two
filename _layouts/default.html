@@ -24,21 +24,30 @@ layout: compress
 @import url("https://fontsapi.zeoseven.com/285/main/result.css");
 
 @keyframes pageSlideUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-body, html {
+body,
+html {
   font-family: "Source Han Serif SC", "Source Han Serif", serif !important;
 }
 
+html,
 body {
+  width: 100%;
+  min-height: 100%;
   overflow-x: hidden;
 }
 
-#main-wrapper {
-  animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-  padding-top: 88px;
+body {
+  margin: 0;
 }
 
 .glass-panel {
@@ -57,22 +66,29 @@ body {
   top: 0;
   left: 0;
   width: 100%;
+  height: 72px;
   z-index: 9997;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 24px;
-  min-height: 72px;
+  padding: 0 28px;
+  box-sizing: border-box;
 }
 
 #menu-toggle {
   position: relative;
   z-index: 1;
   border: none;
+  outline: none;
   background: transparent;
   color: #55CDFC;
   cursor: pointer;
   padding: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.3s, color 0.3s;
 }
 
@@ -85,15 +101,7 @@ body {
 }
 
 #site-top-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #55CDFC;
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  white-space: nowrap;
+  display: none;
 }
 
 #mobile-menu {
@@ -122,6 +130,7 @@ body {
   top: 24px;
   right: 24px;
   border: none;
+  outline: none;
   background: transparent;
   color: #55CDFC;
   cursor: pointer;
@@ -173,22 +182,66 @@ body {
   transition-delay: 100ms;
 }
 
-html[data-mode="dark"] #site-top-menu,
-html[data-mode="dark"] #mobile-menu {
-  background: rgba(249, 200, 216, 0.55);
+#sidebar,
+.sidebar,
+#topbar-wrapper,
+#topbar,
+#breadcrumb,
+.breadcrumb,
+#search-trigger,
+#panel-wrapper,
+#mask {
+  display: none !important;
 }
 
-html[data-mode="dark"] #menu-toggle,
-html[data-mode="dark"] #menu-close,
-html[data-mode="dark"] #site-top-title,
-html[data-mode="dark"] #mobile-menu .menu-item {
-  color: #4a1a2e;
+#main-wrapper {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100vh;
+  margin: 0 !important;
+  padding: 72px 0 0 0 !important;
+  transform: none;
+  animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  display: flex !important;
+  justify-content: center !important;
 }
 
-html[data-mode="dark"] #menu-toggle:hover,
-html[data-mode="dark"] #menu-close:hover,
-html[data-mode="dark"] #mobile-menu .menu-item:hover {
-  color: #7a1a3e;
+#main-wrapper > .container {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box;
+}
+
+#main-wrapper .row {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+#main-wrapper main {
+  width: 100% !important;
+  max-width: none !important;
+  flex: 0 0 100% !important;
+  margin: 0 auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box;
+}
+
+#tail-wrapper {
+  width: 100% !important;
+  max-width: none !important;
+  flex: 0 0 100% !important;
+  margin: 0 auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box;
 }
 
 .page-fade-out {
@@ -196,8 +249,14 @@ html[data-mode="dark"] #mobile-menu .menu-item:hover {
 }
 
 @keyframes pageFadeOut {
-  from { opacity:1; transform:translateY(0); }
-  to { opacity:0; transform:translateY(-12px); }
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
 }
 
 html:not([data-mode="dark"]) body,
@@ -214,22 +273,41 @@ html[data-mode="dark"] main {
   background: linear-gradient(160deg, #2d0a1a 0%, #1a0510 100%) !important;
 }
 
-#tail-wrapper, footer, #footer {
+html[data-mode="dark"] #site-top-menu,
+html[data-mode="dark"] #mobile-menu {
+  background: rgba(249, 200, 216, 0.55);
+}
+
+html[data-mode="dark"] #menu-toggle,
+html[data-mode="dark"] #menu-close,
+html[data-mode="dark"] #mobile-menu .menu-item {
+  color: #4a1a2e;
+}
+
+html[data-mode="dark"] #menu-toggle:hover,
+html[data-mode="dark"] #menu-close:hover,
+html[data-mode="dark"] #mobile-menu .menu-item:hover {
+  color: #7a1a3e;
+}
+
+#tail-wrapper,
+footer,
+#footer {
   background-color: transparent !important;
 }
 
 .card-wrapper.card,
 .card-wrapper,
 .list-group-item {
-  background-color: rgba(173,216,255,0.18) !important;
-  border-color: rgba(100,180,255,0.25) !important;
+  background-color: rgba(173, 216, 255, 0.18) !important;
+  border-color: rgba(100, 180, 255, 0.25) !important;
   transition: all 0.2s;
 }
 
 .card-wrapper.card:hover,
 .card-wrapper:hover,
 .list-group-item:hover {
-  background-color: rgba(173,216,255,0.35) !important;
+  background-color: rgba(173, 216, 255, 0.35) !important;
   transform: translateY(-2px);
 }
 
@@ -254,7 +332,7 @@ html[data-mode="dark"] .list-group-item:hover {
   top: 0;
   width: 6px;
   height: 100vh;
-  background: rgba(128,128,128,0.12);
+  background: rgba(128, 128, 128, 0.12);
   z-index: 9998;
   display: none;
 }
@@ -262,7 +340,8 @@ html[data-mode="dark"] .list-group-item:hover {
 #read-progress-bar {
   width: 100%;
   height: 0%;
-  background: linear-gradient(180deg,
+  background: linear-gradient(
+    180deg,
     #55CDFC 0%,
     #F7A8B8 40%,
     #FFFFFF 60%,
@@ -281,32 +360,19 @@ html[data-mode="dark"] .list-group-item:hover {
   transform: translateX(-50%);
   font-size: 18px;
   line-height: 1;
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
   pointer-events: none;
   transition: bottom 0.08s linear;
 }
 
-#topbar-wrapper,
-#topbar,
-#sidebar,
-.sidebar,
-#search-trigger,
-#breadcrumb,
-.breadcrumb {
-  display: none !important;
-}
+@media (max-width: 768px) {
+  #site-top-menu {
+    height: 72px;
+    padding: 0 24px;
+  }
 
-@media (min-width: 992px) {
   #main-wrapper {
-    margin-left: 0 !important;
-  }
-
-  #main-wrapper .container {
-    max-width: 1140px;
-  }
-
-  main {
-    width: 100%;
+    padding-top: 72px !important;
   }
 }
 </style>
@@ -316,10 +382,10 @@ html[data-mode="dark"] .list-group-item:hover {
 
   <header id="site-top-menu" class="glass-panel">
     <button aria-label="Menu" id="menu-toggle" type="button">
-      <span class="material-symbols-outlined" style="font-size: 32px; font-variation-settings: 'FILL' 0;">menu</span>
+      <span class="material-symbols-outlined" style="font-size: 36px; font-variation-settings: 'FILL' 0;">menu</span>
     </button>
     <span id="site-top-title">{{ page.title | default: site.title | default: "WHITE" }}</span>
-    <div style="width: 32px;"></div>
+    <div style="width: 44px; height: 44px;"></div>
   </header>
 
   <div id="mobile-menu" class="glass-panel">
@@ -335,31 +401,19 @@ html[data-mode="dark"] .list-group-item:hover {
   </div>
 
   <div id="main-wrapper" class="d-flex justify-content-center">
-    <div class="container d-flex flex-column px-xxl-5">
+    <div class="container d-flex flex-column">
       <div class="row flex-grow-1">
-        <main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4">
+        <main aria-label="Main Content">
           {% if layout.layout == 'default' %}
             {% include refactor-content.html content=content lang=lang %}
           {% else %}
             {{ content }}
           {% endif %}
         </main>
-
-        <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
-          <div class="access">
-            {% include_cached update-list.html lang=lang %}
-            {% include_cached trending-tags.html lang=lang %}
-          </div>
-
-          {% for _include in layout.panel_includes %}
-            {% assign _include_path = _include | append: '.html' %}
-            {% include {{ _include_path }} lang=lang %}
-          {% endfor %}
-        </aside>
       </div>
 
       <div class="row">
-        <div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4">
+        <div id="tail-wrapper">
           {% for _include in layout.tail_includes %}
             {% assign _include_path = _include | append: '.html' %}
             {% include {{ _include_path }} lang=lang %}
@@ -380,8 +434,6 @@ html[data-mode="dark"] .list-group-item:hover {
       </button>
     </aside>
   </div>
-
-  <div id="mask" class="d-none position-fixed w-100 h-100 z-1"></div>
 
   {% if site.pwa.enabled %}
     {% include_cached notification.html lang=lang %}
