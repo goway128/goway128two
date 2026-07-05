@@ -8,8 +8,7 @@ layout: compress
 
 {% include lang.html %}
 
-{% if site.theme_mode %}
-  {% capture prefer_mode %}data-mode="{{ site.theme_mode }}"{% endcapture %}
+{% if site.theme_mode %}{% capture prefer_mode %}data-mode="{{ site.theme_mode }}"{% endcapture %}
 {% endif %}
 
 <html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}" {{ prefer_mode }}>
@@ -39,14 +38,18 @@ html {
   font-family: "Source Han Serif SC", "Source Han Serif", serif !important;
 }
 
-html,
+html {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 body {
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
-}
-
-body {
+  overflow-y: hidden;
   margin: 0;
 }
 
@@ -116,8 +119,7 @@ body.menu-open {
   z-index: 9999;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.5s;
-  display: flex;
+  transition: opacity 0.5s;display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -146,8 +148,7 @@ body.menu-open {
 }
 
 #menu-close:hover {
-  color: #666;
-  transform: scale(1.1);
+  color: #666;transform: scale(1.1);
 }
 
 #mobile-menu nav {
@@ -211,6 +212,7 @@ body.menu-open {
   animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   display: flex !important;
   justify-content: center !important;
+  overflow-x: hidden !important;
 }
 
 #main-wrapper > .container {
@@ -220,6 +222,7 @@ body.menu-open {
   padding-left: 0 !important;
   padding-right: 0 !important;
   box-sizing: border-box;
+  overflow-x: hidden !important;
 }
 
 #main-wrapper .row {
@@ -257,8 +260,7 @@ body.menu-open {
 
 @keyframes pageFadeOut {
   from {
-    opacity: 1;
-    transform: translateY(0);
+    opacity: 1;transform: translateY(0);
   }
   to {
     opacity: 0;
@@ -353,7 +355,7 @@ html[data-mode="dark"] .list-group-item:hover {
     #333333 50%,
     #888888 100%
   );
-  border-radius: 0 0 4px 4px;
+  border-radius: 00 4px 4px;
   transition: height 0.08s linear;
   position: relative;
 }
@@ -472,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var scrollLockY = 0;
 
   function lockScroll() {
-    scrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
+    scrollLockY = window.scrollY || document.documentElement.scrollTop ||0;
     document.documentElement.classList.add('menu-open');
     document.body.classList.add('menu-open');
     document.body.style.position = 'fixed';
@@ -571,4 +573,3 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 </body>
 </html>
-
