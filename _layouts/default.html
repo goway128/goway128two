@@ -107,6 +107,58 @@ body.menu-open {
   display: none;
 }
 
+/* ===== 宽屏横排菜单（参考 mahiro.uk） ===== */
+#desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+  margin-left: auto;
+}
+
+#desktop-nav .desktop-nav-item {
+  color: #111;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.25s, opacity 0.25s;
+}
+
+#desktop-nav .desktop-nav-item:hover {
+  color: #666;
+}
+
+html[data-mode="dark"] #desktop-nav .desktop-nav-item {
+  color: #111;
+}
+
+html[data-mode="dark"] #desktop-nav .desktop-nav-item:hover {
+  color: #666;
+}
+
+/* 宽屏(>=1024px)：显示横排菜单，隐藏汉堡按钮 */
+@media (min-width: 1024px) {
+  #menu-toggle {
+    display: none;
+  }
+  #site-top-title {
+    display: block;
+    color: #111;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+  }
+}
+
+/* 窄屏/手机(<1024px)：隐藏横排菜单，用原来的汉堡菜单 */
+@media (max-width: 1023.98px) {
+  #desktop-nav {
+    display: none;
+  }
+}
+
 #mobile-menu {
   position: fixed;
   inset: 0;
@@ -389,19 +441,123 @@ html[data-mode="dark"] #read-progress-bar {
     padding-top: 72px !important;
   }
 }
+/* ===== 妗岄潰妯悜瀵艰埅鏍忥紙瀹藉害 >=1200px 鏄剧ず锛屼豢 mahiro锛?==== */
+#desktop-navbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  z-index: 9997;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 44px;
+  box-sizing: border-box;
+}
+
+#desktop-navbar .nav-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
+  color: #111;
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+#desktop-navbar .nav-logo:hover {
+  opacity: 0.6;
+}
+
+#desktop-navbar .nav-links {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#desktop-navbar .nav-links a {
+  position: relative;
+  color: #444;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 4px 0;
+  transition: color 0.3s;
+}
+
+#desktop-navbar .nav-links a:hover {
+  color: #111;
+}
+
+#desktop-navbar .nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: #111;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#desktop-navbar .nav-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+html[data-mode="dark"] #desktop-navbar {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* >=1200px锛氭樉绀烘í鍚戞爮锛岄殣钘忔眽鍫℃寜閽?*/
+@media (min-width: 1200px) {
+  #desktop-navbar {
+    display: flex;
+  }
+  #site-top-menu {
+    display: none;
+  }
+}
 </style>
 
 <body{% if page.layout == "post" %} class="post-layout"{% endif %}>
-  <div id="read-progress-track"><div id="read-progress-bar"><span id="read-progress-icon">馃崶</span></div></div>
+  <div id="read-progress-track"><div id="read-progress-bar"><span id="read-progress-icon">棣冨炊</span></div></div>
 
   <header id="site-top-menu" class="glass-panel">
     <button aria-label="Menu" id="menu-toggle" type="button">
       <span class="material-symbols-outlined" style="font-size: 36px; font-variation-settings: 'FILL' 0;">menu</span>
     </button>
     <span id="site-top-title">{{ page.title | default: site.title | default: "WHITE" }}</span>
+    <nav id="desktop-nav" aria-label="Primary">
+      <a class="desktop-nav-item" href="https://blog.goway0128.top/">home</a>
+      <a class="desktop-nav-item" href="https://blog.goway0128.top/categories">categories</a>
+      <a class="desktop-nav-item" href="https://blog.goway0128.top/about">about</a>
+      <a class="desktop-nav-item" href="https://blog.goway0128.top/friends">friends</a>
+    </nav>
     <div style="width: 44px; height: 44px;"></div>
   </header>
 
+  <nav id="desktop-navbar" class="glass-panel">
+    <a class="nav-logo" href="https://blog.goway0128.top/">
+      <span>{{ site.title | default: "WHITE" }}</span>
+    </a>
+    <ul class="nav-links">
+      <a href="https://blog.goway0128.top/">home</a>
+      <a href="https://blog.goway0128.top/categories">categories</a>
+      <a href="https://blog.goway0128.top/about">about</a>
+      <a href="https://blog.goway0128.top/friends">friends</a>
+    </ul>
+  </nav>
   <div id="mobile-menu" class="glass-panel">
     <button aria-label="Close menu" id="menu-close" type="button">
       <span class="material-symbols-outlined" style="font-size: 40px; font-variation-settings: 'FILL' 0;">close</span>
