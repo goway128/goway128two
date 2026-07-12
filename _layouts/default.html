@@ -281,11 +281,11 @@ html[data-mode="dark"] #desktop-nav .desktop-nav-item:hover {
 
 #main-wrapper main {
   width: 100% !important;
-  max-width: none !important;
+  max-width: 48rem !important;
   flex: 0 0 100% !important;
   margin: 0 auto !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
   box-sizing: border-box;
 }
 
@@ -296,6 +296,16 @@ html[data-mode="dark"] #desktop-nav .desktop-nav-item:hover {
   margin: 0 auto !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
+  box-sizing: border-box;
+}
+
+/* 文章底部功能区(分享/协议/上下篇/相关文章)跟随正文宽度居中；footer 保持全宽 */
+#tail-wrapper > *:not(footer):not(#footer) {
+  max-width: 48rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 24px;
+  padding-right: 24px;
   box-sizing: border-box;
 }
 
