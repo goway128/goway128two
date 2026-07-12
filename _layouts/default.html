@@ -211,4 +211,366 @@ body.menu-open {
   transform: none;
   animation: pageSlideUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   display: flex !important;
-  justify-content: center !
+  justify-content: center !important;
+  overflow-x: hidden !important;
+}
+
+#main-wrapper > .container {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box;
+  overflow-x: hidden !important;
+}
+
+#main-wrapper .row {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+#main-wrapper main {
+  width: 100% !important;
+  max-width: none !important;
+  flex: 0 0 100% !important;
+  margin: 0 auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box;
+}
+
+#tail-wrapper {
+  width: 100% !important;
+  max-width: none !important;
+  flex: 0 0 100% !important;
+  margin: 0 auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box;
+}
+
+.page-fade-out {
+  animation: pageFadeOut 0.3s ease forwards !important;
+}
+
+@keyframes pageFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+html:not([data-mode="dark"]) body,
+html:not([data-mode="dark"]) #main-wrapper,
+html:not([data-mode="dark"]) #main-wrapper .container,
+html:not([data-mode="dark"]) main {
+  background-color: #ffffff !important;
+}
+
+html[data-mode="dark"] body,
+html[data-mode="dark"] #main-wrapper,
+html[data-mode="dark"] #main-wrapper .container,
+html[data-mode="dark"] main {
+  background: linear-gradient(160deg, #1a1a1a 0%, #000000 100%) !important;
+}
+
+html[data-mode="dark"] #site-top-menu,
+html[data-mode="dark"] #mobile-menu {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+html[data-mode="dark"] #menu-toggle,
+html[data-mode="dark"] #menu-close,
+html[data-mode="dark"] #mobile-menu .menu-item {
+  color: #111;
+}
+
+html[data-mode="dark"] #menu-toggle:hover,
+html[data-mode="dark"] #menu-close:hover,
+html[data-mode="dark"] #mobile-menu .menu-item:hover {
+  color: #666;
+}
+
+#tail-wrapper,
+footer,
+#footer {
+  background-color: transparent !important;
+}
+
+.card-wrapper.card,
+.card-wrapper,
+.list-group-item {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  transition: all 0.2s;
+}
+
+.card-wrapper.card:hover,
+.card-wrapper:hover,
+.list-group-item:hover {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  transform: translateY(-2px);
+}
+
+html[data-mode="dark"] .card,
+html[data-mode="dark"] .card-wrapper,
+html[data-mode="dark"] .list-group-item,
+html[data-mode="dark"] .categories .list-group-item {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ddd !important;
+}
+
+html[data-mode="dark"] .card:hover,
+html[data-mode="dark"] .card-wrapper:hover,
+html[data-mode="dark"] .list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+#read-progress-track {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.06);
+  z-index: 9998;
+  display: none;
+}
+
+#read-progress-bar {
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(
+    180deg,
+    #000000 0%,
+    #333333 50%,
+    #888888 100%
+  );
+  border-radius: 0 0 4px 4px;
+  transition: height 0.08s linear;
+  position: relative;
+}
+
+html[data-mode="dark"] #read-progress-track {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+html[data-mode="dark"] #read-progress-bar {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #aaaaaa 50%,
+    #666666 100%
+  );
+}
+
+#read-progress-icon {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
+  pointer-events: none;
+  transition: bottom 0.08s linear;
+}
+
+@media (max-width: 768px) {
+  #site-top-menu {
+    height: 72px;
+    padding: 0 24px;
+  }
+
+  #main-wrapper {
+    padding-top: 72px !important;
+  }
+}
+</style>
+
+<body{% if page.layout == "post" %} class="post-layout"{% endif %}>
+  <div id="read-progress-track"><div id="read-progress-bar"><span id="read-progress-icon">🍥</span></div></div>
+
+  <header id="site-top-menu" class="glass-panel">
+    <button aria-label="Menu" id="menu-toggle" type="button">
+      <span class="material-symbols-outlined" style="font-size: 36px; font-variation-settings: 'FILL' 0;">menu</span>
+    </button>
+    <span id="site-top-title">{{ page.title | default: site.title | default: "WHITE" }}</span>
+    <div style="width: 44px; height: 44px;"></div>
+  </header>
+
+  <div id="mobile-menu" class="glass-panel">
+    <button aria-label="Close menu" id="menu-close" type="button">
+      <span class="material-symbols-outlined" style="font-size: 40px; font-variation-settings: 'FILL' 0;">close</span>
+    </button>
+    <nav>
+      <a class="menu-item" href="https://blog.goway0128.top/">home</a>
+      <a class="menu-item" href="https://blog.goway0128.top/categories">categories</a>
+      <a class="menu-item" href="https://blog.goway0128.top/about">about</a>
+      <a class="menu-item" href="https://blog.goway0128.top/friends">friends</a>
+    </nav>
+  </div>
+
+  <div id="main-wrapper" class="d-flex justify-content-center">
+    <div class="container d-flex flex-column">
+      <div class="row flex-grow-1">
+        <main aria-label="Main Content">
+          {% if layout.layout == 'default' %}
+            {% include refactor-content.html content=content lang=lang %}
+          {% else %}
+            {{ content }}
+          {% endif %}
+        </main>
+      </div>
+
+      <div class="row">
+        <div id="tail-wrapper">
+          {% for _include in layout.tail_includes %}
+            {% assign _include_path = _include | append: '.html' %}
+            {% include {{ _include_path }} lang=lang %}
+          {% endfor %}
+
+          {% if page.hide_footer != true %}
+            {% include footer.html lang=lang %}
+          {% endif %}
+        </div>
+      </div>
+
+      {% include_cached search-results.html lang=lang %}
+    </div>
+
+    <aside aria-label="Scroll to Top">
+      <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow">
+        <i class="fas fa-angle-up"></i>
+      </button>
+    </aside>
+  </div>
+
+  {% if site.pwa.enabled %}
+    {% include_cached notification.html lang=lang %}
+  {% endif %}
+
+  {% for _include in layout.script_includes %}
+    {% assign _include_path = _include | append: '.html' %}
+    {% include {{ _include_path }} %}
+  {% endfor %}
+
+  {% include_cached search-loader.html lang=lang %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var menuToggle = document.getElementById('menu-toggle');
+  var menuClose = document.getElementById('menu-close');
+  var mobileMenu = document.getElementById('mobile-menu');
+  var scrollLockY = 0;
+
+  function lockScroll() {
+    scrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.documentElement.classList.add('menu-open');
+    document.body.classList.add('menu-open');
+    document.body.style.position = 'fixed';
+    document.body.style.top = '-' + scrollLockY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }
+
+  function unlockScroll() {
+    document.documentElement.classList.remove('menu-open');
+    document.body.classList.remove('menu-open');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, scrollLockY);
+  }
+
+  function openMenu() {
+    mobileMenu.classList.add('is-open');
+    lockScroll();
+  }
+
+  function closeMenu() {
+    mobileMenu.classList.remove('is-open');
+    unlockScroll();
+  }
+
+  if (menuToggle && menuClose && mobileMenu) {
+    menuToggle.addEventListener('click', openMenu);
+    menuClose.addEventListener('click', closeMenu);
+
+    mobileMenu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', closeMenu);
+    });
+
+    mobileMenu.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+    }, { passive: false });
+  }
+});
+
+(function () {
+  var track = document.getElementById('read-progress-track');
+  var bar = document.getElementById('read-progress-bar');
+  if (track && bar && document.body.classList.contains('post-layout')) {
+    track.style.display = 'block';
+    window.addEventListener('scroll', function () {
+      var scrolled = document.documentElement.scrollTop || document.body.scrollTop;
+      var total = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.height = (total > 0 ? Math.min(100, scrolled / total * 100) : 0) + '%';
+    }, { passive: true });
+  }
+})();
+
+(function () {
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('javascript') || a.target === '_blank') return;
+    if (href.startsWith('http') && !href.includes(location.hostname)) return;
+    e.preventDefault();
+    var wrapper = document.getElementById('main-wrapper');
+    if (wrapper) wrapper.classList.add('page-fade-out');
+    setTimeout(function () { location.href = href; }, 280);
+  });
+})();
+
+(function () {
+  var post = document.querySelector('#post-wrapper,article,.post-content');
+  if (!post) return;
+  var els = post.querySelectorAll('h1,h2,h3,h4,p,ul,ol,blockquote,pre,table,img,.card,hr');
+  els.forEach(function (el, i) {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(22px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    el.style.transitionDelay = Math.min(i * 40, 400) + 'ms';
+  });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.addEventListener('transitionend', function () {
+          entry.target.style.transitionDelay = '';
+        }, { once: true });
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
