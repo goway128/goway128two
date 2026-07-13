@@ -425,9 +425,13 @@ html[data-mode="dark"] .list-group-item:hover {
     margin-top: 0 !important;
   }
 
-  /* 隐藏顶部那条突兀的渐变遮罩(黑块) */
-  body.post-layout #panel-wrapper.custom-toc-panel .toc-border-cover {
+  /* 隐藏顶部/底部那条突兀的渐变遮罩(黑块) */
+  body.post-layout #panel-wrapper.custom-toc-panel .toc-border-cover,
+  body.post-layout #panel-wrapper.custom-toc-panel #toc-wrapper::before,
+  body.post-layout #panel-wrapper.custom-toc-panel #toc-wrapper::after {
     display: none !important;
+    background: none !important;
+    content: none !important;
   }
 
   body.post-layout #panel-wrapper.custom-toc-panel .panel-heading {
