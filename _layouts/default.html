@@ -19,6 +19,7 @@ layout: compress
     var saved = localStorage.getItem('site-theme-mode');
     var mode = saved ? saved : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-mode', mode);
+    document.documentElement.setAttribute('data-bs-theme', mode);
   } catch (e) {}
 })();
 </script>
@@ -178,6 +179,10 @@ html[data-mode="dark"] #desktop-nav .desktop-nav-item:hover {
 
 /* 宽屏(>=1024px)：显示横排菜单，隐藏汉堡按钮 */
 @media (min-width: 1024px) {
+  #site-top-menu {
+    justify-content: flex-start;
+    gap: 0;
+  }
   #menu-toggle {
     display: none;
   }
@@ -193,14 +198,14 @@ html[data-mode="dark"] #desktop-nav .desktop-nav-item:hover {
   html[data-mode="dark"] #site-top-title {
     color: #f0f0f0;
   }
-  /* 横排菜单不再自己抢占，交给标题的 margin-right:auto 分隔 */
   #desktop-nav {
     margin-left: 0;
   }
-  /* 切换按钮：宽屏显示在最右，与横排菜单留间距 */
+  /* 切换按钮：宽屏显示在横排菜单右侧 */
   #theme-toggle {
-    display: flex;
-    margin-left: 24px;
+    display: flex !important;
+    margin-left: 28px;
+    flex: 0 0 auto;
   }
 }
 
@@ -414,9 +419,7 @@ html[data-mode="dark"] #mobile-menu .menu-item:hover {
   color: #aaa;
 }
 
-#tail-wrapper,
-footer,
-#footer {
+#tail-wrapper {
   background-color: transparent !important;
 }
 
@@ -490,6 +493,16 @@ html[data-mode="dark"] .categories .card-header,
 html[data-mode="dark"] .categories .card-header a,
 html[data-mode="dark"] .categories .list-group-item,
 html[data-mode="dark"] .categories .list-group-item a {
+  color: #ffffff !important;
+}
+
+/* 分类详情页(点进具体分类)：文章链接跟随深浅，不要蓝色 */
+html:not([data-mode="dark"]) #page-category ul > li > a,
+html:not([data-mode="dark"]) #page-tag ul > li > a {
+  color: #000000 !important;
+}
+html[data-mode="dark"] #page-category ul > li > a,
+html[data-mode="dark"] #page-tag ul > li > a {
   color: #ffffff !important;
 }
 
@@ -864,6 +877,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var cur = document.documentElement.getAttribute('data-mode');
       var next = (cur === 'dark') ? 'light' : 'dark';
       document.documentElement.setAttribute('data-mode', next);
+      document.documentElement.setAttribute('data-bs-theme', next);
       try { localStorage.setItem('site-theme-mode', next); } catch (e) {}
       syncThemeIcon();
     });
