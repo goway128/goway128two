@@ -188,6 +188,19 @@ html[data-mode="dark"] #desktop-nav .desktop-nav-item:hover {
     font-weight: 800;
     letter-spacing: 0.06em;
     text-decoration: none;
+    margin-right: auto;
+  }
+  html[data-mode="dark"] #site-top-title {
+    color: #f0f0f0;
+  }
+  /* 横排菜单不再自己抢占，交给标题的 margin-right:auto 分隔 */
+  #desktop-nav {
+    margin-left: 0;
+  }
+  /* 切换按钮：宽屏显示在最右，与横排菜单留间距 */
+  #theme-toggle {
+    display: flex;
+    margin-left: 24px;
   }
 }
 
@@ -378,19 +391,27 @@ html[data-mode="dark"] main {
 
 html[data-mode="dark"] #site-top-menu,
 html[data-mode="dark"] #mobile-menu {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(20, 20, 24, 0.72);
+  border-top-color: rgba(255, 255, 255, 0.12);
+  border-left-color: rgba(255, 255, 255, 0.12);
+  border-bottom-color: rgba(0, 0, 0, 0.3);
+  border-right-color: rgba(0, 0, 0, 0.3);
 }
 
 html[data-mode="dark"] #menu-toggle,
 html[data-mode="dark"] #menu-close,
+html[data-mode="dark"] #theme-toggle,
+html[data-mode="dark"] #desktop-nav .desktop-nav-item,
 html[data-mode="dark"] #mobile-menu .menu-item {
-  color: #111;
+  color: #f0f0f0;
 }
 
 html[data-mode="dark"] #menu-toggle:hover,
 html[data-mode="dark"] #menu-close:hover,
+html[data-mode="dark"] #theme-toggle:hover,
+html[data-mode="dark"] #desktop-nav .desktop-nav-item:hover,
 html[data-mode="dark"] #mobile-menu .menu-item:hover {
-  color: #666;
+  color: #aaa;
 }
 
 #tail-wrapper,
@@ -402,9 +423,13 @@ footer,
 .card-wrapper.card,
 .card-wrapper,
 .list-group-item {
+  transition: all 0.2s;
+}
+html:not([data-mode="dark"]) .card-wrapper.card,
+html:not([data-mode="dark"]) .card-wrapper,
+html:not([data-mode="dark"]) .list-group-item {
   background-color: rgba(0, 0, 0, 0.04) !important;
   border-color: rgba(0, 0, 0, 0.12) !important;
-  transition: all 0.2s;
 }
 
 .card-wrapper.card:hover,
@@ -414,13 +439,18 @@ footer,
   transform: translateY(-2px);
 }
 
-html[data-mode="dark"] .card,
+html[data-mode="dark"] html[data-mode="dark"] .card,
+html[data-mode="dark"] .card-wrapper.card,
 html[data-mode="dark"] .card-wrapper,
 html[data-mode="dark"] .list-group-item,
+html[data-mode="dark"] .categories.card,
+html[data-mode="dark"] .categories .card-header,
 html[data-mode="dark"] .categories .list-group-item {
   background-color: rgba(255, 255, 255, 0.06) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
-  color: #ddd !important;
+  color: #e8e8e8 !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 html[data-mode="dark"] .card:hover,
