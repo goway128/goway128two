@@ -13,6 +13,15 @@ layout: compress
 {% endif %}
 
 <html lang="{{ page.lang | default: site.alt_lang | default: site.lang }}" {{ prefer_mode }}>
+<script>
+(function () {
+  try {
+    var saved = localStorage.getItem('site-theme-mode');
+    var mode = saved ? saved : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-mode', mode);
+  } catch (e) {}
+})();
+</script>
   {% include head.html lang=lang %}
 
 <script src="{{ '/assets/js/auto-scroll-animation.js' | relative_url }}"></script>
@@ -105,6 +114,36 @@ body.menu-open {
 
 #site-top-title {
   display: none;
+}
+
+/* 深浅模式切换按钮 */
+#theme-toggle {
+  position: relative;
+  z-index: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #111;
+  cursor: pointer;
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s, color 0.3s;
+}
+#theme-toggle:hover {
+  color: #666;
+}
+#theme-toggle:active {
+  transform: scale(0.9);
+}
+html[data-mode="dark"] #theme-toggle {
+  color: #111;
+}
+html[data-mode="dark"] #theme-toggle:hover {
+  color: #666;
 }
 
 /* ===== 宽屏横排菜单（参考 mahiro.uk） ===== */
@@ -399,6 +438,31 @@ html[data-mode="dark"] .list-group-item:hover {
   border-radius: 10px !important;
 }
 
+/* 分类页：分类名/标题文字去掉蓝色链接色 —— 亮色黑字/暗色白字 */
+.categories a,
+.categories a:hover,
+.categories .card-header a,
+.categories .list-group-item a,
+#categories a {
+  border-bottom: none !important;
+}
+/* 亮色模式：纯黑字 */
+html:not([data-mode="dark"]) .categories a,
+html:not([data-mode="dark"]) .categories a:hover,
+html:not([data-mode="dark"]) .categories .card-header,
+html:not([data-mode="dark"]) .categories .list-group-item {
+  color: #000000 !important;
+}
+/* 暗色模式：纯白字 */
+html[data-mode="dark"] .categories a,
+html[data-mode="dark"] .categories a:hover,
+html[data-mode="dark"] .categories .card-header,
+html[data-mode="dark"] .categories .card-header a,
+html[data-mode="dark"] .categories .list-group-item,
+html[data-mode="dark"] .categories .list-group-item a {
+  color: #ffffff !important;
+}
+
 /* ===== 文章页右侧章节目录(TOC)：仅宽屏(>=1200px) ===== */
 /* 默认隐藏整个右侧 panel，子元素(含 sticky)随父级一并消失，不遮挡顶部菜单 */
 #panel-wrapper.custom-toc-panel {
@@ -638,7 +702,9 @@ html[data-mode="dark"] #desktop-navbar {
       <a class="desktop-nav-item" href="https://blog.goway0128.top/about">about</a>
       <a class="desktop-nav-item" href="https://blog.goway0128.top/friends">friends</a>
     </nav>
-    <div style="width: 44px; height: 44px;"></div>
+    <button aria-label="Toggle theme" id="theme-toggle" type="button">
+      <span class="material-symbols-outlined" id="theme-toggle-icon" style="font-size: 28px; font-variation-settings: 'FILL' 0;">light_mode</span>
+    </button>
   </header>
 
   <nav id="desktop-navbar" class="glass-panel">
@@ -753,6 +819,24 @@ document.addEventListener('DOMContentLoaded', function () {
   function closeMenu() {
     mobileMenu.classList.remove('is-open');
     unlockScroll();
+  }
+
+  var themeToggle = document.getElementById('theme-toggle');
+  var themeIcon = document.getElementById('theme-toggle-icon');
+  function syncThemeIcon() {
+    if (!themeIcon) return;
+    var m = document.documentElement.getAttribute('data-mode');
+    themeIcon.textContent = (m === 'dark') ? 'dark_mode' : 'light_mode';
+  }
+  syncThemeIcon();
+  if (themeToggle) {
+    themeToggle.addEventListener('click', function () {
+      var cur = document.documentElement.getAttribute('data-mode');
+      var next = (cur === 'dark') ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-mode', next);
+      try { localStorage.setItem('site-theme-mode', next); } catch (e) {}
+      syncThemeIcon();
+    });
   }
 
   if (menuToggle && menuClose && mobileMenu) {
