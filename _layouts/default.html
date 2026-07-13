@@ -505,6 +505,11 @@ html[data-mode="dark"] .list-group-item:hover {
     color: #d8b4fe;
     border-left-color: #d8b4fe;
   }
+  /* hide theme's built-in blue ::before marker line, keep only custom purple */
+  body.post-layout #toc-wrapper ul .is-active-link::before,
+  body.post-layout #toc .is-active-link::before {
+    display: none !important;
+  }
 }
 @media (max-width: 768px) {
   #site-top-menu {
