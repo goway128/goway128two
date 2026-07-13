@@ -1,4 +1,4 @@
-﻿---
+---
 layout: compress
 ---
 
@@ -659,6 +659,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var wrapper = document.getElementById('main-wrapper');
     if (wrapper) wrapper.classList.add('page-fade-out');
     setTimeout(function () { location.href = href; }, 280);
+  });
+
+  // 修复后退时页面空白：页面显示(含从后退缓存bfcache恢复)时，清除淡出状态
+  window.addEventListener('pageshow', function () {
+    var wrapper = document.getElementById('main-wrapper');
+    if (wrapper) wrapper.classList.remove('page-fade-out');
   });
 })();
 
