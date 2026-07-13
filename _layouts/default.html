@@ -411,8 +411,8 @@ html[data-mode="dark"] .list-group-item:hover {
 
   body.post-layout #panel-wrapper.custom-toc-panel {
     display: block !important;
-    flex: 0 0 240px;
-    max-width: 240px;
+    flex: 0 0 260px;
+    max-width: 260px;
     align-self: flex-start;
     position: sticky;
     top: 96px;
@@ -422,6 +422,12 @@ html[data-mode="dark"] .list-group-item:hover {
   body.post-layout #panel-wrapper.custom-toc-panel #toc-wrapper {
     position: static !important;
     visibility: visible !important;
+    margin-top: 0 !important;
+  }
+
+  /* 隐藏顶部那条突兀的渐变遮罩(黑块) */
+  body.post-layout #panel-wrapper.custom-toc-panel .toc-border-cover {
+    display: none !important;
   }
 
   body.post-layout #panel-wrapper.custom-toc-panel .panel-heading {
@@ -455,15 +461,15 @@ html[data-mode="dark"] .list-group-item:hover {
     margin-left: -2px;
     border-left: 2px solid transparent;
     color: var(--text-muted-color, #999);
-    font-size: 0.86rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.6;
     text-decoration: none;
     transition: color 0.2s, border-color 0.2s, font-weight 0.2s;
   }
   /* 层级缩进 */
   body.post-layout #toc .toc-list .toc-list .toc-link {
     padding-left: 30px;
-    font-size: 0.82rem;
+    font-size: 0.9rem;
   }
   body.post-layout #toc .toc-list .toc-list .toc-list .toc-link {
     padding-left: 44px;
