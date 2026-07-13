@@ -245,7 +245,6 @@ html[data-mode="dark"] #desktop-nav .desktop-nav-item:hover {
 #breadcrumb,
 .breadcrumb,
 #search-trigger,
-#panel-wrapper,
 #mask {
   display: none !important;
 }
@@ -391,6 +390,47 @@ html[data-mode="dark"] .list-group-item:hover {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
+/* ===== 文章页右侧章节目录(TOC)：仅宽屏(>=1200px) ===== */
+#panel-wrapper.custom-toc-panel {
+  display: none;
+}
+
+@media (min-width: 1200px) {
+  /* 文章页：正文靠中、右侧目录并排 */
+  body.post-layout #main-wrapper .row.flex-grow-1 {
+    justify-content: center !important;
+    align-items: flex-start;
+    gap: 40px;
+  }
+
+  /* 正文让出右栏空间 */
+  body.post-layout #main-wrapper main {
+    flex: 0 1 48rem !important;
+    margin: 0 !important;
+  }
+
+  /* 右侧目录栏显示并吸顶 */
+  body.post-layout #panel-wrapper.custom-toc-panel {
+    display: block;
+    flex: 0 0 240px;
+    max-width: 240px;
+    align-self: flex-start;
+    position: sticky;
+    top: 96px;
+    padding-top: 8px;
+  }
+
+  body.post-layout #panel-wrapper.custom-toc-panel #toc-wrapper {
+    position: static !important;
+    visibility: visible !important;
+  }
+
+  body.post-layout #panel-wrapper.custom-toc-panel .panel-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    opacity: 0.9;
+  }
+}
 @media (max-width: 768px) {
   #site-top-menu {
     height: 72px;
@@ -559,6 +599,12 @@ html[data-mode="dark"] #desktop-navbar {
             {{ content }}
           {% endif %}
         </main>
+
+        {% if page.layout == 'post' %}
+          <aside id="panel-wrapper" aria-label="Panel" class="custom-toc-panel">
+            {% include toc.html lang=lang %}
+          </aside>
+        {% endif %}
       </div>
 
       <div class="row">
