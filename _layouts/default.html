@@ -390,6 +390,15 @@ html[data-mode="dark"] .list-group-item:hover {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
+/* 修复分类页：折叠分类时 header 圆角外露出卡片底色的黑角 */
+.categories.card {
+  overflow: hidden !important;
+}
+/* 折叠状态(header 无 hide-border-bottom)：底部也给圆角，不露黑角 */
+.categories .card-header:not(.hide-border-bottom) {
+  border-radius: 10px !important;
+}
+
 /* ===== 文章页右侧章节目录(TOC)：仅宽屏(>=1200px) ===== */
 /* 默认隐藏整个右侧 panel，子元素(含 sticky)随父级一并消失，不遮挡顶部菜单 */
 #panel-wrapper.custom-toc-panel {
