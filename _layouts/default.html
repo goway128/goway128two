@@ -391,27 +391,26 @@ html[data-mode="dark"] .list-group-item:hover {
 }
 
 /* ===== 文章页右侧章节目录(TOC)：仅宽屏(>=1200px) ===== */
+/* 默认隐藏整个右侧 panel。用 aside 自身 display:none，
+   子元素(含 sticky 的 toc-border-cover)随父级一并消失，不再遮挡顶部菜单 */
 #panel-wrapper.custom-toc-panel {
-  display: none;
+  display: none !important;
 }
 
 @media (min-width: 1200px) {
-  /* 文章页：正文靠中、右侧目录并排 */
   body.post-layout #main-wrapper .row.flex-grow-1 {
     justify-content: center !important;
     align-items: flex-start;
     gap: 40px;
   }
 
-  /* 正文让出右栏空间 */
   body.post-layout #main-wrapper main {
     flex: 0 1 48rem !important;
     margin: 0 !important;
   }
 
-  /* 右侧目录栏显示并吸顶 */
   body.post-layout #panel-wrapper.custom-toc-panel {
-    display: block;
+    display: block !important;
     flex: 0 0 240px;
     max-width: 240px;
     align-self: flex-start;
@@ -426,9 +425,61 @@ html[data-mode="dark"] .list-group-item:hover {
   }
 
   body.post-layout #panel-wrapper.custom-toc-panel .panel-heading {
-    font-size: 1rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin-bottom: 14px !important;
+  }
+
+  /* ---- 极简竖线高亮风目录 ---- */
+  body.post-layout #toc .toc-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-left: 2px solid rgba(128, 128, 128, 0.18);
+  }
+  body.post-layout #toc .toc-list .toc-list {
+    border-left: none;
+  }
+  body.post-layout #toc .toc-list-item {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  body.post-layout #toc .toc-link {
+    display: block;
+    position: relative;
+    padding: 5px 0 5px 16px;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    color: var(--text-muted-color, #999);
+    font-size: 0.86rem;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s, font-weight 0.2s;
+  }
+  /* 层级缩进 */
+  body.post-layout #toc .toc-list .toc-list .toc-link {
+    padding-left: 30px;
+    font-size: 0.82rem;
+  }
+  body.post-layout #toc .toc-list .toc-list .toc-list .toc-link {
+    padding-left: 44px;
+  }
+  body.post-layout #toc .toc-link:hover {
+    color: var(--text-color, #333);
+  }
+  /* 当前阅读章节高亮：实色竖线 + 主题色 + 加粗 */
+  body.post-layout #toc .toc-link.is-active-link {
+    color: #c084fc;
     font-weight: 700;
-    opacity: 0.9;
+    border-left-color: #c084fc;
+  }
+  html[data-mode="dark"] body.post-layout #toc .toc-link.is-active-link {
+    color: #d8b4fe;
+    border-left-color: #d8b4fe;
   }
 }
 @media (max-width: 768px) {
